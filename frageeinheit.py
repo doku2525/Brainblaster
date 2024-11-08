@@ -27,11 +27,13 @@ class Frageeinheit:
 
     @staticmethod
     def suche_frageeinheiten_der_lernklasse(lernklasse: Type[Lerneinheit]) -> list[Type[Frageeinheit]]:
-        # liefer alle Frageeinheiten nach rank sortiert, die zur Lerneinheit gehoeren.
-        # TODO Ersetze lambda-filter_funktion durch definierte Funktion im Typeannotation
+        """
+        Liefer alle Klassen von Frageeinheiten nach rank sortiert, die zur Lerneinheit gehoeren.
+        :param lernklasse:
+        :return: list[Type[Frageeinheit]]
+        """
         def filter_funktion(elem: Type[Frageeinheit]) -> bool:
             return "Lerneinheit"+elem().lerneinheit == lernklasse.__name__
-#        filter_funktion = lambda elem: "Lerneinheit" + elem().lerneinheit == lernklasse.__name__
         result = [elem for elem in Frageeinheit.alle_frageeinheiten() if filter_funktion(elem)]
         return sorted(result, key=lambda a: a().rank)
 
