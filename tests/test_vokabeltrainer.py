@@ -1,4 +1,5 @@
 from unittest import TestCase
+import copy
 
 import lerneinheit
 from vokabeltrainer import Vokabeltrainer
@@ -19,15 +20,16 @@ class test_vokabeltrainer(TestCase):
         self.assertEquals(len(Vokabeltrainer.vokabelkarten), 100)
 
     def test_speicherVokabelkartenInDatei(self):
+        # TODO
         Vokabeltrainer.addBeispiele(5, "Japanisch")
         Vokabeltrainer.speicherVokabelkartenInDatei()
         Vokabeltrainer.speicherVokabelkartenInJSON()
 
     def test_addVokabelbox(self):
-        objA = self.obj.addVokabelbox(Vokabelbox("Titel 1", lerneinheit.LerneinheitJapanisch, []))
-        objAA = objA.addVokabelbox(Vokabelbox("Titel 2", lerneinheit.LerneinheitJapanisch, []))
-        objAAA = objAA.addVokabelbox(Vokabelbox("Titel 3", lerneinheit.LerneinheitJapanisch, []))
         self.assertEquals(len(self.obj.vokabelboxen), 0)
+        objA = copy.deepcopy(self.obj.addVokabelbox(Vokabelbox("Titel 1", lerneinheit.LerneinheitJapanisch, [])))
+        objAA = copy.deepcopy(self.obj.addVokabelbox(Vokabelbox("Titel 2", lerneinheit.LerneinheitJapanisch, [])))
+        objAAA = copy.deepcopy(self.obj.addVokabelbox(Vokabelbox("Titel 3", lerneinheit.LerneinheitJapanisch, [])))
         self.assertEquals(len(objA.vokabelboxen), 1)
         self.assertEquals(len(objAA.vokabelboxen), 2)
         self.assertEquals(len(objAAA.vokabelboxen), 3)
@@ -46,6 +48,7 @@ class test_vokabeltrainer(TestCase):
         self.assertEquals(len(obj.vokabelboxen), len(objA.vokabelboxen))
 
     def test_titelAllerVokabelboxen(self):
+        # TODO
         objA = self.obj.addVokabelbox(Vokabelbox("Titel 1", lerneinheit.LerneinheitJapanisch, []))
         objAA = objA.addVokabelbox(Vokabelbox("Titel 2", lerneinheit.LerneinheitJapanisch, []))
         objAAA = objAA.addVokabelbox(Vokabelbox("Titel 3", lerneinheit.LerneinheitJapanisch, []))
@@ -57,6 +60,7 @@ class test_vokabeltrainer(TestCase):
         self.assertEquals("Titel 3", objAAA.vokabelboxen[2].titel)
 
     def test_renameBox(self):
+        # TODO
         obj = self.obj.addVokabelbox(Vokabelbox("Titel 1", lerneinheit.LerneinheitJapanisch, []))
         obj = obj.addVokabelbox(Vokabelbox("Titel 2", lerneinheit.LerneinheitJapanisch, []))
         objA = obj.renameBox('Titel 1', 'Titel 2')
@@ -68,6 +72,7 @@ class test_vokabeltrainer(TestCase):
         self.assertEquals("Titel 2", objC.titelAllerVokabelboxen()[0])
 
     def test_loescheBox(self):
+        # TODO
         obj = self.obj.addVokabelbox(Vokabelbox("Titel 1", lerneinheit.LerneinheitJapanisch, []))
         obj = obj.addVokabelbox(Vokabelbox("Titel 2", lerneinheit.LerneinheitJapanisch, []))
         objA = obj.loescheBox("Titel 3")

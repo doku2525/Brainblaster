@@ -2,8 +2,7 @@ from unittest import TestCase
 
 import lerneinheit
 import frageeinheit
-from vokabelbox import Vokabelbox
-from vokabelkarte import Vokabelkarte
+from vokabelbox import Vokabelbox, Vokabelkarte
 
 
 class test_vokabelbox(TestCase):

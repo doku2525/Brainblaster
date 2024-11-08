@@ -1,7 +1,6 @@
 from unittest import TestCase
-from vokabelkarte import Vokabelkarte
+from vokabelkarte import Vokabelkarte, StatistikManager
 from lerneinheit import LerneinheitFactory
-from statistikmanager import StatistikManager
 
 
 class test_vokabelkarte(TestCase):

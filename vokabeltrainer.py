@@ -6,6 +6,7 @@ import zipfile
 from threading import Thread
 
 from libs.repository.vokabelkarten_repository import VokabelkartenRepository
+from libs.repository.vokabelbox_repository import VokabelboxRepository
 import vokabelbox
 from vokabelkarte import Vokabelkarte
 
@@ -18,9 +19,27 @@ Ausserdem FileOut- und FileIn-Funktionen
 Funtkion fuer Zeit
 (datetime.datetime.now().timestamp()*1000,datetime.datetime.fromisoformat('2024-07-07 02:22:58').timestamp()*1000)
 """
+# TODO 1. Implementiere VokabelRepository-Klasse um die ganze speicher und laden auszulagern.
+#   Zur Zeit wird nicht in JOSN, sondern vokabelkarten.data und vokabelboxen.data geschrieben.
 # TODO: Speicher und Lade den aktuellenIndex und die aktuellenFrageeinheiten in den Vokabelboxen
 # TODO: Momentan gibt es noch keine Verwendung der LernUhr.
 
+# Funktionen nach Aufgabe:
+# Vokabelbox:
+#    existsBoxtitel(self, neuerTitel: str) -> bool
+#    titelAllerVokabelboxen(self) -> list[str]:
+#    addVokabelbox(self, vokBox) -> Vokabeltrainer:
+#    renameBox(self, alterTitel: str, neuerTitel: str) -> Vokabeltrainer:
+#    loescheBox(self, titel: str) -> Vokabeltrainer:
+#    speicherVokabelboxInDatei(self):
+#    ladeVokabelboxenAusDatei(self):
+# statische Methoden:
+#    neu() -> Vokabeltrainer:
+# Klassenmethoden:
+#    addBeispiele(cls, anzahl, sprache) -> None:
+#    addVokabelkarte(cls, karte) -> None:
+#    speicherVokabelkartenInDatei(cls) -> None:
+#    ladeVokabelkartenAusDatei(cls) -> None:
 
 # TODO Definiere Klasse als @dataclass
 class Vokabeltrainer:
@@ -33,44 +52,55 @@ class Vokabeltrainer:
     def __init__(self, vokabelrepository: VokabelkartenRepository, vokabelboxen: list[vokabelbox.Vokabelbox],
                  aktuellerIndex: vokabelbox.Vokabelbox = None):
         self.vokabel_repository = vokabelrepository
+        self.vokabelbox_repository = VokabelboxRepository("./data/vokabelboxen.data")
         self.vokabelboxen = vokabelboxen
         self.aktuellerIndex = aktuellerIndex
         self.dateiBoxen = "./data/vokabelboxen.data"
         self.dateiBoxenJSON = "./data/vokabelboxen.json"
 
-    def existsBoxtitel(self, neuerTitel: str) -> bool:
-        print(f"{self.vokabelboxen}")
-        return neuerTitel in [box.titel for box in self.vokabelboxen] if self.vokabelboxen is not None else False
+    # def existsBoxtitel(self, neuerTitel: str) -> bool:
+    #     # In repo uebertragen
+    #     print(f"{self.vokabelboxen}")
+    #     return neuerTitel in [box.titel for box in self.vokabelboxen] if self.vokabelboxen is not None else False
 
-    def titelAllerVokabelboxen(self) -> list[str]:
-        return [box.titel for box in self.vokabelboxen]
+    # def titelAllerVokabelboxen(self) -> list[str]:
+    #     # In repo uebertragen
+    #     return [box.titel for box in self.vokabelboxen]
 
-    def addVokabelbox(self, vokBox) -> Vokabeltrainer:
-        if self.existsBoxtitel(vokBox.titel):
-            return self
-        else:
-            return Vokabeltrainer(sorted(self.vokabelboxen + [vokBox]), self.aktuellerIndex)
+    # def addVokabelbox(self, vokBox) -> Vokabeltrainer:
+    #     # In repo uebertragen
+    #     print(f"\nSelf: {self.__dict__}")
+    #     print(f"\nvokBox: {vokBox.__dict__}")
+    #     if self.existsBoxtitel(vokBox.titel):
+    #         return self
+    #     else:
+    #         self.vokabelboxen = self.vokabelboxen + [vokBox]
+    #         return self
 
-    def renameBox(self, alterTitel: str, neuerTitel: str) -> Vokabeltrainer:
-        if not self.existsBoxtitel(alterTitel):
-            return self
-        if self.existsBoxtitel(neuerTitel):
-            return self
-        result = []
-        for i in self.vokabelboxen:
-            if i.titel == alterTitel:
-                i.titel = neuerTitel
-            result.append(i)
-        return Vokabeltrainer(sorted(result), self.aktuellerIndex)
+    # def renameBox(self, alterTitel: str, neuerTitel: str) -> Vokabeltrainer:
+    #     # In repo uebertragen
+    #     if not self.existsBoxtitel(alterTitel):
+    #         return self
+    #     if self.existsBoxtitel(neuerTitel):
+    #         return self
+    #     result = []
+    #     for i in self.vokabelboxen:
+    #         if i.titel == alterTitel:
+    #             i.titel = neuerTitel
+    #         result.append(i)
+    #     return Vokabeltrainer(sorted(result), self.aktuellerIndex)
 
-    def loescheBox(self, titel: str) -> Vokabeltrainer:
-        return Vokabeltrainer([box for box in self.vokabelboxen if box.titel != titel], self.aktuellerIndex)
+    # def loescheBox(self, titel: str) -> Vokabeltrainer:
+    #     # In repo uebertragen
+    #     return Vokabeltrainer([box for box in self.vokabelboxen if box.titel != titel], self.aktuellerIndex)
 
-    def speicherVokabelboxInDatei(self):
-        pickle.dump(self.vokabelboxen, open(self.dateiBoxen, "wb"))
+    # def speicherVokabelboxInDatei(self):
+    #     # In repo uebertragen
+    #     pickle.dump(self.vokabelboxen, open(self.dateiBoxen, "wb"))
 
-    def ladeVokabelboxenAusDatei(self):
-        self.vokabelboxen = pickle.load(open(self.dateiBoxen, "rb"))
+    # def ladeVokabelboxenAusDatei(self):
+    #     # In repo uebertragen
+    #     self.vokabelboxen = pickle.load(open(self.dateiBoxen, "rb"))
 
     # def speicherVokabelboxInJSON(self):
     #     data = jsonpickle.encode(self.vokabelboxen)
