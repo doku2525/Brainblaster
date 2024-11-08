@@ -66,10 +66,10 @@ class test_vokabeltrainer(TestCase):
         objA = obj.renameBox('Titel 1', 'Titel 2')
         objB = obj.renameBox('Titel 4', 'Titel 5')
         objC = obj.renameBox('Titel 1', 'Titel 3')
-        self.assertEquals(obj.titelAllerVokabelboxen(), objA.titelAllerVokabelboxen())
-        self.assertEquals(obj.titelAllerVokabelboxen(), objB.titelAllerVokabelboxen())
-        self.assertEquals("Titel 3", objC.titelAllerVokabelboxen()[-1])
-        self.assertEquals("Titel 2", objC.titelAllerVokabelboxen()[0])
+        self.assertEquals(obj.titel_aller_vokabelboxen(), objA.titel_aller_vokabelboxen())
+        self.assertEquals(obj.titel_aller_vokabelboxen(), objB.titel_aller_vokabelboxen())
+        self.assertEquals("Titel 3", objC.titel_aller_vokabelboxen()[-1])
+        self.assertEquals("Titel 2", objC.titel_aller_vokabelboxen()[0])
 
     def test_loescheBox(self):
         # TODO

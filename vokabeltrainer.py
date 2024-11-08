@@ -6,7 +6,7 @@ import zipfile
 from threading import Thread
 
 from libs.repository.vokabelkarten_repository import VokabelkartenRepository
-from libs.repository.vokabelbox_repository import VokabelboxRepository
+from libs.repository.vokabelbox_repository import BinaryVokabelboxRepository
 import vokabelbox
 from vokabelkarte import Vokabelkarte
 
@@ -52,7 +52,7 @@ class Vokabeltrainer:
     def __init__(self, vokabelrepository: VokabelkartenRepository, vokabelboxen: list[vokabelbox.Vokabelbox],
                  aktuellerIndex: vokabelbox.Vokabelbox = None):
         self.vokabel_repository = vokabelrepository
-        self.vokabelbox_repository = VokabelboxRepository("./data/vokabelboxen.data")
+        self.vokabelbox_repository = BinaryVokabelboxRepository("./data/vokabelboxen.data")
         self.vokabelboxen = vokabelboxen
         self.aktuellerIndex = aktuellerIndex
         self.dateiBoxen = "./data/vokabelboxen.data"
