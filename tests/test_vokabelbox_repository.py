@@ -1,16 +1,22 @@
 from unittest import TestCase
 import copy
 
-from libs.repository.vokabelbox_repository import BinaryVokabelboxRepository, VokabelboxRepository
+from libs.repository.vokabelbox_repository import (InMemeoryVokabelboxRepository, VokabelboxRepository,
+                                                   DateiformatVokabelbox, BINARYDateiformatVokabelbox,
+                                                   JSONDateiformatVokabelbox)
 from vokabelbox import Vokabelbox
 from lerneinheit import LerneinheitJapanisch
+
 
 class test_VokabelboxRepository(TestCase):
 
     def setUp(self):
-        self.obj = BinaryVokabelboxRepository('__vokabelbox.data')
+        self.obj = InMemeoryVokabelboxRepository(dateiname='__vokabelbox.data',
+                                                 speicher_methode=BINARYDateiformatVokabelbox)
         self.assertIsInstance(self.obj, VokabelboxRepository)
-        self.assertIsInstance(self.obj, BinaryVokabelboxRepository)
+        self.assertIsInstance(self.obj, InMemeoryVokabelboxRepository)
+        self.assertIsInstance(self.obj.speicher_methode(), BINARYDateiformatVokabelbox)
+        self.assertIsInstance(self.obj.speicher_methode(), DateiformatVokabelbox)
 
     def test_speichern(self):
         self.obj.speichern()
@@ -22,6 +28,8 @@ class test_VokabelboxRepository(TestCase):
         self.obj.vokabelboxen = [1, 2, 3]
         self.obj.laden()
         self.assertEqual([1, 2, 3], self.obj.vokabelboxen)
+        self.obj.vokabelboxen = []
+        self.obj.add_box(Vokabelbox("Titel 1", LerneinheitJapanisch, []))
 
     def test_erneut_laden(self):
         self.assertEqual([], self.obj.vokabelboxen)
@@ -32,18 +40,29 @@ class test_VokabelboxRepository(TestCase):
         self.assertEqual([], self.obj.vokabelboxen)
 
     def test_laden_und_speichern(self):
-        self.obj.vokabelboxen = [1,2,3]
+        self.obj.vokabelboxen = [1, 2, 3]
         self.obj.speichern()
         self.obj.vokabelboxen = None
         self.obj.laden()
-        self.assertEqual([1,2,3], self.obj.vokabelboxen)
+        self.assertEqual([1, 2, 3], self.obj.vokabelboxen)
         self.obj.vokabelboxen = [1]
         self.obj.laden()
         self.assertEqual([1], self.obj.vokabelboxen)
         self.obj.erneut_laden()
-        self.assertEqual([1,2,3], self.obj.vokabelboxen)
+        self.assertEqual([1, 2, 3], self.obj.vokabelboxen)
+        self.obj.vokabelboxen = []
+        self.obj.add_box(Vokabelbox("Titel 1", LerneinheitJapanisch, []))
+        self.obj.add_box(Vokabelbox("Titel 2", LerneinheitJapanisch, []))
+        self.obj.add_box(Vokabelbox("Titel 3", LerneinheitJapanisch, []))
+        self.obj.speichern()
+        self.obj.vokabelboxen = []
+        self.obj.laden()
+        self.assertEquals("Titel 1", self.obj.vokabelboxen[0].titel)
+        self.assertEquals("Titel 2", self.obj.vokabelboxen[1].titel)
+        self.assertEquals("Titel 3", self.obj.vokabelboxen[2].titel)
         self.obj.vokabelboxen = []
         self.obj.speichern()
+
 
     def test_add_box(self):
         obj = copy.deepcopy(self.obj)
@@ -90,7 +109,6 @@ class test_VokabelboxRepository(TestCase):
         self.assertEquals("Titel 2", self.obj.vokabelboxen[1].titel)
         self.assertEquals("Titel 3", self.obj.vokabelboxen[2].titel)
         self.assertEquals(["Titel 1", "Titel 2", "Titel 3"], self.obj.titel_aller_vokabelboxen())
-
 
     def test_exists_boxtitel(self):
         self.obj.add_box(Vokabelbox("Titel 1", LerneinheitJapanisch, []))
