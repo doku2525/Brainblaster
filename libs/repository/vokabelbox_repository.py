@@ -25,11 +25,13 @@ class VokabelboxRepository(ABC):
         pass
 
     @abstractmethod
-    def remove_box(self, box_id):       # Alter Name def loescheBox(self, titel: str) -> Vokabeltrainer:
+    def remove_box(self, box_id):
+        # Alter Name def loescheBox(self, titel: str) -> Vokabeltrainer:
         pass
 
     @abstractmethod
-    def rename_box(self, old_name, new_name):  # Alter Name: def renameBox(self, alterTitel: str, neuerTitel: str) -> Vokabeltrainer:
+    def rename_box(self, old_name, new_name):
+        # Alter Name: def renameBox(self, alterTitel: str, neuerTitel: str) -> Vokabeltrainer:
         pass
 
     @abstractmethod

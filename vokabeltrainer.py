@@ -6,7 +6,7 @@ import zipfile
 from threading import Thread
 
 from libs.repository.vokabelkarten_repository import VokabelkartenRepository
-from libs.repository.vokabelbox_repository import InMemeoryVokabelboxRepository
+from libs.repository.vokabelbox_repository import InMemeoryVokabelboxRepository, BINARYDateiformatVokabelbox
 import vokabelbox
 from vokabelkarte import Vokabelkarte
 
@@ -50,7 +50,6 @@ class Vokabeltrainer:
                  aktuellerIndex: vokabelbox.Vokabelbox = None):
         self.vokabel_repository = vokabelrepository
         self.vokabelbox_repository = InMemeoryVokabelboxRepository("./data/vokabelboxen.data")
-        self.vokabelboxen = vokabelboxen
         self.aktuellerIndex = aktuellerIndex
         self.dateiBoxen = "./data/vokabelboxen.data"
         self.dateiBoxenJSON = "./data/vokabelboxen.json"

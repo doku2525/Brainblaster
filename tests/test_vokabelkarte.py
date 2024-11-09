@@ -2,6 +2,8 @@ from unittest import TestCase
 from vokabelkarte import Vokabelkarte, StatistikManager
 from lerneinheit import LerneinheitFactory
 
+from antwort import Antwort
+from dataclasses import replace, asdict
 
 class test_vokabelkarte(TestCase):
 
@@ -35,3 +37,16 @@ class test_vokabelkarte(TestCase):
         for sprache, lernE in input_list:
             [self.assertEquals(type(elem.lerneinheit), type(lernE)) for elem in
              Vokabelkarte.lieferBeispielKarten(20, sprache)]
+
+    def test_nicht_besonderes(self):
+        liste = Vokabelkarte.lieferBeispielKarten(20, "Japanisch")
+        print(f"\n{liste[0].__dict__}")
+        f = liste[0].lernstats.suche_frageeinheit_nach_titel(liste[0].lernstats.titel_der_frageeinheiten()[0])
+        print(f"\n{replace(liste[0].lernstats.statistiken[f], antworten=[1,2,3,4])}")
+        print(f"\n{liste[0].lernstats.statistiken[f].add_neue_antwort(Antwort(5,10))}")
+        neue_stat = liste[0].lernstats.statistiken[f].add_neue_antwort(Antwort(5,10))
+        neuer_sm = {key : neue_stat if key == f else value for key, value in liste[0].lernstats.statistiken.items()}
+        print(f"Neuer Manager{neuer_sm}")
+        print(f"{replace(liste[0], lernstats=replace(liste[0].lernstats, statistiken=neuer_sm))}")
+        print(f"AS: {asdict(liste[0])}")
+        print(f"DI: {liste[0].__dict__}")
