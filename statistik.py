@@ -4,6 +4,7 @@ from enum import Enum
 from abc import ABC, abstractmethod
 from functools import reduce
 import math
+import libs.utils_enum as u_enum
 from antwort import Antwort
 
 
@@ -98,12 +99,13 @@ class NeuerStatModus(Enum):
 class StatistikCalculations:
     @staticmethod
     def berechne_lernindex(statistik: Statistik) -> int:
-        # TODO den Variablennamen "liste" in einen aussagekraeftigereren Namen aendern.
         if statistik.modus == StatModus.LERNEN:
             position = [i for i, antwort in enumerate(statistik.antworten) if antwort.ist_falsch()]
-            liste = statistik.antworten[max(position):] if position else []
-            return len(list(filter(lambda antwort: antwort.ist_richtig_gelernt(), liste))) - \
-                len(list(filter(lambda antwort: antwort.ist_falsch_gelernt(), liste)))
+            liste_antworten_nach_letztem_falsch = statistik.antworten[max(position):] if position else []
+            return len(list(filter(lambda antwort: antwort.ist_richtig_gelernt(),
+                                   liste_antworten_nach_letztem_falsch))) - \
+                len(list(filter(lambda antwort: antwort.ist_falsch_gelernt(),
+                                liste_antworten_nach_letztem_falsch)))
         else:
             return 1
 
@@ -131,6 +133,11 @@ class StatistikCalculations:
 class Statistik:
     modus: StatModus = field(default=StatModus.NEU)
     antworten: list[Antwort] = field(default_factory=list)
+
+    @classmethod
+    def fromdict(cls, source_dict: dict) -> cls:
+        return cls(modus=u_enum.name_zu_enum(source_dict['modus'], StatModus),
+                   antworten=[Antwort.fromdict(elem) for elem in source_dict['antworten']])
 
     def add_neue_antwort(self, antwort: Antwort) -> Statistik:
         """Fuege eine neue Antwort ans Ende der Statistik"""

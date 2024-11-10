@@ -2,13 +2,19 @@ from unittest import TestCase
 from statistikmanager import StatistikManager
 from frageeinheit import Frageeinheit
 from lerneinheit import LerneinheitChinesisch
-
+from libs.utils_dataclass import mein_asdict
 
 class test_statistikmanager(TestCase):
 
     def setUp(self):
         self.obj = StatistikManager.erzeuge(LerneinheitChinesisch)
         self.assertEquals({}, StatistikManager().statistiken)
+
+    def test_fromdict(self):
+        self.assertEqual(StatistikManager(),
+                         StatistikManager.fromdict(mein_asdict(StatistikManager())))
+        self.assertEqual(StatistikManager.erzeuge(LerneinheitChinesisch),
+                         StatistikManager.fromdict(mein_asdict(StatistikManager.erzeuge(LerneinheitChinesisch))))
 
     def test_erzeuge(self):
         obj = StatistikManager.erzeuge(LerneinheitChinesisch)

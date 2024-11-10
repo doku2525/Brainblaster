@@ -5,11 +5,19 @@ from typing import Type
 from lerneinheit import Lerneinheit
 from statistik import Statistik, StatModus
 from frageeinheit import Frageeinheit
-
+from frageeinheit import *
 
 @dataclass(frozen=True)
 class StatistikManager:
     statistiken: dict[Type[Frageeinheit], Statistik] = field(default_factory=dict)
+
+    @classmethod
+    def fromdict(cls, source_dict: dict) -> cls:
+        # Wandle Klassenname im Schluessel mit globals()['Klassenname'] von String in Type um.
+        # Da alle noetigen Klassen importiert sein muessen, mit from frageeinheit import * importiert
+        return cls(statistiken={globals()[key]: Statistik.fromdict(value)
+                                for key, value
+                                in source_dict['statistiken'].items()}) if source_dict is not None else None
 
     def liste_der_frageeinheiten(self) -> list[Type[Frageeinheit]]:
         """Sortiert nach rank (siehe Attribute Frageeinheit)"""

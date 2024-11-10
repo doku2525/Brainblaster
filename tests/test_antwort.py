@@ -1,6 +1,8 @@
 from unittest import TestCase
 from antwort import Antwort
 
+from libs.utils_dataclass import mein_asdict
+
 
 class test_Antwort(TestCase):
 
@@ -9,6 +11,10 @@ class test_Antwort(TestCase):
         self.ant2 = Antwort(3, 3000)
         self.ant3 = Antwort(7, 3000)
         self.ant4 = Antwort(0, 3000)
+
+    def test_fromdict(self):
+        self.assertEqual(self.ant1, Antwort.fromdict(mein_asdict(self.ant1)))
+        self.assertEqual(Antwort(), Antwort.fromdict(mein_asdict(Antwort())))
 
     def test_ist_richtig(self):
         self.assertTrue(self.ant1.ist_richtig(), "5 ist richtig")

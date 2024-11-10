@@ -6,8 +6,15 @@ import random
 import abfragefilter
 import statistik
 from vokabelkarte import Vokabelkarte
-from frageeinheit import Frageeinheit
-from lerneinheit import Lerneinheit
+from frageeinheit import (Frageeinheit, FrageeinheitChinesischBedeutung, FrageeinheitChinesischEintrag,
+                          FrageeinheitChinesischPinyin, FrageeinheitChinesischSchreiben, FrageeinheitJapanischSchreiben,
+                          FrageeinheitJapanischEintrag, FrageeinheitStandardEintrag, FrageeinheitStandardBeschreibung,
+                          FrageeinheitJapanischBedeutung, FrageeinheitJapanischLesung,
+                          FrageeinheitJapanischKanjiBedeutung, FrageeinheitJapanischKanjiSchreiben,
+                          FrageeinheitJapanischKanjiKunLesung, FrageeinheitJapanischKanjiOnLesung)
+from lerneinheit import (Lerneinheit, LerneinheitJapanisch, LerneinheitChinesisch, LerneinheitStandard,
+                         LerneinheitJapanischKanji)
+
 
 """ Das Attribut selektor enthaelt eine Liste mit Strings, die Tests enthalten, welche durch eval() ausgwertet werden.
 Zum Beispiel: ('satz', True) in a.lerneinheit.daten.items()"""
@@ -29,6 +36,13 @@ class Vokabelbox:
         object.__setattr__(self,
                            'aktuelle_frage',
                            self.verfuegbare_frageeinheiten()[0] if not self.aktuelle_frage else self.aktuelle_frage)
+
+    @classmethod
+    def fromdict(cls, source_dict: dict) -> cls:
+        return cls(titel=source_dict['titel'],
+                   lernklasse=globals()[source_dict['lernklasse']],
+                   selektor=[element for element in source_dict['selektor']],
+                   aktuelle_frage=globals()[source_dict['aktuelle_frage']])
 
     def __lt__(self, other):
         return self.titel < other.titel

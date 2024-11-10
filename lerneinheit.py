@@ -1,4 +1,5 @@
 from __future__ import annotations
+from abc import ABC
 from typing import Type, Any
 from random import randint
 from dataclasses import dataclass, field
@@ -7,11 +8,24 @@ from frageeinheit import Frageeinheit
 
 
 @dataclass(frozen=True)
-class Lerneinheit:
+class Lerneinheit(ABC):
     eintrag: str = ""
     beschreibung: str = ""
     erzeugt: int = 0
     daten: dict[str, Any] = field(default_factory=dict)
+
+    @classmethod
+    def fromdict(cls, source_dict: dict, klassenname: str = None) -> cls:
+        """
+        Dienst nur dazu, die entsprechende Unterklasse von Lerneinheit auszuwaehlen.
+        :param source_dict:
+        :param klassenname:
+        :return:
+        """
+        # Erstelle Generator und liefer mit next(genr, None) das 1. Element oder None
+        lernklasse = next((klasse for klasse in Lerneinheit.__subclasses__() if klasse.__name__ == klassenname), None)
+        lernklasse = cls if lernklasse is None else lernklasse
+        return lernklasse.fromdict(source_dict)
 
     def gleiche_lerneinheit_wie(self, lerneinheit: Lerneinheit) -> bool:
         return self.eintrag == lerneinheit.eintrag and self.beschreibung == lerneinheit.beschreibung
@@ -30,12 +44,26 @@ class Lerneinheit:
 
 @dataclass(frozen=True)
 class LerneinheitStandard(Lerneinheit):
-    ...
+
+    @classmethod
+    def fromdict(cls, source_dict: dict, klassenname: str = None) -> cls:
+        return cls(eintrag=source_dict['eintrag'],
+                   beschreibung=source_dict['beschreibung'],
+                   erzeugt=source_dict['erzeugt'],
+                   daten=source_dict['daten'])
 
 
 @dataclass(frozen=True)
 class LerneinheitJapanisch(Lerneinheit):
     lesung: str = ""
+
+    @classmethod
+    def fromdict(cls, source_dict: dict, klassenname: str = None) -> cls:
+        return cls(eintrag=source_dict['eintrag'],
+                   beschreibung=source_dict['beschreibung'],
+                   lesung=source_dict['lesung'],
+                   erzeugt=source_dict['erzeugt'],
+                   daten=source_dict['daten'])
 
     def gleiche_lerneinheit_wie(self, lerneinheit: Lerneinheit) -> bool:
         return super().gleiche_lerneinheit_wie(lerneinheit) and self.lesung == lerneinheit.lesung
@@ -48,6 +76,15 @@ class LerneinheitJapanisch(Lerneinheit):
 class LerneinheitJapanischKanji(Lerneinheit):
     on_lesung: str = ""
     kun_lesung: str = ""
+
+    @classmethod
+    def fromdict(cls, source_dict: dict, klassenname: str = None) -> cls:
+        return cls(eintrag=source_dict['eintrag'],
+                   beschreibung=source_dict['beschreibung'],
+                   on_lesung=source_dict['on_lesung'],
+                   kun_lesung=source_dict['kun_lesung'],
+                   erzeugt=source_dict['erzeugt'],
+                   daten=source_dict['daten'])
 
     def gleiche_lerneinheit_wie(self, lerneinheit: Lerneinheit) -> bool:
         return (super().gleiche_lerneinheit_wie(lerneinheit)
@@ -63,6 +100,16 @@ class LerneinheitChinesisch(Lerneinheit):
     traditionell: str = ""
     pinyin: str = ""
     zhuyin: str = ""
+
+    @classmethod
+    def fromdict(cls, source_dict: dict, klassenname: str = None) -> cls:
+        return cls(eintrag=source_dict['eintrag'],
+                   beschreibung=source_dict['beschreibung'],
+                   traditionell=source_dict['traditionell'],
+                   pinyin=source_dict['pinyin'],
+                   zhuyin=source_dict['zhuyin'],
+                   erzeugt=source_dict['erzeugt'],
+                   daten=source_dict['daten'])
 
     def gleiche_lerneinheit_wie(self, lerneinheit: Lerneinheit) -> bool:
         return super().gleiche_lerneinheit_wie(lerneinheit) and self.pinyin == lerneinheit.pinyin

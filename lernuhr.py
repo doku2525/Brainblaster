@@ -1,10 +1,13 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 import datetime
 from enum import Enum
 import time
 import copy
 import jsonpickle
+
+import libs.utils_enum as u_enum
+import libs.utils_dataclass as u_data
 
 
 class UhrStatus(Enum):
@@ -15,11 +18,19 @@ class UhrStatus(Enum):
 
 @dataclass(frozen=True)
 class Lernuhr:
-    kalkulations_zeit: int
+    kalkulations_zeit: int = 0
     start_zeit: int = 0
     tempo: float = 1.0
     pause: int = 0
     modus: UhrStatus = UhrStatus.ECHT
+
+    @classmethod
+    def fromdict(cls, source_dict: dict) -> cls:
+        return cls(kalkulations_zeit=source_dict['kalkulations_zeit'],
+                   start_zeit=source_dict['start_zeit'],
+                   tempo=source_dict['tempo'],
+                   pause=source_dict['pause'],
+                   modus=u_enum.name_zu_enum(source_dict['modus'], UhrStatus))
 
     @staticmethod
     def echte_zeit() -> int:
@@ -28,6 +39,7 @@ class Lernuhr:
     @staticmethod
     def lade_uhr_aus_json(json_dateiname: str) -> Lernuhr:
         # TODO TEST
+        # TODO Funktion vielleicht auslagern?
         with open(json_dateiname, "r") as f:
             return jsonpickle.decode(f.read())
 
@@ -35,7 +47,6 @@ class Lernuhr:
     def isostring_to_millis(isostring: String) -> int:
         """Zum Beispiel: isostring_to_millis('2024-04-11 06:00')"""
         return int(datetime.datetime.fromisoformat(isostring).timestamp()*1000)
-
 
     def now(self, zeitpunkt_in_ms: int | float = 0) -> int:
         if self.modus == UhrStatus.ECHT:

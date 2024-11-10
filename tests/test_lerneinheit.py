@@ -1,5 +1,8 @@
 from unittest import TestCase
-from lerneinheit import LerneinheitStandard, LerneinheitJapanisch, LerneinheitFactory
+from lerneinheit import (LerneinheitFactory, LerneinheitJapanisch, LerneinheitChinesisch, LerneinheitStandard,
+                         LerneinheitJapanischKanji)
+from libs.utils_dataclass import mein_asdict
+
 
 class test_Lerneinheit(TestCase):
 
@@ -10,13 +13,24 @@ class test_Lerneinheit(TestCase):
                                         self.listeA[1].beschreibung,
                                         self.listeA[1].erzeugt,
                                         self.listeA[1].daten.update({"plus": 0}))
-        objB = LerneinheitStandard(self.listeA[1].eintrag,
-                                   self.listeA[1].beschreibung,
-                                   self.listeA[1].erzeugt,
-                                   self.listeA[1].daten)
+        obj_b = LerneinheitStandard(self.listeA[1].eintrag,
+                                    self.listeA[1].beschreibung,
+                                    self.listeA[1].erzeugt,
+                                    self.listeA[1].daten)
         self.listeC = LerneinheitFactory.erzeuge_japanisch_beispiele(anzahl=10)
-        self.listeC = LerneinheitFactory.erzeuge_japanisch_kanji_beispiele(anzahl=10)
-        self.listeC = LerneinheitFactory.erzeuge_chinesisch_beispiele(anzahl=10)
+        self.listeD = LerneinheitFactory.erzeuge_japanisch_kanji_beispiele(anzahl=10)
+        self.listeE = LerneinheitFactory.erzeuge_chinesisch_beispiele(anzahl=10)
+
+    def test_fromdict_asdict(self):
+        # TODO Funktioniert nur bei Objekten der gleichen Klasse. Ohne jegliche Fehlerkontrolle
+        self.assertEqual(LerneinheitStandard(), LerneinheitStandard.fromdict(mein_asdict(LerneinheitStandard())))
+        self.assertEqual(LerneinheitJapanisch(), LerneinheitJapanisch.fromdict(mein_asdict(LerneinheitJapanisch())))
+        self.assertEqual(self.objA, self.objA.__class__.fromdict(mein_asdict(self.objA)))
+        self.assertEqual(self.listeA[0], LerneinheitStandard.fromdict(mein_asdict(self.listeA[0])))
+        self.assertEqual(self.listeB[0], LerneinheitStandard.fromdict(mein_asdict(self.listeB[0])))
+        self.assertEqual(self.listeC[0], LerneinheitJapanisch.fromdict(mein_asdict(self.listeC[0])))
+        self.assertEqual(self.listeD[0], LerneinheitJapanischKanji.fromdict(mein_asdict(self.listeD[0])))
+        self.assertEqual(self.listeE[0], LerneinheitChinesisch.fromdict(mein_asdict(self.listeE[0])))
 
     def test_erzeugen(self):
         self.assertEquals("", LerneinheitStandard().eintrag)

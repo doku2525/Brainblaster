@@ -1,4 +1,5 @@
 from unittest import TestCase
+from libs.utils_dataclass import mein_asdict
 from frageeinheit import Frageeinheit, FrageeinheitJapanischBedeutung, FrageeinheitJapanischSchreiben
 from lerneinheit import LerneinheitStandard, LerneinheitJapanisch
 
@@ -9,6 +10,15 @@ class test_Frageeinheit(TestCase):
         pass
         self.standardFragen = Frageeinheit.suche_frageeinheiten_der_lernklasse(LerneinheitStandard)
         self.standardJapanisch = Frageeinheit.suche_frageeinheiten_der_lernklasse(LerneinheitJapanisch)
+
+    def test_fromdict(self):
+        result = {'rank': 1, 'lerneinheit': 'Japanisch', 'warte_sekunden_auf_antwort': 3}
+        self.assertEqual(result, mein_asdict(FrageeinheitJapanischBedeutung()))
+        self.assertEqual(FrageeinheitJapanischBedeutung(),
+                         FrageeinheitJapanischBedeutung().fromdict(mein_asdict(FrageeinheitJapanischBedeutung())))
+        for einheit in Frageeinheit.alle_frageeinheiten():
+            self.assertEqual(einheit(),
+                             einheit().fromdict(mein_asdict(einheit())))
 
     def test_kleiner_als(self):
         obja = FrageeinheitJapanischBedeutung()

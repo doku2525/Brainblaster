@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 
 
@@ -5,6 +6,11 @@ from dataclasses import dataclass
 class Antwort:
     antwort: int = 0
     erzeugt: int = 0
+
+    @classmethod
+    def fromdict(cls, source_dict: dict) -> cls:
+        return cls(antwort=source_dict['antwort'],
+                   erzeugt=source_dict['erzeugt'])
 
     def ist_richtig(self) -> bool: return self.antwort in range(4, 7)
     def ist_falsch(self) -> bool: return self.antwort in range(1, 4)

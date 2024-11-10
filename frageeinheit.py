@@ -7,9 +7,16 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Frageeinheit:
-    rank = 1
-    lerneinheit = ''
-    warte_sekunden_auf_antwort = 3
+    # TODO Lerneinheit koennte durch einen Enumtyp ersetzt werden
+    rank: int = 1
+    lerneinheit: str = ''
+    warte_sekunden_auf_antwort: int = 3
+
+    @classmethod
+    def fromdict(cls, source_dict: dict) -> cls:
+        return cls(rank=source_dict['rank'],
+                   lerneinheit=source_dict['lerneinheit'],
+                   warte_sekunden_auf_antwort=source_dict['warte_sekunden_auf_antwort'])
 
     def __lt__(self, other: Frageeinheit) -> bool:
         return self.rank < other.rank
@@ -92,80 +99,95 @@ class Frageeinheit:
 
 @dataclass(frozen=True)
 class FrageeinheitStandardBeschreibung(Frageeinheit):
-    rank = 1
-    lerneinheit = 'Standard'
+    rank: int = 1
+    lerneinheit: str = 'Standard'
 
     def frage(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.eintrag
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.beschreibung
 
 
+@dataclass(frozen=True)
 class FrageeinheitStandardEintrag(Frageeinheit):
-    rank = 2
-    lerneinheit = 'Standard'
+    rank: int = 2
+    lerneinheit: str = 'Standard'
 
     def frage(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.beschreibung
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.eintrag
 
 
+@dataclass(frozen=True)
 class FrageeinheitJapanischBedeutung(Frageeinheit):
-    rank = 1
-    lerneinheit = 'Japanisch'
+    rank: int = 1
+    lerneinheit: str = 'Japanisch'
+
+    @classmethod
+    def fromdict(cls, source_dict: dict) -> cls:
+        return cls(rank=source_dict['rank'],
+                   lerneinheit=source_dict['lerneinheit'],
+                   warte_sekunden_auf_antwort=source_dict['warte_sekunden_auf_antwort'])
 
     def frage(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.eintrag
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.beschreibung
 
 
+@dataclass(frozen=True)
 class FrageeinheitJapanischLesung(Frageeinheit):
-    rank = 2
-    lerneinheit = 'Japanisch'
+    rank: int = 2
+    lerneinheit: str = 'Japanisch'
 
     def frage(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.eintrag
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.lesung
 
 
+@dataclass(frozen=True)
 class FrageeinheitJapanischEintrag(Frageeinheit):
-    rank = 3
-    lerneinheit = 'Japanisch'
+    rank: int = 3
+    lerneinheit: str = 'Japanisch'
 
     def frage(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.beschreibung
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.lesung
 
 
+@dataclass(frozen=True)
 class FrageeinheitJapanischSchreiben(Frageeinheit):
-    rank = 4
-    lerneinheit = 'Japanisch'
+    rank: int = 4
+    lerneinheit: str = 'Japanisch'
 
     def frage(self, lerneinheit: Lerneinheit) -> str: return "[" + lerneinheit.lesung + "]\n" + lerneinheit.beschreibung
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.eintrag
 
 
+@dataclass(frozen=True)
 class FrageeinheitJapanischKanjiBedeutung(Frageeinheit):
-    rank = 1
-    lerneinheit = 'JapanischKanji'
+    rank: int = 1
+    lerneinheit: str = 'JapanischKanji'
 
     def frage(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.eintrag
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.beschreibung
 
 
+@dataclass(frozen=True)
 class FrageeinheitJapanischKanjiOnLesung(Frageeinheit):
-    rank = 2
-    lerneinheit = 'JapanischKanji'
+    rank: int = 2
+    lerneinheit: str = 'JapanischKanji'
 
     def frage(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.eintrag
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.onLesung
 
 
+@dataclass(frozen=True)
 class FrageeinheitJapanischKanjiKunLesung(Frageeinheit):
-    rank = 3
-    lerneinheit = 'JapanischKanji'
+    rank: int = 3
+    lerneinheit: str = 'JapanischKanji'
 
     def frage(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.eintrag
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.kunLesung
 
 
+@dataclass(frozen=True)
 class FrageeinheitJapanischKanjiSchreiben(Frageeinheit):
-    rank = 4
-    lerneinheit = 'JapanischKanji'
+    rank: int = 4
+    lerneinheit: str = 'JapanischKanji'
 
     def frage(self, lerneinheit: Lerneinheit) -> str:
         return "[" + lerneinheit.onLesung + "]\n/" + lerneinheit.kunLesung + "/\n\t" + lerneinheit.beschreibung
@@ -173,33 +195,37 @@ class FrageeinheitJapanischKanjiSchreiben(Frageeinheit):
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.eintrag
 
 
+@dataclass(frozen=True)
 class FrageeinheitChinesischBedeutung(Frageeinheit):
-    rank = 1
-    lerneinheit = 'Chinesisch'
+    rank: int = 1
+    lerneinheit: str = 'Chinesisch'
 
     def frage(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.eintrag
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.beschreibung
 
 
+@dataclass(frozen=True)
 class FrageeinheitChinesischPinyin(Frageeinheit):
-    rank = 2
-    lerneinheit = 'Chinesisch'
+    rank: int = 2
+    lerneinheit: str = 'Chinesisch'
 
     def frage(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.eintrag
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.pinyin
 
 
+@dataclass(frozen=True)
 class FrageeinheitChinesischEintrag(Frageeinheit):
-    rank = 3
-    lerneinheit = 'Chinesisch'
+    rank: int = 3
+    lerneinheit: str = 'Chinesisch'
 
     def frage(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.beschreibung
     def antwort(self, lerneinheit: Lerneinheit) -> str: return lerneinheit.pinyin
 
 
+@dataclass(frozen=True)
 class FrageeinheitChinesischSchreiben(Frageeinheit):
-    rank = 4
-    lerneinheit = 'Chinesisch'
+    rank: int = 4
+    lerneinheit: str = 'Chinesisch'
 
     def frage(self, lerneinheit: Lerneinheit) -> str:
         return lerneinheit.beschreibung + "\n[" + lerneinheit.pinyin + "]"
