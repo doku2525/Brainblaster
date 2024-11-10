@@ -2,7 +2,6 @@ from __future__ import annotations
 from typing import Type, Self
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-# from lerneinheit import Lerneinheit
 
 
 @dataclass(frozen=True)

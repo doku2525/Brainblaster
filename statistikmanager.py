@@ -5,7 +5,9 @@ from typing import Type
 from lerneinheit import Lerneinheit
 from statistik import Statistik, StatModus
 from frageeinheit import Frageeinheit
-from frageeinheit import *
+
+import libs.utils_klassen as k_utils
+
 
 @dataclass(frozen=True)
 class StatistikManager:
@@ -13,9 +15,7 @@ class StatistikManager:
 
     @classmethod
     def fromdict(cls, source_dict: dict) -> cls:
-        # Wandle Klassenname im Schluessel mit globals()['Klassenname'] von String in Type um.
-        # Da alle noetigen Klassen importiert sein muessen, mit from frageeinheit import * importiert
-        return cls(statistiken={globals()[key]: Statistik.fromdict(value)
+        return cls(statistiken={k_utils.suche_subklasse_by_klassenname(Frageeinheit, key): Statistik.fromdict(value)
                                 for key, value
                                 in source_dict['statistiken'].items()}) if source_dict is not None else None
 

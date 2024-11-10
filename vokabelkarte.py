@@ -5,7 +5,6 @@ from dataclasses import dataclass, field
 import libs.utils_enum as utils_enum
 from statistikmanager import StatistikManager
 from lerneinheit import Lerneinheit, LerneinheitFactory
-from lerneinheit import *
 
 
 class KartenStatus(Enum):

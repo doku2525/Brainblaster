@@ -20,12 +20,7 @@ class test_vokabelbox(TestCase):
 
     def test_fromdict_asdict(self):
         self.assertEqual(self.japBox, Vokabelbox.fromdict(mein_asdict(self.japBox)))
-        # self.assertEqual(LerneinheitJapanisch(), LerneinheitJapanisch.fromdict(mein_asdict(LerneinheitJapanisch())))
-        # self.assertEqual(self.listeA[0], LerneinheitStandard.fromdict(mein_asdict(self.listeA[0])))
-        # self.assertEqual(self.listeB[0], LerneinheitStandard.fromdict(mein_asdict(self.listeB[0])))
-        # self.assertEqual(self.listeC[0], LerneinheitJapanisch.fromdict(mein_asdict(self.listeC[0])))
-        # self.assertEqual(self.listeD[0], LerneinheitJapanischKanji.fromdict(mein_asdict(self.listeD[0])))
-        # self.assertEqual(self.listeE[0], LerneinheitChinesisch.fromdict(mein_asdict(self.listeE[0])))
+        self.assertEqual(self.chiBox, Vokabelbox.fromdict(mein_asdict(self.chiBox)))
 
     def test_kleiner_als(self):
         self.assertLess(self.chiBox, self.japBox)

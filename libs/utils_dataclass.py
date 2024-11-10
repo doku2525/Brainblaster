@@ -8,6 +8,7 @@ import importlib
 
 
 def asdict_factory(items):
+    # TODO Test
     return {key: (
         value.name if isinstance(value, Enum) else      # Lege Value fuer Enumtyp fest
         value.__name__ if isinstance(value, type) else  # Lege Value fuer dictionary fest
@@ -24,6 +25,7 @@ def asdict_factory(items):
 
 
 def mein_asdict(daten_klasse: Any) -> dict:
+    # TODO Test
     if isinstance(daten_klasse, importlib.import_module('vokabelkarte').Vokabelkarte):
         return ({'lernklasse': daten_klasse.lerneinheit.__class__.__name__} |
                 asdict(daten_klasse, dict_factory=asdict_factory))

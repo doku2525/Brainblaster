@@ -6,6 +6,8 @@ from dataclasses import dataclass, field
 import lernuhr
 from frageeinheit import Frageeinheit
 
+import libs.utils_klassen as k_utils
+
 
 @dataclass(frozen=True)
 class Lerneinheit(ABC):
@@ -22,8 +24,7 @@ class Lerneinheit(ABC):
         :param klassenname:
         :return:
         """
-        # Erstelle Generator und liefer mit next(genr, None) das 1. Element oder None
-        lernklasse = next((klasse for klasse in Lerneinheit.__subclasses__() if klasse.__name__ == klassenname), None)
+        lernklasse = k_utils.suche_subklasse_by_klassenname(Lerneinheit, klassenname)
         lernklasse = cls if lernklasse is None else lernklasse
         return lernklasse.fromdict(source_dict)
 

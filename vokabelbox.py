@@ -6,15 +6,9 @@ import random
 import abfragefilter
 import statistik
 from vokabelkarte import Vokabelkarte
-from frageeinheit import (Frageeinheit, FrageeinheitChinesischBedeutung, FrageeinheitChinesischEintrag,
-                          FrageeinheitChinesischPinyin, FrageeinheitChinesischSchreiben, FrageeinheitJapanischSchreiben,
-                          FrageeinheitJapanischEintrag, FrageeinheitStandardEintrag, FrageeinheitStandardBeschreibung,
-                          FrageeinheitJapanischBedeutung, FrageeinheitJapanischLesung,
-                          FrageeinheitJapanischKanjiBedeutung, FrageeinheitJapanischKanjiSchreiben,
-                          FrageeinheitJapanischKanjiKunLesung, FrageeinheitJapanischKanjiOnLesung)
-from lerneinheit import (Lerneinheit, LerneinheitJapanisch, LerneinheitChinesisch, LerneinheitStandard,
-                         LerneinheitJapanischKanji)
-
+from frageeinheit import Frageeinheit
+from lerneinheit import Lerneinheit
+import libs.utils_klassen as k_utils
 
 """ Das Attribut selektor enthaelt eine Liste mit Strings, die Tests enthalten, welche durch eval() ausgwertet werden.
 Zum Beispiel: ('satz', True) in a.lerneinheit.daten.items()"""
@@ -40,9 +34,9 @@ class Vokabelbox:
     @classmethod
     def fromdict(cls, source_dict: dict) -> cls:
         return cls(titel=source_dict['titel'],
-                   lernklasse=globals()[source_dict['lernklasse']],
+                   lernklasse=k_utils.suche_subklasse_by_klassenname(Lerneinheit, source_dict['lernklasse']),
                    selektor=[element for element in source_dict['selektor']],
-                   aktuelle_frage=globals()[source_dict['aktuelle_frage']])
+                   aktuelle_frage=k_utils.suche_subklasse_by_klassenname(Frageeinheit, source_dict['aktuelle_frage']))
 
     def __lt__(self, other):
         return self.titel < other.titel
@@ -141,9 +135,11 @@ class Vokabelbox:
         return random.sample(liste_der_karten, len(liste_der_karten))
 
 
+# TODO
 """
     karte.lernstats.statistiken[trainer.aktuellerIndex.aktuelleFrage].zeitZumLernen(0)
     for karte in trainer.aktuellerIndex.filterVokabelkarten(vt.Vokabeltrainer.vokabelkarten)]
 
-liste[0].lernstats.statistiken[trainer.aktuellerIndex.aktuelleFrage] = liste[0].lernstats.statistiken[trainer.aktuellerIndex.aktuelleFrage]
+liste[0].lernstats.statistiken[trainer.aktuellerIndex.aktuelleFrage] = 
+                                                liste[0].lernstats.statistiken[trainer.aktuellerIndex.aktuelleFrage]
 """
