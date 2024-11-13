@@ -39,14 +39,16 @@ class test_vokabelkarte(TestCase):
              Vokabelkarte.lieferBeispielKarten(20, sprache)]
 
     def test_nicht_besonderes(self):
+        # TODO Aktuelles Problem
+        #   Implementiere Weg, um einer Vokabelkarte eine Antwort der aktuellen Frageeinheit hinzuzufuegen.
         liste = Vokabelkarte.lieferBeispielKarten(20, "Japanisch")
-        print(f"\n{liste[0].__dict__}")
+        print(f"\n Zeile 1: {liste[0].__dict__}")
         f = liste[0].lernstats.suche_frageeinheit_nach_titel(liste[0].lernstats.titel_der_frageeinheiten()[0])
-        print(f"\n{replace(liste[0].lernstats.statistiken[f], antworten=[1,2,3,4])}")
-        print(f"\n{liste[0].lernstats.statistiken[f].add_neue_antwort(Antwort(5,10))}")
+        print(f"\nZeile 2: {replace(liste[0].lernstats.statistiken[f], antworten=[1,2,3,4])}")
+        print(f"\nZeile 3: {liste[0].lernstats.statistiken[f].add_neue_antwort(Antwort(5,10))}")
         neue_stat = liste[0].lernstats.statistiken[f].add_neue_antwort(Antwort(5,10))
         neuer_sm = {key : neue_stat if key == f else value for key, value in liste[0].lernstats.statistiken.items()}
-        print(f"Neuer Manager{neuer_sm}")
-        print(f"{replace(liste[0], lernstats=replace(liste[0].lernstats, statistiken=neuer_sm))}")
-        print(f"AS: {asdict(liste[0])}")
-        print(f"DI: {liste[0].__dict__}")
+        print(f"Zeile 4: Neuer Manager{neuer_sm}")
+        print(f"Zeile 5: {replace(liste[0], lernstats=replace(liste[0].lernstats, statistiken=neuer_sm))}")
+        print(f"Zeile 6: AS: {asdict(liste[0])}")
+        print(f"Zeile 7: DI: {liste[0].__dict__}")

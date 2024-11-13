@@ -41,13 +41,12 @@ class InMemoryVokabelkartenRepository(VokabelkartenRepository):
 
     BACKUP_VERZEICHNIS = "backups/"
 
-    def __init__(self, dateiname: str, verzeichnis: str, speicher_methode: Type[DateiformatVokabelkarte]):
+    def __init__(self, dateiname: str, verzeichnis: str, vokabelkarten: list[Vokabelkarte] = None,
+                 speicher_methode: Type[DateiformatVokabelkarte] = None):
         self.dateiname: str = dateiname
         self.verzeichnis: str = verzeichnis
-        self.vokabelkarten: list[Vokabelkarte] = []
+        self.vokabelkarten: list[Vokabelkarte] = [] if vokabelkarten is None else vokabelkarten
         self.speicher_methode: Type[DateiformatVokabelkarte] = speicher_methode
-        self.vokabelkarten: list[Vokabelkarte] = []
-
 
     def speichern(self) -> None:
         self.speicher_methode.speichern(zu_speichernde_liste=self.vokabelkarten, dateiname=self.dateiname)
@@ -62,29 +61,29 @@ class InMemoryVokabelkartenRepository(VokabelkartenRepository):
     def erneut_laden(self):
         self.vokabelkarten = self.speicher_methode.laden(dateiname=self.dateiname)
 
-    def add_neue_karte(self, vokabelkarte: Vokabelkarte) -> bool:
+    def add_karte(self, vokabelkarte: Vokabelkarte) -> bool:
         if vokabelkarte in self.vokabelkarten:
-            return false
+            return False
         self.vokabelkarten.append(vokabelkarte)
+        return True
 
-    def remove_karte(self, zu_entfernende_karte: str) -> None:
+    def remove_karte(self, zu_entfernende_karte: Vokabelkarte) -> None:
         self.vokabelkarten = [karte for karte in self.vokabelkarten if karte != zu_entfernende_karte]
         # Koennte auch mit Suchbegriff durchgefuehrt werden
 
-    def exists_karte(self, karten_id: str) -> bool:
-        return karten_id in self.vokabelkarten
+    def replace_karte(self, original_karte: Vokabelkarte, neue_karte: Vokabelkarte) -> None:
+        """
+        Erhaelt die Reihenfolge der Liste. Existiert die neue Karte bereits, findet kein Austausch statt.
+        :param original_karte:
+        :param neue_karte:
+        :return:
+        """
+        if self.exists_karte(neue_karte):
+            return None
+        self.vokabelkarten = [karte if karte != original_karte else neue_karte for karte in self.vokabelkarten]
 
-    def add_neue_antwort(self, vokabelkarte: Vokabelkarte, frageeinheit: Frageeinheit) -> None:
-        pass
-
-    def get_by_id(self, id_nummer: int) -> Vokabelkarte:
-        pass
-
-    def changed(self) -> None:
-        pass
-
-    def update(self, vokabelkarte: Vokabelkarte) -> None:
-        pass
+    def exists_karte(self, karte: Vokabelkarte) -> bool:
+        return karte in self.vokabelkarten
 
 
 class DateiformatVokabelkarte(ABC):
