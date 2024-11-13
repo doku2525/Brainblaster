@@ -1,0 +1,70 @@
+[
+    {
+        "lernklasse": "LerneinheitJapanisch",
+        "lerneinheit": {
+            "eintrag": "日本語Eint1",
+            "beschreibung": "日本語Besch1",
+            "erzeugt": 1731531771192,
+            "daten": {
+                "daten": 1
+            },
+            "lesung": "日本語Lesu1"
+        },
+        "lernstats": {
+            "statistiken": {
+                "FrageeinheitJapanischBedeutung": {
+                    "modus": "NEU",
+                    "antworten": []
+                },
+                "FrageeinheitJapanischLesung": {
+                    "modus": "NEU",
+                    "antworten": []
+                },
+                "FrageeinheitJapanischEintrag": {
+                    "modus": "NEU",
+                    "antworten": []
+                },
+                "FrageeinheitJapanischSchreiben": {
+                    "modus": "NEU",
+                    "antworten": []
+                }
+            }
+        },
+        "erzeugt": 0,
+        "status": "NORMAL"
+    },
+    {
+        "lernklasse": "LerneinheitJapanisch",
+        "lerneinheit": {
+            "eintrag": "日本語Eint2",
+            "beschreibung": "日本語Besch2",
+            "erzeugt": 1731531781264,
+            "daten": {
+                "daten": 2
+            },
+            "lesung": "日本語Lesu2"
+        },
+        "lernstats": {
+            "statistiken": {
+                "FrageeinheitJapanischBedeutung": {
+                    "modus": "NEU",
+                    "antworten": []
+                },
+                "FrageeinheitJapanischLesung": {
+                    "modus": "NEU",
+                    "antworten": []
+                },
+                "FrageeinheitJapanischEintrag": {
+                    "modus": "NEU",
+                    "antworten": []
+                },
+                "FrageeinheitJapanischSchreiben": {
+                    "modus": "NEU",
+                    "antworten": []
+                }
+            }
+        },
+        "erzeugt": 0,
+        "status": "NORMAL"
+    }
+]

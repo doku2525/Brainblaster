@@ -1,0 +1,20 @@
+[
+    {
+        "titel": "Titel 1",
+        "lernklasse": "LerneinheitJapanisch",
+        "selektor": [],
+        "aktuelle_frage": "FrageeinheitJapanischBedeutung"
+    },
+    {
+        "titel": "Titel 2",
+        "lernklasse": "LerneinheitJapanisch",
+        "selektor": [],
+        "aktuelle_frage": "FrageeinheitJapanischBedeutung"
+    },
+    {
+        "titel": "Titel 3",
+        "lernklasse": "LerneinheitJapanisch",
+        "selektor": [],
+        "aktuelle_frage": "FrageeinheitJapanischBedeutung"
+    }
+]
