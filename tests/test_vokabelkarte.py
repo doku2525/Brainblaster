@@ -1,8 +1,8 @@
 from unittest import TestCase
-from vokabelkarte import Vokabelkarte, KartenStatus
-from lerneinheit import LerneinheitFactory
-from statistikmanager import StatistikManager
-from libs.utils_dataclass import mein_asdict
+from src.classes.vokabelkarte import Vokabelkarte, KartenStatus
+from src.classes.lerneinheit import LerneinheitFactory
+from src.classes.statistikmanager import StatistikManager
+from src.utils.utils_dataclass import mein_asdict
 
 
 class test_vokabelkarte(TestCase):

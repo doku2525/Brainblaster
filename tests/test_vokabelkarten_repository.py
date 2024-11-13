@@ -1,10 +1,9 @@
 from unittest import TestCase
 import copy
 
-from libs.repository.vokabelkarten_repository import (VokabelkartenRepository, InMemoryVokabelkartenRepository,
-                                                      BINARYDateiformatVokabelkarte, JSONDateiformatVokabelkarte)
-from vokabelkarte import Vokabelkarte
-from lerneinheit import LerneinheitJapanisch
+from src.repositories.vokabelkarten_repository import (InMemoryVokabelkartenRepository,
+                                                       BINARYDateiformatVokabelkarte, JSONDateiformatVokabelkarte)
+from src.classes.vokabelkarte import Vokabelkarte
 
 
 class test_VokabelkartenRepository(TestCase):

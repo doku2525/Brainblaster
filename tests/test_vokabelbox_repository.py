@@ -1,11 +1,11 @@
 from unittest import TestCase
 import copy
 
-from libs.repository.vokabelbox_repository import (InMemeoryVokabelboxRepository, VokabelboxRepository,
-                                                   DateiformatVokabelbox, BINARYDateiformatVokabelbox,
-                                                   JSONDateiformatVokabelbox)
-from vokabelbox import Vokabelbox
-from lerneinheit import LerneinheitJapanisch
+from src.repositories.vokabelbox_repository import (InMemeoryVokabelboxRepository, VokabelboxRepository,
+                                                    DateiformatVokabelbox, BINARYDateiformatVokabelbox,
+                                                    JSONDateiformatVokabelbox)
+from src.classes.vokabelbox import Vokabelbox
+from src.classes.lerneinheit import LerneinheitJapanisch
 
 
 class test_VokabelboxRepository(TestCase):

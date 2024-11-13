@@ -6,8 +6,8 @@ from dataclasses import replace
 import  json
 import _pickle as pickle
 
-from vokabelbox import Vokabelbox
-from libs.utils_dataclass import mein_asdict
+from src.classes.vokabelbox import Vokabelbox
+from src.utils.utils_dataclass import mein_asdict
 
 
 # TODO Evtl, syncronitaet zwischen den verschiedenen Speichermedien implementieren???

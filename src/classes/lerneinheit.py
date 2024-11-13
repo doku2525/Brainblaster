@@ -3,10 +3,10 @@ from abc import ABC
 from typing import Type, Any
 from random import randint
 from dataclasses import dataclass, field
-import lernuhr
-from frageeinheit import Frageeinheit
+from src.classes import lernuhr
+from src.classes.frageeinheit import Frageeinheit
 
-import libs.utils_klassen as k_utils
+import src.utils.utils_klassen as k_utils
 
 
 @dataclass(frozen=True)
@@ -129,7 +129,7 @@ class LerneinheitFactory:
             return [LerneinheitStandard(eintrag="StandEint" + str(count),
                                         beschreibung="StandBesch" + str(count),
                                         erzeugt=lernuhr.Lernuhr(0, 0, 0, 0, lernuhr.UhrStatus.LAEUFT).echte_zeit()
-                                        + (10000 * count) + randint(1, 100),
+                                                + (10000 * count) + randint(1, 100),
                                         daten={"daten": count}) for count in range(1, anzahl+1)]
 
     @staticmethod
@@ -141,7 +141,7 @@ class LerneinheitFactory:
                                          beschreibung="日本語Besch" + str(count),
                                          lesung="日本語Lesu" + str(count),
                                          erzeugt=lernuhr.Lernuhr(0, 0, 0, 0, lernuhr.UhrStatus.LAEUFT).echte_zeit()
-                                         + (10000 * count) + randint(1, 100),
+                                                 + (10000 * count) + randint(1, 100),
                                          daten={"daten": count}) for count in range(1, anzahl+1)]
 
     @staticmethod
@@ -154,7 +154,7 @@ class LerneinheitFactory:
                                               on_lesung="漢字On" + str(count),
                                               kun_lesung="漢字Kun" + str(count),
                                               erzeugt=lernuhr.Lernuhr(0, 0, 0, 0, lernuhr.UhrStatus.LAEUFT).echte_zeit()
-                                              + (10000 * count) + randint(1, 100),
+                                                      + (10000 * count) + randint(1, 100),
                                               daten={"daten": count}) for count in range(1, anzahl+1)]
 
     @staticmethod
@@ -168,5 +168,5 @@ class LerneinheitFactory:
                                           pinyin="ChinPiny" + str(count),
                                           zhuyin="ChinZhuy" + str(count),
                                           erzeugt=lernuhr.Lernuhr(0, 0, 0, 0, lernuhr.UhrStatus.LAEUFT).echte_zeit()
-                                          + (10000 * count) + randint(1, 100),
+                                                  + (10000 * count) + randint(1, 100),
                                           daten={"daten": count}) for count in range(1, anzahl+1)]

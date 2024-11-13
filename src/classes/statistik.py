@@ -4,8 +4,8 @@ from enum import Enum
 from abc import ABC, abstractmethod
 from functools import reduce
 import math
-import libs.utils_enum as u_enum
-from antwort import Antwort
+import src.utils.utils_enum as u_enum
+from src.classes.antwort import Antwort
 
 
 class StatModusStrategy(ABC):

@@ -2,9 +2,9 @@ from __future__ import annotations
 from enum import Enum
 from dataclasses import dataclass, field
 
-import libs.utils_enum as utils_enum
-from statistikmanager import StatistikManager
-from lerneinheit import Lerneinheit, LerneinheitFactory
+import src.utils.utils_enum as utils_enum
+from src.classes.statistikmanager import StatistikManager
+from src.classes.lerneinheit import Lerneinheit, LerneinheitFactory
 
 
 class KartenStatus(Enum):

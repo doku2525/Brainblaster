@@ -1,7 +1,7 @@
 from unittest import TestCase
-from statistikmanager import StatistikManager, Frageeinheit
-from lerneinheit import LerneinheitChinesisch
-from libs.utils_dataclass import mein_asdict
+from src.classes.statistikmanager import StatistikManager, Frageeinheit
+from src.classes.lerneinheit import LerneinheitChinesisch
+from src.utils.utils_dataclass import mein_asdict
 
 class test_statistikmanager(TestCase):
 

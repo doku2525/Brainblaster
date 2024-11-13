@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from statistikmanager import StatistikManager
-from frageeinheit import Frageeinheit
-from statistik import StatModus, StatistikCalculations
+from src.classes.statistikmanager import StatistikManager
+from src.classes.frageeinheit import Frageeinheit
+from src.classes.statistik import StatModus, StatistikCalculations
 from typing import Type
 
 

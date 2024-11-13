@@ -1,7 +1,7 @@
 from unittest import TestCase
-from libs.utils_enum import name_zu_enum, enum_zu_dict
+from src.utils.utils_enum import name_zu_enum, enum_zu_dict
 
-from lernuhr import UhrStatus
+from src.classes.lernuhr import UhrStatus
 
 class test_UtilsEnum(TestCase):
 

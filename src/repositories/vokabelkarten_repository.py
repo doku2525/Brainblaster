@@ -5,9 +5,8 @@ from typing import Type
 import json
 import _pickle as pickle
 
-from vokabelkarte import Vokabelkarte
-from frageeinheit import Frageeinheit
-from libs.utils_dataclass import mein_asdict
+from src.classes.vokabelkarte import Vokabelkarte
+from src.utils.utils_dataclass import mein_asdict
 
 
 class VokabelkartenRepository(ABC):

@@ -1,13 +1,11 @@
 from __future__ import annotations
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 import datetime
 from enum import Enum
 import time
-import copy
 import jsonpickle
 
-import libs.utils_enum as u_enum
-import libs.utils_dataclass as u_data
+import src.utils.utils_enum as u_enum
 
 
 class UhrStatus(Enum):

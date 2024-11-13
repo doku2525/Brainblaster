@@ -3,12 +3,11 @@ from typing import Iterable, Type
 from dataclasses import dataclass, field
 import random
 
-import abfragefilter
-import statistik
-from vokabelkarte import Vokabelkarte
-from frageeinheit import Frageeinheit
-from lerneinheit import Lerneinheit
-import libs.utils_klassen as k_utils
+from src.classes import statistik, abfragefilter
+from src.classes.vokabelkarte import Vokabelkarte
+from src.classes.frageeinheit import Frageeinheit
+from src.classes.lerneinheit import Lerneinheit
+import src.utils.utils_klassen as k_utils
 
 """ Das Attribut selektor enthaelt eine Liste mit Strings, die Tests enthalten, welche durch eval() ausgwertet werden.
 Zum Beispiel: ('satz', True) in a.lerneinheit.daten.items()"""

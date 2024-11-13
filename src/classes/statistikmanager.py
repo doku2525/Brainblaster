@@ -2,11 +2,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Type
 
-from lerneinheit import Lerneinheit
-from statistik import Statistik, StatModus
-from frageeinheit import Frageeinheit
+from src.classes.lerneinheit import Lerneinheit
+from src.classes.statistik import Statistik, StatModus
+from src.classes.frageeinheit import Frageeinheit
 
-import libs.utils_klassen as k_utils
+import src.utils.utils_klassen as k_utils
 
 
 @dataclass(frozen=True)

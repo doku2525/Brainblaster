@@ -26,7 +26,7 @@ def asdict_factory(items):
 
 def mein_asdict(daten_klasse: Any) -> dict:
     # TODO Test
-    if isinstance(daten_klasse, importlib.import_module('vokabelkarte').Vokabelkarte):
+    if isinstance(daten_klasse, importlib.import_module('src.classes.vokabelkarte').Vokabelkarte):
         return ({'lernklasse': daten_klasse.lerneinheit.__class__.__name__} |
                 asdict(daten_klasse, dict_factory=asdict_factory))
     return asdict(daten_klasse, dict_factory=asdict_factory)

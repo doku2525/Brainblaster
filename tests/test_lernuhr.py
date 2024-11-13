@@ -1,8 +1,8 @@
 from time import sleep
 from unittest import TestCase
 
-from lernuhr import Lernuhr
-from lernuhr import UhrStatus
+from src.classes.lernuhr import Lernuhr
+from src.classes.lernuhr import UhrStatus
 
 class test_LernUhr(TestCase):
 

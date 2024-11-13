@@ -1,7 +1,7 @@
 from unittest import TestCase
-from antwort import Antwort
+from src.classes.antwort import Antwort
 
-from libs.utils_dataclass import mein_asdict
+from src.utils.utils_dataclass import mein_asdict
 
 
 class test_Antwort(TestCase):

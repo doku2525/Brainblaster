@@ -1,7 +1,7 @@
 from unittest import TestCase
-from libs.utils_dataclass import mein_asdict
-from frageeinheit import Frageeinheit, FrageeinheitJapanischBedeutung, FrageeinheitJapanischSchreiben
-from lerneinheit import LerneinheitStandard, LerneinheitJapanisch
+from src.utils.utils_dataclass import mein_asdict
+from src.classes.frageeinheit import Frageeinheit, FrageeinheitJapanischBedeutung, FrageeinheitJapanischSchreiben
+from src.classes.lerneinheit import LerneinheitStandard, LerneinheitJapanisch
 
 
 class test_Frageeinheit(TestCase):

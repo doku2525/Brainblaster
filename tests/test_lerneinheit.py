@@ -1,7 +1,7 @@
 from unittest import TestCase
-from lerneinheit import (LerneinheitFactory, LerneinheitJapanisch, LerneinheitChinesisch, LerneinheitStandard,
-                         LerneinheitJapanischKanji)
-from libs.utils_dataclass import mein_asdict
+from src.classes.lerneinheit import (LerneinheitFactory, LerneinheitJapanisch, LerneinheitChinesisch, LerneinheitStandard,
+                                     LerneinheitJapanischKanji)
+from src.utils.utils_dataclass import mein_asdict
 
 
 class test_Lerneinheit(TestCase):

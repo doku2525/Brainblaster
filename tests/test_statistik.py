@@ -1,8 +1,8 @@
 from unittest import TestCase
 from dataclasses import replace
-from antwort import Antwort
-from statistik import Statistik, StatModus, StatistikCalculations
-from lernuhr import Lernuhr
+from src.classes.antwort import Antwort
+from src.classes.statistik import Statistik, StatModus, StatistikCalculations
+from src.classes.lernuhr import Lernuhr
 
 
 class test_Statistik(TestCase):
