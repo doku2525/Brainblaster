@@ -1,7 +1,8 @@
 from unittest import TestCase
-from vokabelkarte import Vokabelkarte
+from vokabelkarte import Vokabelkarte, KartenStatus
 from lerneinheit import LerneinheitFactory
 from statistikmanager import StatistikManager
+from libs.utils_dataclass import mein_asdict
 
 
 class test_vokabelkarte(TestCase):
@@ -9,14 +10,22 @@ class test_vokabelkarte(TestCase):
     def setUp(self):
         self.lernJap = LerneinheitFactory.erzeuge_japanisch_beispiele(anzahl=10)
         self.lernSta = LerneinheitFactory.erzeuge_standard_beispiele(anzahl=10)
-        self.vokJap = Vokabelkarte(self.lernJap[0], None, None, None)
-        self.vokSta = Vokabelkarte(self.lernSta[0], None, None, None)
+        self.vokJap = Vokabelkarte(lerneinheit=self.lernJap[0])
+        self.vokSta = Vokabelkarte(lerneinheit=self.lernSta[0])
+
+    def test_fromdict(self):
+        sprachen = ["Japanisch", "Chineisch", "Kanji"]
+        for sprache in sprachen:
+            karten_liste = Vokabelkarte.lieferBeispielKarten(1, sprache)
+            self.assertEquals(karten_liste[0], Vokabelkarte.fromdict(mein_asdict(karten_liste[0])))
 
     def test_erzeugeStatistik(self):
-        self.assertEquals(self.vokJap.lernstats, None)
-        self.assertIs(self.vokSta.lernstats, None)
+        self.assertIsInstance(self.vokJap.lernstats, StatistikManager)
+        self.assertIsInstance(self.vokJap.status, KartenStatus)
         result = self.vokJap.erzeugeStatistik()
-        self.assertIs(type(result.lernstats), StatistikManager)
+        self.assertIsInstance(result.lernstats, StatistikManager)
+        self.assertIsInstance(result.status, KartenStatus)
+        self.assertEquals(result.status, KartenStatus.NORMAL)
         self.assertEquals(len(result.lernstats.liste_der_frageeinheiten()), 4)
 
     def test_erzeugeBeispiele(self):
