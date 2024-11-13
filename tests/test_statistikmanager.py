@@ -1,6 +1,5 @@
 from unittest import TestCase
-from statistikmanager import StatistikManager
-from frageeinheit import Frageeinheit
+from statistikmanager import StatistikManager, Frageeinheit
 from lerneinheit import LerneinheitChinesisch
 from libs.utils_dataclass import mein_asdict
 

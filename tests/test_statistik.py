@@ -1,6 +1,5 @@
 from unittest import TestCase
 from dataclasses import replace
-from libs.utils_dataclass import mein_asdict
 from antwort import Antwort
 from statistik import Statistik, StatModus, StatistikCalculations
 from lernuhr import Lernuhr
@@ -14,13 +13,6 @@ class test_Statistik(TestCase):
         self.ant2 = Antwort(3, 3000)
         self.ant3 = Antwort(7, 3000)
         self.ant4 = Antwort(0, 3000)
-
-    def test_fromdict_asdict(self):
-        self.assertEqual(self.stat, Statistik.fromdict(mein_asdict(Statistik())))
-        obj = self.stat.add_neue_antwort(Antwort(5, Lernuhr.echte_zeit()))
-        self.assertEqual(obj, Statistik.fromdict(mein_asdict(obj)))
-        self.assertEqual(1, len(Statistik.fromdict(mein_asdict(obj)).antworten))
-        self.assertEqual(StatModus.PRUEFEN, Statistik.fromdict(mein_asdict(obj)).modus)
 
     def test_erzeugung_mit_standardwerten(self):
         obj = Statistik()

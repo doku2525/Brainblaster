@@ -5,8 +5,7 @@ import lerneinheit
 from lerneinheit import *
 from frageeinheit import *
 import frageeinheit
-from vokabelbox import Vokabelbox
-from vokabelkarte import Vokabelkarte
+from vokabelbox import Vokabelbox, Vokabelkarte
 
 
 class test_vokabelbox(TestCase):

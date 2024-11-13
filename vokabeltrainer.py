@@ -6,6 +6,7 @@ import zipfile
 from threading import Thread
 
 from libs.repository.vokabelkarten_repository import VokabelkartenRepository
+from libs.repository.vokabelbox_repository import InMemeoryVokabelboxRepository, BINARYDateiformatVokabelbox
 import vokabelbox
 from vokabelkarte import Vokabelkarte
 
@@ -18,9 +19,24 @@ Ausserdem FileOut- und FileIn-Funktionen
 Funtkion fuer Zeit
 (datetime.datetime.now().timestamp()*1000,datetime.datetime.fromisoformat('2024-07-07 02:22:58').timestamp()*1000)
 """
+# TODO 1. Implementiere VokabelRepository-Klasse um die ganze speicher und laden auszulagern.
+#   Zur Zeit wird nicht in JOSN, sondern vokabelkarten.data und vokabelboxen.data geschrieben.
 # TODO: Speicher und Lade den aktuellenIndex und die aktuellenFrageeinheiten in den Vokabelboxen
 # TODO: Momentan gibt es noch keine Verwendung der LernUhr.
-
+# TODO import pickle muss verschwinden
+# Funktionen nach Aufgabe:
+# Vokabelbox:
+#    titelAllerVokabelboxen(self) -> list[str]:  !!! Wird in main.py aufgerufen
+#    addVokabelbox(self, vokBox) -> Vokabeltrainer:  !!! Wird in vielen ImporterKlassen aufgerufen
+#    speicherVokabelboxInDatei(self):   !!! Wird in main.py und ImporterKlassen aufgerufen
+#    ladeVokabelboxenAusDatei(self):   !!! Wird in main.py, webApp_main.py und ImporterKlassen aufgerufen
+# statische Methoden:
+#    neu() -> Vokabeltrainer:
+# Klassenmethoden:
+#    addBeispiele(cls, anzahl, sprache) -> None:
+#    addVokabelkarte(cls, karte) -> None:
+#    speicherVokabelkartenInDatei(cls) -> None:
+#    ladeVokabelkartenAusDatei(cls) -> None:
 
 # TODO Definiere Klasse als @dataclass
 class Vokabeltrainer:
@@ -33,44 +49,10 @@ class Vokabeltrainer:
     def __init__(self, vokabelrepository: VokabelkartenRepository, vokabelboxen: list[vokabelbox.Vokabelbox],
                  aktuellerIndex: vokabelbox.Vokabelbox = None):
         self.vokabel_repository = vokabelrepository
-        self.vokabelboxen = vokabelboxen
+        self.vokabelbox_repository = InMemeoryVokabelboxRepository("./data/vokabelboxen.data")
         self.aktuellerIndex = aktuellerIndex
         self.dateiBoxen = "./data/vokabelboxen.data"
         self.dateiBoxenJSON = "./data/vokabelboxen.json"
-
-    def existsBoxtitel(self, neuerTitel: str) -> bool:
-        print(f"{self.vokabelboxen}")
-        return neuerTitel in [box.titel for box in self.vokabelboxen] if self.vokabelboxen is not None else False
-
-    def titelAllerVokabelboxen(self) -> list[str]:
-        return [box.titel for box in self.vokabelboxen]
-
-    def addVokabelbox(self, vokBox) -> Vokabeltrainer:
-        if self.existsBoxtitel(vokBox.titel):
-            return self
-        else:
-            return Vokabeltrainer(sorted(self.vokabelboxen + [vokBox]), self.aktuellerIndex)
-
-    def renameBox(self, alterTitel: str, neuerTitel: str) -> Vokabeltrainer:
-        if not self.existsBoxtitel(alterTitel):
-            return self
-        if self.existsBoxtitel(neuerTitel):
-            return self
-        result = []
-        for i in self.vokabelboxen:
-            if i.titel == alterTitel:
-                i.titel = neuerTitel
-            result.append(i)
-        return Vokabeltrainer(sorted(result), self.aktuellerIndex)
-
-    def loescheBox(self, titel: str) -> Vokabeltrainer:
-        return Vokabeltrainer([box for box in self.vokabelboxen if box.titel != titel], self.aktuellerIndex)
-
-    def speicherVokabelboxInDatei(self):
-        pickle.dump(self.vokabelboxen, open(self.dateiBoxen, "wb"))
-
-    def ladeVokabelboxenAusDatei(self):
-        self.vokabelboxen = pickle.load(open(self.dateiBoxen, "rb"))
 
     # def speicherVokabelboxInJSON(self):
     #     data = jsonpickle.encode(self.vokabelboxen)
