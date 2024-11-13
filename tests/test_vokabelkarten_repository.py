@@ -2,7 +2,7 @@ from unittest import TestCase
 import copy
 
 from libs.repository.vokabelkarten_repository import (VokabelkartenRepository, InMemoryVokabelkartenRepository,
-                                                      BINARYDateiformatVokabelkarte)
+                                                      BINARYDateiformatVokabelkarte, JSONDateiformatVokabelkarte)
 from vokabelkarte import Vokabelkarte
 from lerneinheit import LerneinheitJapanisch
 
@@ -71,3 +71,11 @@ class test_VokabelkartenRepository(TestCase):
     def test_exists_karte(self):
         self.assertTrue(self.repo.exists_karte(self.karten[5]))
         self.assertFalse(self.repo.exists_karte(self.karten[15]))
+
+    def test_json_speichern_laden(self):
+        self.repo.speicher_methode = JSONDateiformatVokabelkarte
+        self.repo.dateiname = '__vokabelkarten.JSON'
+        self.repo.vokabelkarten = self.karten[:2]
+        self.repo.speichern()
+        self.repo.erneut_laden()
+        self.assertEqual(self.repo.vokabelkarten, self.karten[:2])

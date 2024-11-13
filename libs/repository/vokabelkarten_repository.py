@@ -2,10 +2,12 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Type
 
+import json
 import _pickle as pickle
 
 from vokabelkarte import Vokabelkarte
 from frageeinheit import Frageeinheit
+from libs.utils_dataclass import mein_asdict
 
 
 class VokabelkartenRepository(ABC):
@@ -52,11 +54,10 @@ class InMemoryVokabelkartenRepository(VokabelkartenRepository):
         self.speicher_methode.speichern(zu_speichernde_liste=self.vokabelkarten, dateiname=self.dateiname)
 
     def laden(self) -> bool:
-        if not self.vokabelkarten:
-            self.vokabelkarten = self.speicher_methode.laden(dateiname=self.dateiname)
-            return True
-        else:
+        if self.vokabelkarten:
             return False
+        self.erneut_laden()
+        return True
 
     def erneut_laden(self):
         self.vokabelkarten = self.speicher_methode.laden(dateiname=self.dateiname)
@@ -89,21 +90,44 @@ class InMemoryVokabelkartenRepository(VokabelkartenRepository):
 class DateiformatVokabelkarte(ABC):
     @staticmethod
     @abstractmethod
-    def speichern(zu_speichernde_liste: list[Vokabelbox], dateiname: str) -> None:
+    def speichern(zu_speichernde_liste: list[Vokabelkarte], dateiname: str) -> None:
         pass
 
     @staticmethod
     @abstractmethod
-    def laden(dateiname: str) -> list[Vokabelbox]:
+    def laden(dateiname: str) -> list[Vokabelkarte]:
         pass
 
 
 class BINARYDateiformatVokabelkarte(DateiformatVokabelkarte):
 
     @staticmethod
-    def speichern(zu_speichernde_liste: list[Vokabelbox], dateiname: str) -> None:
+    def speichern(zu_speichernde_liste: list[Vokabelkarte], dateiname: str) -> None:
         pickle.dump(zu_speichernde_liste, open(dateiname, "wb"))
 
     @staticmethod
-    def laden(dateiname: str) -> list[Vokabelbox]:
+    def laden(dateiname: str) -> list[Vokabelkarte]:
         return pickle.load(open(dateiname, "rb"))
+
+
+class JSONDateiformatVokabelkarte(DateiformatVokabelkarte):
+
+    @staticmethod
+    def speichern(zu_speichernde_liste: list[Vokabelkarte], dateiname: str, ensure_ascii: bool = False) -> None:
+        """
+        Um die Kompatibilitaet zu erhoehen kann ensure_ascii=True gesetzt werden, damit Unicodezeichen in
+        Escape-Sequenzen umgewandelt werden.
+        :param zu_speichernde_liste: list[Vokabelkarte]
+        :param dateiname: str
+        :param ensure_ascii: bool = False
+        :return: None
+        """
+        with open(dateiname, 'w') as ausgabe_datei:
+            json.dump([mein_asdict(karte) for karte in zu_speichernde_liste], ausgabe_datei,
+                      indent=4, ensure_ascii=ensure_ascii)
+
+    @staticmethod
+    def laden(dateiname: str) -> list[Vokabelkarte]:
+        with open(dateiname, 'r') as eingabe_datei:
+            data = json.load(eingabe_datei)
+        return [Vokabelkarte.fromdict(karte) for karte in data]

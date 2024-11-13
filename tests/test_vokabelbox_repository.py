@@ -117,3 +117,14 @@ class test_VokabelboxRepository(TestCase):
         self.assertTrue(self.obj.exists_boxtitel('Titel 2'))
         self.assertFalse(self.obj.exists_boxtitel('Titel 3'))
         self.assertFalse(self.obj.exists_boxtitel(''))
+
+    def test_json_speichern_laden(self):
+        self.obj.add_box(Vokabelbox("Titel 1", LerneinheitJapanisch, []))
+        self.obj.add_box(Vokabelbox("Titel 2", LerneinheitJapanisch, []))
+        self.obj.add_box(Vokabelbox("Titel 3", LerneinheitJapanisch, []))
+        alten_boxen = self.obj.vokabelboxen
+        self.obj.speicher_methode = JSONDateiformatVokabelbox
+        self.obj.dateiname = '__vokabelbox.JSON'
+        self.obj.speichern()
+        self.obj.erneut_laden()
+        self.assertEqual(self.obj.vokabelboxen, alten_boxen)

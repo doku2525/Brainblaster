@@ -2,8 +2,12 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Type
 from dataclasses import replace
-from vokabelbox import Vokabelbox
+
+import  json
 import _pickle as pickle
+
+from vokabelbox import Vokabelbox
+from libs.utils_dataclass import mein_asdict
 
 
 # TODO Evtl, syncronitaet zwischen den verschiedenen Speichermedien implementieren???
@@ -54,13 +58,16 @@ class InMemeoryVokabelboxRepository(VokabelboxRepository):
         # Alter Name: def speicherVokabelboxInDatei(self):
         self.speicher_methode.speichern(self.vokabelboxen, self.dateiname)
 
-    def laden(self) -> None:
+    def laden(self) -> bool:
         # Alter Name: def ladeVokabelboxenAusDatei(self):
-        self.vokabelboxen = self.speicher_methode.laden(self.dateiname) if not self.vokabelboxen else self.vokabelboxen
+        if self.vokabelboxen:
+            return False
+        self.erneut_laden()
+        return True
 
     def erneut_laden(self) -> None:
         # Alter Name: def ladeVokabelboxenAusDatei(self):
-        self.vokabelboxen = pickle.load(open(self.dateiname, "rb"))
+        self.vokabelboxen = self.speicher_methode.laden(self.dateiname)
 
     def add_box(self, box: Vokabelbox) -> None:
         # Alter Name: def addVokabelbox(self, vokBox) -> Vokabeltrainer:
@@ -117,18 +124,13 @@ class BINARYDateiformatVokabelbox(DateiformatVokabelbox):
 class JSONDateiformatVokabelbox(DateiformatVokabelbox):
 
     @staticmethod
-    def speichern(zu_speichernde_liste: list[Vokabelbox], dateiname: str) -> None:
-        # TODO Test
-        # TODO Experimentel. Benoetigt noch von Hand geschrieben Umwandlung in JSON
-        data = jsonpickle.encode(zu_speichernde_liste)
-        parsed = json.loads(data)
-        with open(dateiname, "w") as text_file:
-            print(json.dumps(parsed, indent=4), file=text_file)
+    def speichern(zu_speichernde_liste: list[Vokabelbox], dateiname: str, ensure_ascii: bool = False) -> None:
+        with open(dateiname, 'w') as ausgabe_datei:
+            json.dump([mein_asdict(box) for box in zu_speichernde_liste], ausgabe_datei,
+                      indent=4, ensure_ascii=ensure_ascii)
 
     @staticmethod
     def laden(dateiname: str) -> list[Vokabelbox]:
-        # TODO Test
-        # TODO Experimentel. Benoetigt noch von Hand geschrieben Umwandlung in JSON
-        with open(dateiname, "r") as f:
-            result = jsonpickle.decode(f.read())
-        return result
+        with open(dateiname, 'r') as eingabe_datei:
+            data = json.load(eingabe_datei)
+        return [Vokabelbox.fromdict(box) for box in data]
