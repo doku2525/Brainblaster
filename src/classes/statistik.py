@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Type
 from dataclasses import dataclass, field
 from enum import Enum
 from abc import ABC, abstractmethod
@@ -72,28 +73,13 @@ class StatModusLernen(StatModusStrategy):
 
 
 class StatModus(Enum):
-    NEU = 1
-    LERNEN = 2
-    PRUEFEN = 3
-
-    def klasse(self):
-        old_to_new_map = {
-            StatModus.NEU: NeuerStatModus.NEU,
-            StatModus.LERNEN: NeuerStatModus.LERNEN,
-            StatModus.PRUEFEN: NeuerStatModus.PRUEFEN
-        }
-        return old_to_new_map[self].klasse()
-
-
-class NeuerStatModus(Enum):
-    # TODO Issue #4 Das Durcheinander von NeuerStatModus und StatModus beseitigen. Siehe speichern mit pickle
     NEU = (1, StatModusNeu)
     LERNEN = (2, StatModusLernen)
     PRUEFEN = (3, StatModusPruefen)
 
-    def __init__(self, value, klasse):
-        self._value_ = value
-        self.klasse = klasse
+    def __init__(self, value: int, klasse: Type[StatModusStrategy]):
+        self._value_: int = value
+        self.klasse: Type[StatModusStrategy] = klasse
 
 
 class StatistikCalculations:
@@ -118,15 +104,6 @@ class StatistikCalculations:
     @staticmethod
     def berechne_millisekunden(statistik: Statistik) -> int:
         return statistik.modus.klasse().srs_zeit_in_millis(statistik)
-
-    # @staticmethod
-    # def map_statmods(modus: StatModus) -> NeuerStatModus:
-    #     OLD_TO_NEW_MAP = {
-    #         StatModus.NEU: NeuerStatModus.NEU,
-    #         StatModus.LERNEN: NeuerStatModus.LERNEN,
-    #         StatModus.PRUEFEN: NeuerStatModus.PRUEFEN
-    #     }
-    #     return OLD_TO_NEW_MAP[modus]
 
 
 @dataclass(frozen=True)

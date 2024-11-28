@@ -13,6 +13,7 @@ from vokabelkarte import Vokabelkarte
 from vokabelbox import Vokabelbox
 import lerneinheit as le_alt
 
+
 def lade_pickle_datei(dateipfad):
     """Lädt eine Binärdatei mit pickle."""
     with open(dateipfad, "rb") as datei:
@@ -69,12 +70,12 @@ def konvertiere_vokabelboxen(alte_vokabelboxen):
 
 def main():
     # Pfade zu alten Dateien
-    alter_kartenpfad = "daten/vokabelkarten.data"
-    alter_boxenpfad = "daten/vokabelboxen.data"
+    alter_kartenpfad = "../../daten/vokabelkarten.data"
+    alter_boxenpfad = "../../daten/vokabelboxen.data"
 
     # Pfade zu neuen Dateien
-    neuer_kartenpfad = "daten/data/vokabelkarten.JSON"
-    neuer_boxenpfad = "daten/data/vokabelboxen.JSON"
+    neuer_kartenpfad = "../../daten/data/vokabelkarten.JSON"
+    neuer_boxenpfad = "../../daten/data/vokabelboxen.JSON"
 
     # Laden der alten Daten
     alte_vokabelkarten = lade_pickle_datei(alter_kartenpfad)
