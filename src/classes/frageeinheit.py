@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Frageeinheit:
-    # TODO Lerneinheit koennte durch einen Enumtyp ersetzt werden
+    # TODO Issue #1 Lerneinheit koennte durch einen Enumtyp ersetzt werden
     rank: int = 1
     lerneinheit: str = ''
     warte_sekunden_auf_antwort: int = 3
@@ -56,7 +56,7 @@ class Frageeinheit:
     def suche_frageeinheit_fuer_lernklasse_mit_titel(lernklasse: Type[Lerneinheit],
                                                      titel_frageeinheit: str) -> Frageeinheit:
         """Liefer die Frageeinheit, mit dem Titel fTitel, die zur Subklasse von Lerneinheit gehoert"""
-        # TODO Ersetze lambda-filter_funktion durch definierte Funktion im Typeannotation
+        # TODO Issue #2 Ersetze lambda-filter_funktion durch definierte Funktion im Typeannotation
         def filter_funktion(elem: Type[Frageeinheit]) -> bool:
             return "Frageeinheit" + titel_frageeinheit == elem.__name__
 #        filter_funktion = lambda elem: "Frageeinheit" + titel_frageeinheit == elem.__name__

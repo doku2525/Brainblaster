@@ -32,8 +32,7 @@ class Vokabelkarte:
                    erzeugt=source_dict['erzeugt'],
                    status=utils_enum.name_zu_enum(source_dict['status'], KartenStatus))
 
-    # TODO Namen der Methoden von CamelFrom auf python_form umstellen
-    def erzeugeStatistik(self) -> Vokabelkarte:
+    def erzeuge_statistik(self) -> Vokabelkarte:
         return Vokabelkarte(self.lerneinheit,
                             StatistikManager.erzeuge(self.lerneinheit.__class__),
                             self.erzeugt,
@@ -44,7 +43,7 @@ class Vokabelkarte:
         if not liste:
             return []
         else:
-            return [Vokabelkarte(lern_einheit, StatistikManager(), 0, KartenStatus.NORMAL).erzeugeStatistik()
+            return [Vokabelkarte(lern_einheit, StatistikManager(), 0, KartenStatus.NORMAL).erzeuge_statistik()
                     for lern_einheit
                     in liste]
 

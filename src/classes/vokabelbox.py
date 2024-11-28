@@ -11,8 +11,8 @@ import src.utils.utils_klassen as k_utils
 
 """ Das Attribut selektor enthaelt eine Liste mit Strings, die Tests enthalten, welche durch eval() ausgwertet werden.
 Zum Beispiel: ('satz', True) in a.lerneinheit.daten.items()"""
-# TODO Ein Weg finden, keine Strings mit eval() verwenden zu muessen. Siehe Funktion filter_rekursiv()
-# TODO Fuer die Liste von Strings mit Tests einen eigenen Datentyp erstellen
+# TODO Issue #7 Ein Weg finden, keine Strings mit eval() verwenden zu muessen. Siehe Funktion filter_rekursiv()
+# TODO Issue #7 Fuer die Liste von Strings mit Tests einen eigenen Datentyp erstellen
 
 
 @dataclass(frozen=True)
@@ -23,7 +23,7 @@ class Vokabelbox:
     aktuelle_frage: Type[Frageeinheit] = None
 
     def __post_init__(self):
-        # TODO Mit solchen Tricks zu arbeiten ist vielleicht nicht die beste Idee und ein Zeichen dafuer,
+        # TODO Issue #7 Mit solchen Tricks zu arbeiten ist vielleicht nicht die beste Idee und ein Zeichen dafuer,
         #   am Design etwas zu veraendern.
         #   ??? Muss aktuelleFrage wirklich als Attribut gespeichert werden oder sollte es nicht eine Funktion sein?
         object.__setattr__(self,
@@ -101,9 +101,9 @@ class Vokabelbox:
         return filter_rekursiv(karten_der_lernklasse, self.selektor)
 
     def sammle_infos(self, alle_vokabelkarten: list[Vokabelkarte], uhrzeit: int) -> dict[str, int]:
-        # TODO Die Funktion sollte vielleicht eher in Vokabeltrainer existieren. "zuPruefen", "zuLernen" etc.
+        # TODO Issue #7 Die Funktion sollte vielleicht eher in Vokabeltrainer existieren. "zuPruefen", "zuLernen" etc.
         #       sind keine Verantwortlichkeiten fuer eine Vokabelbox
-        # TODO Die for-Schleife koennte vielleicht in eine Funktion ausgelagert werden
+        # TODO Issue #7 Die for-Schleife koennte vielleicht in eine Funktion ausgelagert werden
         #  oder mit Listcomprehension geschrieben werden?
         result = {}
         karten_dieser_vokabelbox = list(self.filter_vokabelkarten(alle_vokabelkarten))
@@ -136,7 +136,7 @@ class Vokabelbox:
         return random.sample(liste_der_karten, len(liste_der_karten))
 
 
-# TODO
+# TODO Issue #7
 """
     karte.lernstats.statistiken[trainer.aktuellerIndex.aktuelleFrage].zeitZumLernen(0)
     for karte in trainer.aktuellerIndex.filterVokabelkarten(vt.Vokabeltrainer.vokabelkarten)]

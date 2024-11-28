@@ -30,7 +30,7 @@ class StatistikManager:
     def suche_frageeinheit_nach_titel(self, suchstring: str) -> Type[Frageeinheit]:
         return [frage_klasse for frage_klasse in self.statistiken.keys() if frage_klasse().titel() == suchstring][0]
 
-    # TODO Noch viele auskommentierte Funktionen
+    # TODO Issue #6 Noch viele auskommentierte Funktionen
     # def ist_erste_frageeinheit(self, frage_klasse: Type[Frageeinheit]) -> bool:
     #     return self.liste_der_frageeinheiten()[0] == frage_klasse
 

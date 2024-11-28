@@ -22,7 +22,7 @@ class test_vokabelkarte(TestCase):
     def test_erzeugeStatistik(self):
         self.assertIsInstance(self.vokJap.lernstats, StatistikManager)
         self.assertIsInstance(self.vokJap.status, KartenStatus)
-        result = self.vokJap.erzeugeStatistik()
+        result = self.vokJap.erzeuge_statistik()
         self.assertIsInstance(result.lernstats, StatistikManager)
         self.assertIsInstance(result.status, KartenStatus)
         self.assertEquals(result.status, KartenStatus.NORMAL)

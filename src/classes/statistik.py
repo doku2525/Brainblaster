@@ -86,7 +86,7 @@ class StatModus(Enum):
 
 
 class NeuerStatModus(Enum):
-    # TODO Das Durcheinander von NeuerStatModus und StatModus beseitigen. Siehe speichern mit pickle
+    # TODO Issue #4 Das Durcheinander von NeuerStatModus und StatModus beseitigen. Siehe speichern mit pickle
     NEU = (1, StatModusNeu)
     LERNEN = (2, StatModusLernen)
     PRUEFEN = (3, StatModusPruefen)

@@ -14,11 +14,11 @@ Ausserdem FileOut- und FileIn-Funktionen
 Funtkion fuer Zeit
 (datetime.datetime.now().timestamp()*1000,datetime.datetime.fromisoformat('2024-07-07 02:22:58').timestamp()*1000)
 """
-# TODO 1. Implementiere VokabelRepository-Klasse um die ganze speicher und laden auszulagern.
+# TODO Issue #8 1. Implementiere VokabelRepository-Klasse um die ganze speicher und laden auszulagern.
 #   Zur Zeit wird nicht in JOSN, sondern vokabelkarten.data und vokabelboxen.data geschrieben.
-# TODO: Speicher und Lade den aktuellenIndex und die aktuellenFrageeinheiten in den Vokabelboxen
-# TODO: Momentan gibt es noch keine Verwendung der LernUhr.
-# TODO import pickle muss verschwinden
+# TODO Issue #8 Speicher und Lade den aktuellenIndex und die aktuellenFrageeinheiten in den Vokabelboxen
+# TODO Issue #8 Momentan gibt es noch keine Verwendung der LernUhr.
+# TODO Issue #8 import pickle muss verschwinden
 # Funktionen nach Aufgabe:
 # Vokabelbox:
 # x  titelAllerVokabelboxen(self) -> list[str]:  !!! Wird in main.py aufgerufen                            xxx VokabelboxRepository
@@ -57,6 +57,6 @@ class VokabeltrainerModell:
 
     @classmethod
     def addBeispiele(cls, anzahl, sprache) -> None:
-        # TODO In FactoryKlasse ausgelagern.
+        # TODO Issue #8 In FactoryKlasse ausgelagern.
         # Funktion wird nur in den Tests benutzt
         [VokabeltrainerModell.addVokabelkarte(karte) for karte in Vokabelkarte.lieferBeispielKarten(anzahl, sprache)]

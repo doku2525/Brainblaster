@@ -36,8 +36,8 @@ class Lernuhr:
 
     @staticmethod
     def lade_uhr_aus_json(json_dateiname: str) -> Lernuhr:
-        # TODO TEST
-        # TODO Funktion vielleicht auslagern?
+        # TODO Issue #5 TEST
+        # TODO Issue #5 Funktion vielleicht auslagern?
         with open(json_dateiname, "r") as f:
             return jsonpickle.decode(f.read())
 
@@ -79,6 +79,6 @@ class Lernuhr:
         return datetime.datetime.fromtimestamp(self.now()/1000).strftime('%F %T.%f')
 
     def as_date(self) -> Lernuhr:
-        # TODO
+        # TODO Issue #5
         raise NotImplemented   # returns Date(this.now())
         # return self

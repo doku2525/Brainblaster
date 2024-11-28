@@ -35,7 +35,7 @@ class Lerneinheit(ABC):
         return self.gleiche_lerneinheit_wie(lerneinheit) and self.erzeugt == lerneinheit.erzeugt
 
     # def to_lerneinheit(self) -> Lerneinheit:
-    #     # TODO der Sinn dieser Methode ist mir noch komplett schleierhaft!
+    #     # TODO Issue #3 der Sinn dieser Methode ist mir noch komplett schleierhaft!
     #     return LerneinheitStandard(eintrag, beschreibung, erzeugt, daten)
 
     @classmethod
