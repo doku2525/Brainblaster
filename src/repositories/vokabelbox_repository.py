@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Type
 from dataclasses import replace
 
-import  json
+import json
 import _pickle as pickle
 
 from src.classes.vokabelbox import Vokabelbox

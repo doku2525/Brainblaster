@@ -14,7 +14,7 @@ class VokabeltrainerController:
         else: print("\t Keine Boxen vorhanden!")
 
     def zeigeVokabelkartenStats(self, mein_modell: VokabeltrainerModell) -> None:
-        def countLernTypen() -> int:
+        def countLernTypen() -> set:
             return set([karte.lerneinheit.__class__.__name__
                         for karte
                         in mein_modell.vokabelkarten.vokabelkarten])
@@ -25,6 +25,8 @@ class VokabeltrainerController:
 
     def programm_loop(self):
         fortsetzen = True
+        self.modell.vokabelkarten.laden()
+        self.modell.vokabelboxen.laden()
         while fortsetzen:
             print("\n\n*** Hauptmenue ***")
             print("\t Zeige Vokabelboxen (1)")

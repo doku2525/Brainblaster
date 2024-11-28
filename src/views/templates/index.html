@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title>{{ title }}</title>
+        <style>
+            .menue {
+                padding: 15px;
+            }
+            td {
+                padding: 5px;
+            }
+            .speichern {
+                padding: -10px;
+                margin-top: -10px;
+            }
+        </style>
+    </head>
+    <body>
+	{{ uhrzeit }}
+        <table>
+            <tr >
+                <th class="menue"> <h2> <a href="testfrage?command=PRUEFEN"> Pruefe Vokabeln </a> </h2> </th>
+                <th class="menue"> <h2> <a href="testfrage?command=LERNEN"> Lerne Vokabeln </a> </h2> </th>
+                <th class="menue"> <h2> <a href="testfrage?command=NEU"> Teste neue Vokabeln</a> </h2></th>
+            </tr>
+            <tr class="speichern">
+                <th></th>
+                <th></th>
+                <th> <h2> <a href="index?command=speichern"> Speicher</a> </h2></th>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <th> </th>
+                <th> <h2> Vokabelboxen </h2> </th>
+                <th> <h2> Statistiken </h2> </th>
+                <th> <h2> Links </h2></th>
+            </tr>
+                {% for counter, box in boxen: %}
+                {% set count = counter | string() %}
+                {% set urlboxindex = "index?l=" + count %}
+                {% set urlvokabelbox = "vokabelbox?l=" + count %}
+                {% if box == current %}
+                <tr>
+                    <td>●</td>
+                    <td><b> {{ box }} </b></td>
+                    <td> {{ statistiken[counter]['karten'] }} </td>
+                    <td><a href={{urlvokabelbox}}> {{ currentFrage }}</a></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td></td>
+                    <td><a href={{urlboxindex}}> {{ box }} </a></td>
+                    <td> {{ statistiken[counter]['karten'] }} </td>
+                    <td><a href={{urlvokabelbox}}> {{ currentFrage }} </a></td>
+                </tr>
+                {% endif %}
+	            {% endfor %}
+	    </table>
+    </body>
+</html>

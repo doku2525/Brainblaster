@@ -11,7 +11,7 @@ import src.utils.utils_klassen as k_utils
 
 """ Das Attribut selektor enthaelt eine Liste mit Strings, die Tests enthalten, welche durch eval() ausgwertet werden.
 Zum Beispiel: ('satz', True) in a.lerneinheit.daten.items()"""
-# TODO Ein Weg finden, keine Strings mit eval() verwenden zu muessen.
+# TODO Ein Weg finden, keine Strings mit eval() verwenden zu muessen. Siehe Funktion filter_rekursiv()
 # TODO Fuer die Liste von Strings mit Tests einen eigenen Datentyp erstellen
 
 
@@ -101,6 +101,8 @@ class Vokabelbox:
         return filter_rekursiv(karten_der_lernklasse, self.selektor)
 
     def sammle_infos(self, alle_vokabelkarten: list[Vokabelkarte], uhrzeit: int) -> dict[str, int]:
+        # TODO Die Funktion sollte vielleicht eher in Vokabeltrainer existieren. "zuPruefen", "zuLernen" etc.
+        #       sind keine Verantwortlichkeiten fuer eine Vokabelbox
         # TODO Die for-Schleife koennte vielleicht in eine Funktion ausgelagert werden
         #  oder mit Listcomprehension geschrieben werden?
         result = {}

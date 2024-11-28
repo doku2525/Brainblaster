@@ -40,12 +40,12 @@ class VokabelkartenRepository(ABC):
 
 class InMemoryVokabelkartenRepository(VokabelkartenRepository):
 
-    BACKUP_VERZEICHNIS = "backups/"
+    BACKUP_VERZEICHNIS = "backups/"     # TODO Backup-Funktion implementieren
 
     def __init__(self, dateiname: str, verzeichnis: str, vokabelkarten: list[Vokabelkarte] = None,
                  speicher_methode: Type[DateiformatVokabelkarte] = None):
         self.dateiname: str = dateiname
-        self.verzeichnis: str = verzeichnis
+        self.verzeichnis: str = verzeichnis     # TODO Dieses Attribute hat ueberhaupt keine Funktion
         self.vokabelkarten: list[Vokabelkarte] = [] if vokabelkarten is None else vokabelkarten
         self.speicher_methode: Type[DateiformatVokabelkarte] = speicher_methode
 
