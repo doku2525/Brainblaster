@@ -1,9 +1,14 @@
 from __future__ import annotations
+from typing import Callable
 from dataclasses import dataclass, field
+import random
 
+from src.classes.lernuhr import Lernuhr
 from src.repositories.vokabelkarten_repository import VokabelkartenRepository
 from src.repositories.vokabelbox_repository import (VokabelboxRepository)
 from src.classes.vokabelkarte import Vokabelkarte
+from src.classes.statistikfilter import StatistikfilterPruefen
+
 
 """
 Im original ist Vokabeltrainer von OrderedCollection abgeleitet und speichert die Vojkabelboxen
@@ -38,6 +43,22 @@ class VokabeltrainerModell:
     vokabelboxen: VokabelboxRepository = field(default_factory=VokabelboxRepository)
     vokabelkarten: VokabelkartenRepository = field(default_factory=VokabelkartenRepository)
     index_aktuelle_box: int = 0
+
+    def starte_vokabeltest(self,
+                           filter_funktion: Callable[[Vokabelkarte], bool],
+                           test_funktion: Callable[[Vokabelkarte], Vokabelkarte],
+                           zeit: int) -> list[tuple[Vokabelkarte, Vokabelkarte]]:
+
+        vok_box = self.vokabelboxen[self.index_aktuelle_box]
+        karten_der_box = vok_box.filter_vokabelkarten(self.vokabelkarten)               # 1. Vokabelboxfilter
+        zu_testende_karten = list(filter(                                               # 2. Pruefenfilter anwenden
+            lambda karte: StatistikfilterPruefen.filter(stat_manager=karte.lernstats,
+                                                        frage=vok_box.aktuelle_frage,
+                                                        vergleichszeit=zeit), karten_der_box))
+        zu_testende_karten = zu_testende_karten[:20]                                    # 3. Begrenze Anzahl auf x
+        ersten_x_karten = random.sample(zu_testende_karten, len(zu_testende_karten))    # 4. Mische Karten
+        return list(map(lambda karte: (karte, test_funktion(karte)), ersten_x_karten))  # 5. Fuehre Test durch
+
 
     # dateiKarten = "./daten/data/vokabelkarten.data"
     # dateiKartenBackup = "./daten/data/backups/vokabelkarten."

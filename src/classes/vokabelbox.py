@@ -3,7 +3,7 @@ from typing import Iterable, Type
 from dataclasses import dataclass, field
 import random
 
-from src.classes import statistik, abfragefilter
+from src.classes import statistik, statistikfilter
 from src.classes.vokabelkarte import Vokabelkarte
 from src.classes.frageeinheit import Frageeinheit
 from src.classes.lerneinheit import Lerneinheit
@@ -120,15 +120,16 @@ class Vokabelbox:
         result["zuPruefen"] = len([stats
                                    for stats
                                    in liste_der_statistikmanager_der_karten
-                                   if abfragefilter.PruefenFilter().filter(stats, self.aktuelle_frage, uhrzeit)])
+                                   if statistikfilter.StatistikfilterPruefen().filter(stats, self.aktuelle_frage,
+                                                                                      uhrzeit)])
         result["zuLernen"] = len([stats
                                   for stats
                                   in liste_der_statistikmanager_der_karten
-                                  if abfragefilter.LernenFilter().filter(stats, self.aktuelle_frage, uhrzeit)])
+                                  if statistikfilter.StatistikfilterLernen().filter(stats, self.aktuelle_frage, uhrzeit)])
         result["zuNeu"] = len([stats
                                for stats
                                in liste_der_statistikmanager_der_karten
-                               if abfragefilter.NeueFilter().filter(stats, self.aktuelle_frage, uhrzeit)])
+                               if statistikfilter.StatistikfilterNeue().filter(stats, self.aktuelle_frage, uhrzeit)])
         return result
 
     @staticmethod

@@ -9,6 +9,9 @@ class test_vokabeltrainermodell(TestCase):
         pass
 #        self.obj = VokabeltrainerModell.neu()
 
+    def test_starte_vokabeltest(self):
+        pass
+
     def test_addVokabelkarte(self):
         pass
 #        assert False
