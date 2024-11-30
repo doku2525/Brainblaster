@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.classes.kartenfilter import KartenfilterTupel, filter_karten, FilterKartenstatistik
+from src.classes.kartenfilter import KartenfilterTupel, FilterKartenstatistik, KartenfilterStrategie
 from src.classes.vokabeltrainermodell import VokabeltrainerModell
 from src.classes.vokabelkarte import Vokabelkarte
 from src.classes.vokabelbox import Vokabelbox
@@ -41,18 +41,25 @@ class test_Kartenfilter(TestCase):
         ]
 
         meine_liste = [1, 2, 3]
-        self.assertEquals([1111, 1112, 1113], filter_karten(filter_tupel=filter_liste, liste=meine_liste))
-        self.assertEquals([1111, 1112, 1113], filter_karten(filter_liste, meine_liste))
-        self.assertEquals([], filter_karten(filter_tupel=filter_liste, liste=[]))
-        self.assertEquals([1, 2, 3], filter_karten(filter_tupel=[], liste=meine_liste))
-        self.assertEquals([], filter_karten())
-        self.assertEquals([], filter_karten(filter_tupel=filter_liste))
-        self.assertEquals([1, 2, 3], filter_karten(liste=meine_liste))
-        self.assertEquals([], filter_karten(meine_liste))
-        self.assertEquals([1111, 1112, 1113], filter_karten(filter_tupel=filter_liste2,
-                                                            liste=meine_liste), "eigener arg_name")
-        self.assertEquals([], filter_karten(filter_tupel=filter_liste3,
-                                            liste=meine_liste), "Falscher arg_name")
+        self.assertEquals([1111, 1112, 1113],
+                          KartenfilterStrategie.filter_karten(filter_tupel=filter_liste, liste=meine_liste))
+        self.assertEquals([1111, 1112, 1113],
+                          KartenfilterStrategie.filter_karten(filter_liste, meine_liste))
+        self.assertEquals([],
+                          KartenfilterStrategie.filter_karten(filter_tupel=filter_liste, liste=[]))
+        self.assertEquals([1, 2, 3],
+                          KartenfilterStrategie.filter_karten(filter_tupel=[], liste=meine_liste))
+        self.assertEquals([], KartenfilterStrategie.filter_karten())
+        self.assertEquals([],
+                          KartenfilterStrategie.filter_karten(filter_tupel=filter_liste))
+        self.assertEquals([1, 2, 3], KartenfilterStrategie.filter_karten(liste=meine_liste))
+        self.assertEquals([], KartenfilterStrategie.filter_karten(meine_liste))
+        self.assertEquals([1111, 1112, 1113],
+                          KartenfilterStrategie.filter_karten(filter_tupel=filter_liste2,
+                                                              liste=meine_liste), "eigener arg_name")
+        self.assertEquals([],
+                          KartenfilterStrategie.filter_karten(filter_tupel=filter_liste3,
+                                                              liste=meine_liste), "Falscher arg_name")
 
     def test_filterkartenstatistik(self):
         result = FilterKartenstatistik(StatistikfilterNeue, self.obj.aktuelle_box(), 1000)

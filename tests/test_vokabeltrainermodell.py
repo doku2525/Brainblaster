@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 from datetime import datetime, timedelta
 from dataclasses import replace
 from src.classes.vokabeltrainermodell import VokabeltrainerModell
-from src.classes.kartenfilter import KartenfilterTupel, filter_karten
+from src.classes.kartenfilter import KartenfilterTupel, KartenfilterStrategie
 from src.classes.vokabelkarte import Vokabelkarte
 from src.classes.vokabelbox import Vokabelbox
 from src.repositories.vokabelbox_repository import InMemeoryVokabelboxRepository
@@ -25,7 +25,7 @@ class test_vokabeltrainermodell(TestCase):
         def test_func(karte: Vokabelkarte) -> Vokabelkarte:
             return karte.lerneinheit.eintrag
 
-        with patch('src.classes.kartenfilter.filter_karten') as mock_filter_karten:
+        with patch('src.classes.kartenfilter.KartenfilterStrategie.filter_karten') as mock_filter_karten:
             mock_filter_karten.return_value = self.liste
             result = self.obj.starte_vokabeltest(test_funktion=test_func, zeit=0)
             mock_filter_karten.assert_called_once()

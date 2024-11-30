@@ -16,29 +16,33 @@ KartenfilterTupel = namedtuple('KartenfilterTupel',
                                defaults=[lambda:None, {}, 'karten_liste'])
 
 
-def filter_karten(filter_tupel: list[KartenfilterTupel] = None, liste: list[Vokabelkarte] = None) -> list[Vokabelkarte]:
-    """ arg_name = der Argumentname, mit dem die Liste in der Filterfunktion uebergeben wird. Standard = 'liste'."""
-    match (filter_tupel is None or filter_tupel == [], liste is None or liste == []):
-        case (True, True): return []
-        case (True, _): return liste
-        case (_, True): return []
-        case _:
-            try:  # Pruefe, ob Argument arg_name exisitiert mit dem ersten Element aus den Listen
-                filter_tupel[0].funktion(**filter_tupel[0].args | {filter_tupel[0].arg_name_liste: liste[:1]})
-            except TypeError:
-                return []
-            else:
-                return reduce(lambda v_liste, f_tupel: f_tupel.funktion(**(f_tupel.args |
-                                                                           {f_tupel.arg_name_liste: v_liste})),
-                              filter_tupel,
-                              liste)
-
-
 class KartenfilterStrategie(ABC):
 
     @abstractmethod
     def filter(self, karten_liste: list[Vokabelkarte]) -> list[Vokabelkarte]:
         pass
+
+    @staticmethod
+    def filter_karten(filter_tupel: list[KartenfilterTupel] = None,
+                      liste: list[Vokabelkarte] = None) -> list[Vokabelkarte]:
+        """ arg_name = der Argumentname, mit dem die Liste in der Filterfunktion uebergeben wird. Standard = 'liste'."""
+        match (filter_tupel is None or filter_tupel == [], liste is None or liste == []):
+            case (True, True):
+                return []
+            case (True, _):
+                return liste
+            case (_, True):
+                return []
+            case _:
+                try:  # Pruefe, ob Argument arg_name exisitiert mit dem ersten Element aus den Listen
+                    filter_tupel[0].funktion(**filter_tupel[0].args | {filter_tupel[0].arg_name_liste: liste[:1]})
+                except TypeError:
+                    return []
+                else:
+                    return reduce(lambda v_liste, f_tupel: f_tupel.funktion(**(f_tupel.args |
+                                                                               {f_tupel.arg_name_liste: v_liste})),
+                                  filter_tupel,
+                                  liste)
 
 
 @dataclass(frozen=True)

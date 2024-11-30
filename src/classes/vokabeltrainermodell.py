@@ -5,8 +5,8 @@ from functools import reduce
 import random
 from typing import Callable, Type, TYPE_CHECKING
 
-from src.classes.kartenfilter import FilterKartenstatistik, FilterVokabelbox, KartenfilterTupel
-import src.classes.kartenfilter as kfilter
+from src.classes.kartenfilter import FilterKartenstatistik, FilterVokabelbox, KartenfilterTupel, KartenfilterStrategie
+#import src.classes.kartenfilter as kfilter
 from src.classes.statistikfilter import StatistikfilterPruefen
 from src.repositories.vokabelkarten_repository import VokabelkartenRepository
 from src.repositories.vokabelbox_repository import VokabelboxRepository
@@ -58,7 +58,7 @@ class VokabeltrainerModell:
         filter_liste = [
             KartenfilterTupel(funktion=FilterVokabelbox(self.aktuelle_box())),
             KartenfilterTupel(funktion=FilterKartenstatistik(StatistikfilterPruefen, self.aktuelle_box(), zeit))]
-        zu_testende_karten = kfilter.filter_karten(filter_liste, self.alle_vokabelkarten())  # 3. Filter
+        zu_testende_karten = KartenfilterStrategie.filter_karten(filter_liste, self.alle_vokabelkarten())  # 3. Filter
         ersten_x_karten = random.sample(zu_testende_karten[:20],
                                         len(zu_testende_karten[:20]))           # 4. Begrenze auf x Karten und mische
         return list(map(lambda karte: (karte, test_funktion(karte)), ersten_x_karten))  # 5. Fuehre Test durch
