@@ -1,8 +1,10 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
-from src.classes.statistikmanager import StatistikManager
+from typing import Type, TYPE_CHECKING
 from src.classes.frageeinheit import Frageeinheit
 from src.classes.statistik import StatModus, StatistikCalculations
-from typing import Type
+if TYPE_CHECKING:
+    from src.classes.statistikmanager import StatistikManager
 
 
 class SatistikfilterStrategie(ABC):
@@ -22,11 +24,11 @@ class StatistikfilterPruefen(SatistikfilterStrategie):
 class StatistikfilterNeue(SatistikfilterStrategie):
     """Teste, ob angegebene Statistik zur Vergleichszeit in eine Abfrageliste fuer neue Karten kommt.
         Dies haengt auch vom Ergebnis der vorherigen Statistik ab. True->Ja, False->Noch nicht"""
-    def filter(self, stat_manager: StatistikManager, frageklasse: Type[Frageeinheit], vergleichszeit: int) -> bool:
-        aktuelle_statistik = stat_manager.statistiken[frageklasse]
+    def filter(self, stat_manager: StatistikManager, frage: Type[Frageeinheit], vergleichszeit: int) -> bool:
+        aktuelle_statistik = stat_manager.statistiken[frage]
         zeitdauer = 14 * 86400000  # 1 Tag = 86400000 ms
         vorherige_statistik = stat_manager.statistiken[
-            Frageeinheit.vorherige_frageeinheit(frageklasse)] if not Frageeinheit.ist_erste_frageeinheit(frageklasse)\
+            Frageeinheit.vorherige_frageeinheit(frage)] if not Frageeinheit.ist_erste_frageeinheit(frage)\
             else None
         return (aktuelle_statistik.modus == StatModus.NEU
                 and StatistikCalculations.berechne_millisekunden(vorherige_statistik) > zeitdauer
