@@ -1,11 +1,10 @@
 from flask import Flask, jsonify, render_template, request
 from threading import Thread
 
+from src.classes.lerneinheit import LerneinheitJapanisch
+from src.classes.vokabelbox import Vokabelbox
 from src.routes.flaskroutes import FlaskRoutes
 from src.routes.index import IndexRoute
-
-from src.classes.vokabelbox import Vokabelbox
-from src.classes.lerneinheit import LerneinheitJapanisch
 
 class FlaskView:
 

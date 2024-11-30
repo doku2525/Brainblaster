@@ -1,10 +1,9 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Type
 from dataclasses import replace
-
 import json
 import _pickle as pickle
+from typing import Type
 
 from src.classes.vokabelbox import Vokabelbox
 from src.utils.utils_dataclass import mein_asdict

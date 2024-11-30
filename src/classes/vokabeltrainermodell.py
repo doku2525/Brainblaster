@@ -6,7 +6,6 @@ import random
 from typing import Callable, Type, TYPE_CHECKING
 
 from src.classes.kartenfilter import FilterKartenstatistik, FilterVokabelbox, KartenfilterTupel, KartenfilterStrategie
-#import src.classes.kartenfilter as kfilter
 from src.classes.statistikfilter import StatistikfilterPruefen
 from src.repositories.vokabelkarten_repository import VokabelkartenRepository
 from src.repositories.vokabelbox_repository import VokabelboxRepository

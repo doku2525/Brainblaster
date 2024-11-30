@@ -1,11 +1,10 @@
 from __future__ import annotations
 from abc import ABC
-from typing import Type, Any
-from random import randint
 from dataclasses import dataclass, field
-from src.classes import lernuhr
+from random import randint
+from typing import Type, Any
 from src.classes.frageeinheit import Frageeinheit
-
+from src.classes import lernuhr         # TODO Issue #3 Warum nicht Lernuhr importiert?
 import src.utils.utils_klassen as k_utils
 
 

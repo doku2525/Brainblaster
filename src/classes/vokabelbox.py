@@ -1,13 +1,15 @@
 from __future__ import annotations
-from typing import Iterable, Type
 from dataclasses import dataclass, field
 import random
+from typing import Iterable, Type, TYPE_CHECKING
 
-from src.classes import statistik, statistikfilter
-from src.classes.vokabelkarte import Vokabelkarte
 from src.classes.frageeinheit import Frageeinheit
 from src.classes.lerneinheit import Lerneinheit
+from src.classes import statistik, statistikfilter
 import src.utils.utils_klassen as k_utils
+
+if TYPE_CHECKING:
+    from src.classes.vokabelkarte import Vokabelkarte
 
 """ Das Attribut selektor enthaelt eine Liste mit Strings, die Tests enthalten, welche durch eval() ausgwertet werden.
 Zum Beispiel: ('satz', True) in a.lerneinheit.daten.items()"""

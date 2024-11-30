@@ -1,10 +1,9 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Type
-
+from src.classes.frageeinheit import Frageeinheit
 from src.classes.lerneinheit import Lerneinheit
 from src.classes.statistik import Statistik, StatModus
-from src.classes.frageeinheit import Frageeinheit
 
 import src.utils.utils_klassen as k_utils
 

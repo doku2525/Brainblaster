@@ -1,10 +1,10 @@
 """
 Hilfsfunktionen fuer Operationen auf Dataclasses
 """
-from typing import Any
 from enum import Enum
 from dataclasses import asdict
 import importlib
+from typing import Any
 
 
 def asdict_factory(items):

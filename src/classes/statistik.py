@@ -1,12 +1,12 @@
 from __future__ import annotations
-from typing import Type
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from abc import ABC, abstractmethod
 from functools import reduce
 import math
-import src.utils.utils_enum as u_enum
+from typing import Type
 from src.classes.antwort import Antwort
+import src.utils.utils_enum as u_enum
 
 
 class StatModusStrategy(ABC):
