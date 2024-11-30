@@ -1,8 +1,9 @@
 from unittest import TestCase
 
-from src.utils.utils_dataclass import mein_asdict
 from src.classes import frageeinheit, lerneinheit
-from src.classes.vokabelbox import Vokabelbox, Vokabelkarte
+from src.classes.vokabelbox import Vokabelbox
+from src.classes.vokabelkarte import Vokabelkarte
+from src.utils.utils_dataclass import mein_asdict
 
 
 class test_vokabelbox(TestCase):
