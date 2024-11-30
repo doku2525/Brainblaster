@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from src.classes.vokabelkarte import Vokabelkarte
 
 
-@dataclass
+@dataclass(frozen=True)
 class VokabeltrainerModell:
     vokabelboxen: VokabelboxRepository = field(default_factory=VokabelboxRepository)
     vokabelkarten: VokabelkartenRepository = field(default_factory=VokabelkartenRepository)

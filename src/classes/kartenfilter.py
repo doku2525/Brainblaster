@@ -27,12 +27,10 @@ class KartenfilterStrategie(ABC):
                       liste: list[Vokabelkarte] = None) -> list[Vokabelkarte]:
         """ arg_name = der Argumentname, mit dem die Liste in der Filterfunktion uebergeben wird. Standard = 'liste'."""
         match (filter_tupel is None or filter_tupel == [], liste is None or liste == []):
-            case (True, True):
+            case (_, True):     # Reihenfolge wichtig! Zuerst liste == None abfangen, damit Ergebnis nicht None ist.
                 return []
             case (True, _):
                 return liste
-            case (_, True):
-                return []
             case _:
                 try:  # Pruefe, ob Argument arg_name exisitiert mit dem ersten Element aus den Listen
                     filter_tupel[0].funktion(**filter_tupel[0].args | {filter_tupel[0].arg_name_liste: liste[:1]})
