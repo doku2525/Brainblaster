@@ -15,31 +15,6 @@ if TYPE_CHECKING:
     from src.classes.vokabelbox import Vokabelbox
     from src.classes.vokabelkarte import Vokabelkarte
 
-"""
-Im original ist Vokabeltrainer von OrderedCollection abgeleitet und speichert die Vojkabelboxen
-Dazu eine instance Variable current Index.
-Die Methoden greifen vor allem auf die Liste zu, veraendern den Index.
-Ausserdem FileOut- und FileIn-Funktionen 
-
-Funtkion fuer Zeit
-(datetime.datetime.now().timestamp()*1000,datetime.datetime.fromisoformat('2024-07-07 02:22:58').timestamp()*1000)
-"""
-# TODO Issue #8 Speicher und Lade den aktuellenIndex und die aktuellenFrageeinheiten in den Vokabelboxen
-# TODO Issue #8 Momentan gibt es noch keine Verwendung der LernUhr.
-# Funktionen nach Aufgabe:
-# Vokabelbox:
-# x  titelAllerVokabelboxen(self) -> list[str]:  !!! Wird in main.py aufgerufen                            xxx VokabelboxRepository
-# x  addVokabelbox(self, vokBox) -> Vokabeltrainer:  !!! Wird in vielen ImporterKlassen aufgerufen         xxx VokabelboxRepository
-# x  speicherVokabelboxInDatei(self):   !!! Wird in main.py und ImporterKlassen aufgerufen                 xxx VokabelboxRepository
-# x  ladeVokabelboxenAusDatei(self):   !!! Wird in main.py, webApp_main.py und ImporterKlassen aufgerufen  xxx VokabelboxRepository
-# statische Methoden:
-#    neu() -> Vokabeltrainer:
-# Klassenmethoden:
-#    addBeispiele(cls, anzahl, sprache) -> None:
-# x  addVokabelkarte(cls, karte) -> None:                               xxx VokabelkartenRepository
-# x  speicherVokabelkartenInDatei(cls) -> None:                         xxx VokabelkartenRepository
-# x  ladeVokabelkartenAusDatei(cls) -> None:                            xxx VokabelkartenRepository
-
 
 @dataclass
 class VokabeltrainerModell:
