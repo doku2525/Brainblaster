@@ -10,10 +10,11 @@ from src.repositories.vokabelbox_repository import (InMemeoryVokabelboxRepositor
 def main() -> None:
     pass
 
+
 if __name__ == "__main__":
 
     modell = VokabeltrainerModell(
-        vokabelkarten=InMemoryVokabelkartenRepository(dateiname='daten/data/vokabelkarten.JSON',verzeichnis='',
+        vokabelkarten=InMemoryVokabelkartenRepository(dateiname='daten/data/vokabelkarten.JSON', verzeichnis='',
                                                       speicher_methode=JSONDateiformatVokabelkarte),
         vokabelboxen=InMemeoryVokabelboxRepository(dateiname='daten/data/vokabelboxen.JSON',
                                                    speicher_methode=JSONDateiformatVokabelbox))

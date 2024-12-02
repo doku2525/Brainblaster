@@ -1,25 +1,27 @@
 from src.classes.vokabeltrainermodell import VokabeltrainerModell
 
+
 class VokabeltrainerController:
 
     def __init__(self, modell: VokabeltrainerModell):
         self.modell = modell
 
-    def zeigeVokabelBoxen(self, mein_modell: VokabeltrainerModell) -> None:
+    def zeigeVokabelBoxen(self) -> None:
         print("Verfuegbare Vokabelboxen:")
-        if mein_modell.vokabelboxen.titel_aller_vokabelboxen():
+        if self.modell.vokabelboxen.titel_aller_vokabelboxen():
             [print(f"\t {name}")
              for name
-             in mein_modell.vokabelboxen.titel_aller_vokabelboxen()]
-        else: print("\t Keine Boxen vorhanden!")
+             in self.modell.vokabelboxen.titel_aller_vokabelboxen()]
+        else:
+            print("\t Keine Boxen vorhanden!")
 
-    def zeigeVokabelkartenStats(self, mein_modell: VokabeltrainerModell) -> None:
+    def zeigeVokabelkartenStats(self) -> None:
         def countLernTypen() -> set:
             return set([karte.lerneinheit.__class__.__name__
                         for karte
-                        in mein_modell.vokabelkarten.vokabelkarten])
+                        in self.modell.vokabelkarten.vokabelkarten])
         print(
-            f"\tAnzahl der Karten: {len(mein_modell.vokabelkarten.vokabelkarten)}\n"
+            f"\tAnzahl der Karten: {len(self.modell.vokabelkarten.vokabelkarten)}\n"
             f"\tAnzahl der LernTypen: {len(countLernTypen())}  {', '.join(countLernTypen())}"
         )
 
@@ -33,6 +35,9 @@ class VokabeltrainerController:
             print("\t Zeige Vokabekartenstats (2)")
             print("\t Beende Programm (q)")
             answer = input(" Was soll ich tun? ")
-            if answer.lower() == "q": return []
-            if answer.lower() == "1": self.zeigeVokabelBoxen(self.modell)
-            if answer.lower() == "2": self.zeigeVokabelkartenStats(self.modell)
+            if answer.lower() == "q":
+                return []
+            if answer.lower() == "1":
+                self.zeigeVokabelBoxen()
+            if answer.lower() == "2":
+                self.zeigeVokabelkartenStats()
