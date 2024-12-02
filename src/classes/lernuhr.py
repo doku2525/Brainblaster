@@ -2,8 +2,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import datetime
 from enum import Enum
-import time
 import jsonpickle
+import time
 
 import src.utils.utils_enum as u_enum
 
@@ -36,8 +36,6 @@ class Lernuhr:
 
     @staticmethod
     def lade_uhr_aus_json(json_dateiname: str) -> Lernuhr:
-        # TODO Issue #5 TEST
-        # TODO Issue #5 Funktion vielleicht auslagern?
         with open(json_dateiname, "r") as f:
             return jsonpickle.decode(f.read())
 
@@ -76,9 +74,7 @@ class Lernuhr:
         return Lernuhr(Lernuhr.echte_zeit(), self.start_zeit, self.tempo, 0, UhrStatus.LAEUFT)
 
     def as_iso_format(self) -> str:
-        return datetime.datetime.fromtimestamp(self.now()/1000).strftime('%F %T.%f')
+        return datetime.datetime.fromtimestamp(self.now() / 1000).strftime('%F %T.%f')
 
-    def as_date(self) -> Lernuhr:
-        # TODO Issue #5
-        raise NotImplemented   # returns Date(this.now())
-        # return self
+    def as_date(self) -> datetime.date:
+        return datetime.datetime.fromtimestamp(self.now() / 1000).date()
