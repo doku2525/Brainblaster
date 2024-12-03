@@ -1,15 +1,12 @@
 import time
 import json
 
-from src.classes.lernuhr import Lernuhr, UhrStatus
+from src.classes.lernuhr import Lernuhr
 from src.classes.vokabeltrainercontroller import VokabeltrainerController
 from src.classes.vokabeltrainermodell import VokabeltrainerModell
-from src.views.flaskview import FlaskView
-from src.repositories.vokabelkarten_repository import (InMemoryVokabelkartenRepository,
-                                                       JSONDateiformatVokabelkarte)
-from src.repositories.vokabelbox_repository import (InMemeoryVokabelboxRepository,
-                                                    JSONDateiformatVokabelbox)
-from src.utils.utils_dataclass import mein_asdict
+from src.repositories.vokabelkarten_repository import InMemoryVokabelkartenRepository, JSONDateiformatVokabelkarte
+from src.repositories.vokabelbox_repository import InMemeoryVokabelboxRepository, JSONDateiformatVokabelbox
+#from src.views.flaskview import FlaskView
 
 def main() -> None:
     pass
