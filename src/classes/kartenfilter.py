@@ -25,9 +25,11 @@ class KartenfilterStrategie(ABC):
     @staticmethod
     def filter_karten(filter_tupel: list[KartenfilterTupel] = None,
                       liste: list[Vokabelkarte] = None) -> list[Vokabelkarte]:
-        """ arg_name = der Argumentname, mit dem die Liste in der Filterfunktion uebergeben wird. Standard = 'liste'."""
+        """ arg_name = der Argumentname, mit dem die Liste in der Filterfunktion uebergeben wird. Standard = 'liste'.
+            WICHTIG!!! Bei Kartenfilter-Objekten die filter()-Funktion uebergeben nicht nur die Klasse.
+            So => filter_karten( [KlasseA(...).filter, KlasseB(...).filter] , [vokabelkarten]) """
         match (filter_tupel is None or filter_tupel == [], liste is None or liste == []):
-            case (_, True):     # Reihenfolge wichtig! Zuerst liste == None abfangen, damit Ergebnis nicht None ist.
+            case (_, True):         # Reihenfolge wichtig! Zuerst liste == None abfangen, damit Ergebnis nicht None ist.
                 return []
             case (True, _):
                 return liste

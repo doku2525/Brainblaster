@@ -9,6 +9,7 @@ from src.classes.kartenfilter import FilterKartenstatistik, FilterVokabelbox, Ka
 from src.classes.statistikfilter import StatistikfilterPruefen
 from src.repositories.vokabelkarten_repository import VokabelkartenRepository
 from src.repositories.vokabelbox_repository import VokabelboxRepository
+import src.utils.utils_klassen as u_klassen
 
 if TYPE_CHECKING:
     from src.classes.vokabelbox import Vokabelbox
@@ -30,9 +31,19 @@ class VokabeltrainerModell:
     def starte_vokabeltest(self, test_funktion: Callable[[Vokabelkarte], Vokabelkarte],
                            zeit: int) -> list[tuple[Vokabelkarte, Vokabelkarte]]:
         filter_liste = [
-            KartenfilterTupel(funktion=FilterVokabelbox(self.aktuelle_box())),
-            KartenfilterTupel(funktion=FilterKartenstatistik(StatistikfilterPruefen, self.aktuelle_box(), zeit))]
+            KartenfilterTupel(funktion=FilterVokabelbox(vokabelbox=self.aktuelle_box()).filter),
+            KartenfilterTupel(funktion=FilterKartenstatistik(strategie=StatistikfilterPruefen,
+                                                             vokabelbox=self.aktuelle_box(),
+                                                             zeit=zeit).filter)]
         zu_testende_karten = KartenfilterStrategie.filter_karten(filter_liste, self.alle_vokabelkarten())  # 3. Filter
         ersten_x_karten = random.sample(zu_testende_karten[:20],
                                         len(zu_testende_karten[:20]))           # 4. Begrenze auf x Karten und mische
         return list(map(lambda karte: (karte, test_funktion(karte)), ersten_x_karten))  # 5. Fuehre Test durch
+
+    @staticmethod
+    def datum_der_letzten_antwort() -> int:
+        """Ergebniss in Millisekunden
+            Die Lernuhr sollte nicht weiter als die letzte Antwort zurueckgedreht werden, da es sonst zu Antworten
+            mit gleichen Werten in Antwort.erzeugt()"""
+        from src.classes.antwort import Antwort
+        return max([antwort.erzeugt for antwort in u_klassen.suche_alle_instanzen_einer_klasse(Antwort)])
