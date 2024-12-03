@@ -1,3 +1,7 @@
+import time
+import json
+
+from src.classes.lernuhr import Lernuhr, UhrStatus
 from src.classes.vokabeltrainercontroller import VokabeltrainerController
 from src.classes.vokabeltrainermodell import VokabeltrainerModell
 from src.views.flaskview import FlaskView
@@ -5,7 +9,7 @@ from src.repositories.vokabelkarten_repository import (InMemoryVokabelkartenRepo
                                                        JSONDateiformatVokabelkarte)
 from src.repositories.vokabelbox_repository import (InMemeoryVokabelboxRepository,
                                                     JSONDateiformatVokabelbox)
-
+from src.utils.utils_dataclass import mein_asdict
 
 def main() -> None:
     pass
@@ -18,8 +22,10 @@ if __name__ == "__main__":
                                                       speicher_methode=JSONDateiformatVokabelkarte),
         vokabelboxen=InMemeoryVokabelboxRepository(dateiname='daten/data/vokabelboxen.JSON',
                                                    speicher_methode=JSONDateiformatVokabelbox))
+    uhr = Lernuhr.lade_aus_jsondatei("daten/data/uhrzeit.json")
+
     # flask_html_view = FlaskView()
     # flask_html_view.start_server()
 
-    controller = VokabeltrainerController(modell=modell)
+    controller = VokabeltrainerController(modell=modell, uhr=uhr)
     controller.programm_loop()

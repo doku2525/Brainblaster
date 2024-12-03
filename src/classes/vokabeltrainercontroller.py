@@ -1,10 +1,12 @@
+from src.classes.lernuhr import Lernuhr
 from src.classes.vokabeltrainermodell import VokabeltrainerModell
 
 
 class VokabeltrainerController:
 
-    def __init__(self, modell: VokabeltrainerModell):
+    def __init__(self, modell: VokabeltrainerModell, uhr: Lernuhr):
         self.modell = modell
+        self.uhr = uhr
 
     def zeigeVokabelBoxen(self) -> None:
         print("Verfuegbare Vokabelboxen:")
@@ -30,11 +32,11 @@ class VokabeltrainerController:
         self.modell.vokabelkarten.laden()
         self.modell.vokabelboxen.laden()
         while fortsetzen:
-            print("\n\n*** Hauptmenue ***")
-            print("\t Zeige Vokabelboxen (1)")
-            print("\t Zeige Vokabekartenstats (2)")
-            print("\t Beende Programm (q)")
-            answer = input(" Was soll ich tun? ")
+            print(f"\n\n*** Hauptmenue ***\t\t{self.uhr.as_iso_format(Lernuhr.echte_zeit())[:-7]}",
+                  "\n\t(1) Zeige Vokabelboxen",
+                  "\n\t(2) Zeige Vokabekartenstats",
+                  "\n\t-------------------------\n\t(q) Beende Programm")
+            answer = input(f"\n  Was soll ich tun? ")
             if answer.lower() == "q":
                 return []
             if answer.lower() == "1":
