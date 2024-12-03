@@ -1,6 +1,6 @@
 from unittest import TestCase
 from datetime import date
-from time import sleep
+from time import sleep, time
 
 from src.classes.lernuhr import Lernuhr
 from src.classes.lernuhr import UhrStatus
@@ -17,77 +17,208 @@ class test_LernUhr(TestCase):
         self.schnell = Lernuhr(self.jetzt, self.jetzt - self.einTag, 2.0, 0, UhrStatus.LAEUFT)
         self.zeit = 2
         self.rest = 1
+        self.unix_zeit_string = '1970-01-01 01:00:00.000000'
 
     def test_echte_zeit(self):
         sleep(0.2)
         self.assertLess(self.jetzt, Lernuhr.echte_zeit(), "jetzt < als aktuelleZeit")
         self.assertFalse(self.jetzt > Lernuhr.echte_zeit(), "jetzt ist nicht > als aktuelleZeit")
+        self.assertAlmostEqual(time() * 1000, Lernuhr.echte_zeit(), delta=2)
+
+    def test_speicher_in_jsondatei(self):
+        dateiname = '__uhr.json'
+        uhr = Lernuhr()
+        uhr.speicher_in_jsondatei(dateiname)
+        with open(dateiname, "r") as file:
+            string = file.read()
+        dic = eval(string)
+        self.assertEqual('1970-01-01 01:00:00.000000', dic['kalkulations_zeit'])
+        self.assertEqual('1970-01-01 01:00:00.000000', dic['start_zeit'])
+        self.assertEqual(1.0, dic['tempo'])
+        self.assertEqual(0, dic['pause'])
+        self.assertEqual('ECHT', dic['modus'])
+        uhr = Lernuhr(1720743153000, 1720743153000, 1.0, 0, UhrStatus.LAEUFT)
+        uhr.speicher_in_jsondatei(dateiname)
+        with open(dateiname, "r") as file:
+            string = file.read()
+        dic = eval(string)
+        self.assertEqual('2024-07-12 02:12:33.000000', dic['kalkulations_zeit'])
+        self.assertEqual('2024-07-12 02:12:33.000000', dic['start_zeit'])
+        self.assertEqual(1.0, dic['tempo'])
+        self.assertEqual(0, dic['pause'])
+        self.assertEqual('LAEUFT', dic['modus'])
+
+    def test_lade_aus_jsondatei(self):
+        dateiname = '__uhr.json'
+        uhr = Lernuhr.lade_aus_jsondatei(dateiname)
+        uhr2 = Lernuhr(1720743153000, 1720743153000, 1.0, 0, UhrStatus.LAEUFT)
+        self.assertEqual(uhr, uhr2)
+        self.assertIsInstance(uhr.kalkulations_zeit, int)
+        self.assertIsInstance(uhr.start_zeit, int)
+        self.assertIsInstance(uhr.modus, UhrStatus)
+        self.assertIsInstance(uhr.pause, int)
+        self.assertIsInstance(uhr.tempo, float)
 
     def test_isostring_to_millis(self):
         self.assertEquals(Lernuhr.isostring_to_millis('1970-01-01 01:00'), 0)
 
-    def test_now(self):
-        # TODO Tests neu schreiben, damit die sleep()-Befehle entfallen
-        # sleep(1)
-        self.assertGreater(self.schnell.now(self.jetzt + 1000), self.normal.now(self.jetzt + 1000),
-                           "schnell ist > als normal")
-        self.assertLess(self.langsam.now(self.jetzt + 1000), self.normal.now(self.jetzt + 1000),
-                        "normal ist > als langsam")
-        before = self.schnell.now(Lernuhr.echte_zeit())
-        sleep(self.zeit)
-        after = self.schnell.now(Lernuhr.echte_zeit())
-        self.assertIn(int((after-before)/1000),
-                      range(int(self.schnell.tempo * self.zeit) - self.rest,
-                            int(self.schnell.tempo * self.zeit) + self.rest),
-                      "schnell ist doppelte Geschwindigkeit")
-        before = self.normal.now(Lernuhr.echte_zeit())
-        sleep(self.zeit)
-        after = self.normal.now(Lernuhr.echte_zeit())
-        self.assertIn(int((after - before) / 1000),
-                      range(int(self.normal.tempo * self.zeit) - self.rest,
-                            int(self.normal.tempo * self.zeit) + self.rest),
-                      "normal ist einfache Geschwindigkeit")
-        before = self.langsam.now(Lernuhr.echte_zeit())
-        sleep(self.zeit)
-        after = self.langsam.now(Lernuhr.echte_zeit())
-        self.assertIn(int((after - before) / 1000),
-                      range(int(self.langsam.tempo * self.zeit) - self.rest,
-                            int(self.langsam.tempo * self.zeit) + self.rest),
-                      "langsam ist halbe Geschwindigkeit")
+    def test_now_kalkzeit_eq_startzeit(self):
+        uhr = Lernuhr(0, 0, 1, 0, UhrStatus.LAEUFT)
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-02 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(0, 0, 2, 0, UhrStatus.LAEUFT)
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-03 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(0, 0, 0.5, 0, UhrStatus.LAEUFT)
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-01 13:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(0, 0, 1, 0, UhrStatus.PAUSE)
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(0, 0, 2, 0, UhrStatus.PAUSE)
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(0, 0, 0.5, 0, UhrStatus.PAUSE)
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(self.einTag))
 
-    def test_pausiere(self):
-        obj = self.normal.pausiere()
-        before = obj.now(Lernuhr.echte_zeit())
-        sleep(self.zeit)
-        after = obj.now(Lernuhr.echte_zeit())
-        self.assertIn(int((after-before) / 1000), range(int(0-self.rest), self.rest),
-                      "bei Pause laeuft die Zeit nicht weiter")
-        self.assertEquals(UhrStatus.PAUSE, obj.modus, "Status == PAUSE")
-        self.assertIn(int((self.normal.now(Lernuhr.echte_zeit()) - obj.now(Lernuhr.echte_zeit())) / 1000),
-                      range(self.zeit-self.rest, self.zeit+self.rest), "pause ist $zeit langsamer als normal")
+    def test_now_kalkzeit_lt_startzeit(self):
+        uhr = Lernuhr(0, self.einTag, 1, 0, UhrStatus.LAEUFT)
+        self.assertEqual('1970-01-02 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-03 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(0, self.einTag, 2, 0, UhrStatus.LAEUFT)
+        self.assertEqual('1970-01-02 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-04 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(0, self.einTag, 0.5, 0, UhrStatus.LAEUFT)
+        self.assertEqual('1970-01-02 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-02 13:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(0, self.einTag, 1, 0, UhrStatus.PAUSE)
+        self.assertEqual('1970-01-02 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-02 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(0, self.einTag, 2, 0, UhrStatus.PAUSE)
+        self.assertEqual('1970-01-02 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-02 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(0, self.einTag, 0.5, 0, UhrStatus.PAUSE)
+        self.assertEqual('1970-01-02 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-02 01:00:00.000000', uhr.as_iso_format(self.einTag))
+
+    def test_now_kalkzeit_gt_startzeit(self):
+        uhr = Lernuhr(self.einTag, 0, 1, 0, UhrStatus.LAEUFT)
+        self.assertEqual('1969-12-31 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(self.einTag, 0, 2, 0, UhrStatus.LAEUFT)
+        self.assertEqual('1969-12-30 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(self.einTag, 0, 0.5, 0, UhrStatus.LAEUFT)
+        self.assertEqual('1969-12-31 13:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(self.einTag, 0, 1, 0, UhrStatus.PAUSE)
+        self.assertEqual('1969-12-31 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1969-12-31 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(self.einTag, 0, 2, 0, UhrStatus.PAUSE)
+        self.assertEqual('1969-12-30 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1969-12-30 01:00:00.000000', uhr.as_iso_format(self.einTag))
+        uhr = Lernuhr(self.einTag, 0, 0.5, 0, UhrStatus.PAUSE)
+        self.assertEqual('1969-12-31 13:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1969-12-31 13:00:00.000000', uhr.as_iso_format(self.einTag))
+
+    def test_now_vergleich(self):
+        uhr_normal = Lernuhr(0, self.einTag, 1, 0, UhrStatus.LAEUFT)
+        uhr_schnell = Lernuhr(0, self.einTag, 2, 0, UhrStatus.LAEUFT)
+        uhr_langsam = Lernuhr(0, self.einTag, 0.5, 0, UhrStatus.LAEUFT)
+        self.assertEqual(uhr_normal.now(self.einTag * 100), uhr_schnell.now(self.einTag * 50))
+        self.assertEqual(uhr_normal.now(self.einTag * 100), uhr_langsam.now(self.einTag * 200))
+
+        uhr_normal = Lernuhr(0, self.einTag, 1, 0, UhrStatus.PAUSE)
+        uhr_schnell = Lernuhr(0, self.einTag, 2, 0, UhrStatus.PAUSE)
+        uhr_langsam = Lernuhr(0, self.einTag, 0.5, 0, UhrStatus.PAUSE)
+        self.assertEqual(uhr_normal.now(self.einTag * 100), uhr_schnell.now(self.einTag * 50))
+        self.assertEqual(uhr_normal.now(self.einTag * 100), uhr_schnell.now(self.einTag * 100))
+        self.assertEqual(uhr_normal.now(self.einTag * 100), uhr_langsam.now(self.einTag * 200))
+        self.assertEqual(uhr_normal.now(self.einTag * 100), uhr_langsam.now(self.einTag * 100))
+
+    def test_now_gegenwart(self):
+        zeit_jetzt = Lernuhr.isostring_to_millis('2024-12-01 01:00:00.000000')
+        uhr = Lernuhr(zeit_jetzt, zeit_jetzt, 1, 0, UhrStatus.LAEUFT)
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('2024-12-01 01:00:00.000000', uhr.as_iso_format(zeit_jetzt))
+        self.assertEqual('2024-12-02 01:00:00.000000', uhr.as_iso_format(zeit_jetzt + self.einTag))
+        uhr = Lernuhr(zeit_jetzt, zeit_jetzt, 1, 0, UhrStatus.PAUSE)
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(zeit_jetzt))
+        self.assertNotEqual('2024-12-01 01:00:00.000000', uhr.as_iso_format(zeit_jetzt))
+        self.assertEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(zeit_jetzt + self.einTag))
+        self.assertNotEqual('2024-12-01 01:00:00.000000', uhr.as_iso_format(zeit_jetzt + self.einTag))
+        uhr = Lernuhr(zeit_jetzt, zeit_jetzt, 1, zeit_jetzt, UhrStatus.PAUSE)
+        self.assertEqual('2024-12-01 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertNotEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertNotEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(zeit_jetzt))
+        self.assertEqual('2024-12-01 01:00:00.000000', uhr.as_iso_format(zeit_jetzt))
+        self.assertNotEqual('1970-01-01 01:00:00.000000', uhr.as_iso_format(zeit_jetzt + self.einTag))
+        self.assertEqual('2024-12-01 01:00:00.000000', uhr.as_iso_format(zeit_jetzt + self.einTag))
+
+    def test_now_zehn_tage_testfall(self):
+        heute = self.einTag * 10
+        uhr = Lernuhr(heute, 0, 2, 0, UhrStatus.LAEUFT)
+        for tag in range(0, 10):
+            self.assertEqual(f"1970-01-{1 + tag*2:02d} 01:00:00.000000",
+                             uhr.as_iso_format(heute + self.einTag * tag))
+
+    def test_pausiere_neu(self):
+        zeit_jetzt = Lernuhr.isostring_to_millis('2024-12-01 01:00:00.000000')
+        uhr = Lernuhr(zeit_jetzt, zeit_jetzt, 1, 0, UhrStatus.LAEUFT)
+        obj = uhr.pausiere()
+        self.assertEqual(0, obj.pause)
+        self.assertEqual('1970-01-01 01:00:00.000000', obj.as_iso_format(zeit_jetzt))
+        # Ein pausierendes Objekt liefert mit now() immer die Zeit in obj.pause zurueck.
+        obj = uhr.pausiere(zeit_jetzt + self.einTag)
+        self.assertEqual(zeit_jetzt + self.einTag, obj.pause)
+        self.assertEqual('2024-12-02 01:00:00.000000', obj.as_iso_format(0))
+        self.assertEqual('2024-12-02 01:00:00.000000', obj.as_iso_format(zeit_jetzt))
+        self.assertEqual('2024-12-02 01:00:00.000000', obj.as_iso_format(zeit_jetzt * 2))
+        # pausiere() auf ein Objekt Uhr das bereits pausiert veraendert nichts
+        obj = obj.pausiere(zeit_jetzt + self.einTag)
+        self.assertEqual('2024-12-02 01:00:00.000000', obj.as_iso_format(zeit_jetzt + 2 * self.einTag))
 
     def test_beende_pause(self):
-        obj_a = self.normal.pausiere()
-        sleep(self.zeit)
-        obj_b = obj_a.beende_pause()
-        before = obj_b.now(Lernuhr.echte_zeit())
-        sleep(self.zeit)
-        after = obj_b.now(Lernuhr.echte_zeit())
-        self.assertIn(int((after-before) / 1000), range(self.zeit - self.rest, self.zeit + self.rest),
-                      "wenn pause beendet, lauft uhr normal weiter")
-        self.assertIn(int((self.normal.now(Lernuhr.echte_zeit()) - obj_b.now(Lernuhr.echte_zeit())) / 1000),
-                      range(self.zeit - self.rest, self.zeit + self.rest),
-                      "Nach $zeit ist Uhr immer noch $zeit zurueck")
+        zeit_jetzt = Lernuhr.isostring_to_millis('2024-12-01 01:00:00.000000')
+        uhr_ohne_pause = Lernuhr(zeit_jetzt, zeit_jetzt, 1, 0, UhrStatus.LAEUFT)
+        tage_vergangen = 1
+        uhr = uhr_ohne_pause.pausiere(zeit_jetzt + self.einTag * tage_vergangen)
+        self.assertEqual(zeit_jetzt + self.einTag * tage_vergangen,
+                         uhr.pause, "pause wird auf den Beginn der Pause gesetzt")
+        tage_vergangen = 2
+        uhr = uhr.beende_pause(zeit_jetzt + self.einTag * tage_vergangen)
+        self.assertEqual(0, uhr.pause, "pause wird wieder auf 0 gesetzt")
+        self.assertEqual('1969-12-31 01:00:00.000000', uhr.as_iso_format(0))
+        self.assertEqual('2024-12-02 01:00:00.000000', uhr.as_iso_format(zeit_jetzt + self.einTag * tage_vergangen))
+        self.assertEqual('2024-12-03 01:00:00.000000',
+                         uhr_ohne_pause.as_iso_format(zeit_jetzt + self.einTag * tage_vergangen))
+        tage_vergangen = 3
+        self.assertEqual('2024-12-03 01:00:00.000000', uhr.as_iso_format(zeit_jetzt + self.einTag * tage_vergangen))
+        self.assertEqual('2024-12-04 01:00:00.000000',
+                         uhr_ohne_pause.as_iso_format(zeit_jetzt + self.einTag * tage_vergangen))
+
+    def test_reset_neu(self):
+        zeit_jetzt = Lernuhr.isostring_to_millis('2024-12-01 01:00:00.000000')
+        uhr = Lernuhr(zeit_jetzt, zeit_jetzt, 2, 0, UhrStatus.LAEUFT)
+        self.assertEqual('2024-12-05 01:00:00.000000', uhr.as_iso_format(zeit_jetzt + 2 * self.einTag))
+        uhr_reseted = uhr.reset(zeit_jetzt + 2 * self.einTag)
+        self.assertEqual('2024-12-09 01:00:00.000000', uhr.as_iso_format(zeit_jetzt + 4 * self.einTag))
+        self.assertEqual('2024-12-05 01:00:00.000000', uhr_reseted.as_iso_format(zeit_jetzt + 4 * self.einTag))
 
     def test_reset(self):
         sleep(1)
         self.assertGreater(self.normal.now(Lernuhr.echte_zeit()),
-                           self.normal.reset().now(Lernuhr.echte_zeit()),
+                           self.normal.reset(Lernuhr.echte_zeit()).now(Lernuhr.echte_zeit()),
                            "Nach Reset ist die Zeit zurueckgesetzt")
 
     def test_as_iso_format(self):
         uhr = Lernuhr(0, 0, 0, 0, UhrStatus.PAUSE)
         self.assertEquals(uhr.as_iso_format()[:-7], '1970-01-01 01:00:00')
+        uhr = Lernuhr(1720743153000, 1720743153000, 0, 0, UhrStatus.PAUSE)
+        print(f"\n {uhr.as_iso_format()=}")
+        self.assertEquals(uhr.as_iso_format()[:-7], '2024-07-12 02:12:33')
 
     def test_as_date(self):
         uhr = Lernuhr(0, 0, 0, 0, UhrStatus.PAUSE)
