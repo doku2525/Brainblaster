@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.classes.statistikfilter import (StatistikfilterPruefen, StatistikfilterNeue,
+from src.classes.statistikfilter import (StatistikfilterPruefen, StatistikfilterNeue, StatistikfilterNeueAlle,
                                          StatistikfilterLernen, StatistikfilterLernenAlle)
 from src.classes.statistikmanager import StatistikManager
 from src.classes.frageeinheit import (FrageeinheitChinesischBedeutung, FrageeinheitChinesischPinyin,
@@ -46,7 +46,7 @@ class test_Statistikfilter(TestCase):
         self.assertFalse(StatistikfilterNeue().filter(self.stat_manager, FrageeinheitChinesischPinyin,
                                                       2 * 24 * 3_600_000))
         self.assertFalse(StatistikfilterNeue().filter(self.stat_manager2, FrageeinheitChinesischPinyin,
-                                                     2 * 24 * 3_600_000), "Vorherige Abfrage noch unter 14 Tagen")
+                                                      2 * 24 * 3_600_000), "Vorherige Abfrage noch unter 14 Tagen")
         self.assertTrue(StatistikfilterNeue().filter(self.stat_manager3, FrageeinheitChinesischPinyin,
                                                      2 * 24 * 3_600_000), "Vorherige Abfrage ueber 14 T")
         self.assertFalse(StatistikfilterNeue().filter(self.stat_manager3, FrageeinheitChinesischPinyin,
@@ -55,6 +55,23 @@ class test_Statistikfilter(TestCase):
                                                      11 + 0), "Vorherige Abfrage ueber 14 T und Zeit ok")
         self.assertFalse(StatistikfilterNeue().filter(self.stat_manager, FrageeinheitChinesischEintrag,
                                                       24 * 3_600_000), "Vorherige Abfrage LernenModus")
+
+    def test_filter_neu_alle(self):
+        # Tests aus test_filter_neu kopiert und muessten bei allen FrageEinheiten ohne Antwort True ergeben
+        self.assertFalse(StatistikfilterNeueAlle().filter(self.stat_manager, FrageeinheitChinesischBedeutung,
+                                                          24 * 3_600_000), "Nicht leer")
+        self.assertFalse(StatistikfilterNeueAlle().filter(self.stat_manager, FrageeinheitChinesischPinyin,
+                                                          2 * 24 * 3_600_000), "Nicht leer")
+        self.assertTrue(StatistikfilterNeueAlle().filter(self.stat_manager2, FrageeinheitChinesischPinyin,
+                                                         2 * 24 * 3_600_000), "Vorherige Abfrage noch unter 14 Tagen")
+        self.assertTrue(StatistikfilterNeueAlle().filter(self.stat_manager3, FrageeinheitChinesischPinyin,
+                                                         2 * 24 * 3_600_000), "Vorherige Abfrage ueber 14 T")
+        self.assertTrue(StatistikfilterNeueAlle().filter(self.stat_manager3, FrageeinheitChinesischPinyin,
+                                                         10 + 0), "Vorherige Abfrage ueber 14 T, aber Zeit zu frueh")
+        self.assertTrue(StatistikfilterNeueAlle().filter(self.stat_manager3, FrageeinheitChinesischPinyin,
+                                                         11 + 0), "Vorherige Abfrage ueber 14 T und Zeit ok")
+        self.assertTrue(StatistikfilterNeueAlle().filter(self.stat_manager, FrageeinheitChinesischEintrag,
+                                                         24 * 3_600_000), "Vorherige Abfrage LernenModus")
 
     def test_filter_lernen(self):
         self.assertFalse(StatistikfilterLernen().filter(self.stat_manager, FrageeinheitChinesischBedeutung,

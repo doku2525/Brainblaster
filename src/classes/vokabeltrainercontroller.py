@@ -3,8 +3,7 @@ from dataclasses import replace
 import datetime
 from typing import TYPE_CHECKING
 from src.classes.lernuhr import Lernuhr
-if TYPE_CHECKING:
-    from src.classes.vokabeltrainermodell import VokabeltrainerModell
+from src.classes.vokabeltrainermodell import VokabeltrainerModell
 
 
 class VokabeltrainerController:
@@ -38,9 +37,11 @@ class VokabeltrainerController:
         self.modell.vokabelkarten.laden()
         self.modell.vokabelboxen.laden()
         self.modell = replace(self.modell, index_aktuelle_box=80)
-
-        result = self.modell.starte_vokabeltest(lambda karte: karte.lerneinheit.eintrag,
-                                                self.uhr.now(Lernuhr.echte_zeit()))
+        result = VokabeltrainerModell.filter_und_execute(funktion=lambda karte: karte.lerneinheit.eintrag,
+                                                         filter_liste=self.modell.filterliste_vokabeln_pruefen(
+                                                             zeit=self.uhr.now(Lernuhr.echte_zeit()),
+                                                             max_anzahl=20),
+                                                         liste_der_vokabeln=self.modell.alle_vokabelkarten())
         print("Zum Pruefen:\n\t",
               "\n\t".join([karte.lerneinheit.eintrag for karte, _ in result]),
               "\n\n")

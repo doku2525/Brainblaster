@@ -37,6 +37,11 @@ class StatistikfilterNeue(SatistikfilterStrategie):
                 ) if vorherige_statistik else aktuelle_statistik.modus == StatModus.NEU
 
 
+class StatistikfilterNeueAlle(SatistikfilterStrategie):
+    def filter(self, stat_manager: StatistikManager, frage: Type[Frageeinheit], vergleichszeit: int) -> bool:
+        return stat_manager.statistiken[frage].modus == StatModus.NEU
+
+
 class StatistikfilterLernen(SatistikfilterStrategie):
     """Teste, ob angegebene Statistik zur Vergleichszeit in eine Lernliste fuer Karten im Lernmodus kommt."""
     def filter(self, stat_manager: StatistikManager, frage: Type[Frageeinheit], vergleichszeit: int) -> bool:
