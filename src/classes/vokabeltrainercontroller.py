@@ -41,6 +41,9 @@ class VokabeltrainerController:
 
         result = self.modell.starte_vokabeltest(lambda karte: karte.lerneinheit.eintrag,
                                                 self.uhr.now(Lernuhr.echte_zeit()))
+        print("Zum Pruefen:\n\t",
+              "\n\t".join([karte.lerneinheit.eintrag for karte, _ in result]),
+              "\n\n")
         print(f"Anzahl in Vokabelbox vorhandener Karten: ",
               f"{len(list(self.modell.aktuelle_box().filter_vokabelkarten(self.modell.alle_vokabelkarten())))}")
         print(f"Vokabeln zum pruefen: {len(list(result))}")

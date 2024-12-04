@@ -7,7 +7,8 @@ from typing import cast
 
 from src.classes.lernuhr import Lernuhr
 from src.classes.vokabeltrainermodell import VokabeltrainerModell
-from src.classes.kartenfilter import KartenfilterTupel, KartenfilterStrategie, FilterKartenstatistik, FilterVokabelbox
+from src.classes.kartenfilter import (KartenfilterTupel, KartenfilterStrategie, FilterKartenstatistik,
+                                      FilterVokabelbox, FilterKartenanzahl, FilterMischen)
 from src.classes.vokabelkarte import Vokabelkarte
 from src.classes.vokabelbox import Vokabelbox
 from src.repositories.vokabelbox_repository import InMemeoryVokabelboxRepository, JSONDateiformatVokabelbox
@@ -63,6 +64,26 @@ class test_vokabeltrainermodell(TestCase):
                                             vokabelbox=self.komplett.aktuelle_box(),
                                             zeit=Lernuhr.isostring_to_millis("2024-08-12 13:00:00.000"))
         self.assertEqual(2514, len(list(mein_filter.filter(karten_liste=self.komplett.alle_vokabelkarten()))))
+
+    def teste_kartenfilter_kartenzahl(self):
+        self.komplett = replace(self.komplett, index_aktuelle_box=40)
+        mein_filter = FilterKartenanzahl(max_anzahl=10)
+        self.assertEqual(10, len(list(mein_filter.filter(karten_liste=self.komplett.alle_vokabelkarten()))))
+        mein_filter = FilterKartenanzahl()
+        self.assertEqual(0, len(list(mein_filter.filter(karten_liste=self.komplett.alle_vokabelkarten()))))
+
+    def teste_kartenfilter_mischen(self):
+        self.komplett = replace(self.komplett, index_aktuelle_box=40)
+        mein_filter = FilterKartenanzahl(max_anzahl=10)
+        result_normal = list(mein_filter.filter(karten_liste=self.komplett.alle_vokabelkarten()))
+        mischen_filter = FilterMischen()
+        result_gemischt = list(mischen_filter.filter(result_normal))
+        self.assertEqual(10, len(result_gemischt))
+        self.assertNotEqual(result_normal, result_gemischt)
+        self.assertFalse(reduce(lambda result, neuer_wert: result and neuer_wert[0] == neuer_wert[1],
+                                zip(result_normal, result_gemischt), True))
+        for karte in result_normal:
+            self.assertIn(karte, result_gemischt)
 
     def teste_kartenfilter_kombiniert(self):
         self.komplett = replace(self.komplett, index_aktuelle_box=40)
@@ -134,13 +155,9 @@ class test_vokabeltrainermodell(TestCase):
             mock_filter_karten.return_value = self.liste
             result = self.obj.starte_vokabeltest(test_funktion=test_func, zeit=0)
             mock_filter_karten.assert_called_once()
-            self.assertEquals(20, len(result))
-            self.assertIsInstance(result[0][0], Vokabelkarte)
-            self.assertIsInstance(result[0][1], str)
-            self.assertNotEqual([karte.lerneinheit.eintrag for karte in self.liste],
-                                [karte.lerneinheit.eintrag for karte, name in result], "Teste, ob Gemischt?")
-            self.assertEqual([karte.lerneinheit.eintrag for karte, name in result],
-                             [name for karte, name in result])
+            # Result = Liste aus Tupel(karte, f(karte)).
+            self.assertEqual([karte.lerneinheit.eintrag for karte, fun_result in result],
+                             [fun_result for karte, fun_result in result])
 
     def test_datum_der_letzten_antwort(self):
         self.assertEqual(1720681644987, VokabeltrainerModell.datum_der_letzten_antwort())

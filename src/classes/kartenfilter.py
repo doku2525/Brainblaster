@@ -4,6 +4,7 @@ from collections import namedtuple
 from dataclasses import dataclass, field
 from functools import reduce
 from typing import Type, TYPE_CHECKING
+import random
 
 if TYPE_CHECKING:
     from src.classes.statistikfilter import SatistikfilterStrategie
@@ -65,3 +66,18 @@ class FilterVokabelbox:
 
     def filter(self, karten_liste: list[Vokabelkarte]) -> list[Vokabelkarte]:
         return self.vokabelbox.filter_vokabelkarten(karten_liste)
+
+
+@dataclass(frozen=True)
+class FilterKartenanzahl:
+    max_anzahl: int = 0
+
+    def filter(self, karten_liste: list[Vokabelkarte]) -> list[Vokabelkarte]:
+        return karten_liste[:self.max_anzahl]
+
+
+@dataclass(frozen=True)
+class FilterMischen:
+
+    def filter(self, karten_liste: list[Vokabelkarte]) -> list[Vokabelkarte]:
+        return random.sample(karten_liste, len(karten_liste))

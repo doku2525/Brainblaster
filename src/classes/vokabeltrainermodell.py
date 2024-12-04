@@ -1,11 +1,9 @@
 from __future__ import annotations
-from collections import namedtuple
 from dataclasses import dataclass, field
-from functools import reduce
-import random
 from typing import Callable, Type, TYPE_CHECKING
 
-from src.classes.kartenfilter import FilterKartenstatistik, FilterVokabelbox, KartenfilterTupel, KartenfilterStrategie
+from src.classes.kartenfilter import (KartenfilterStrategie, FilterKartenstatistik, FilterVokabelbox, KartenfilterTupel,
+                                      FilterKartenanzahl, FilterMischen)
 from src.classes.statistikfilter import StatistikfilterPruefen
 from src.repositories.vokabelkarten_repository import VokabelkartenRepository
 from src.repositories.vokabelbox_repository import VokabelboxRepository
@@ -29,16 +27,17 @@ class VokabeltrainerModell:
         return self.vokabelkarten.vokabelkarten
 
     def starte_vokabeltest(self, test_funktion: Callable[[Vokabelkarte], Vokabelkarte],
-                           zeit: int) -> list[tuple[Vokabelkarte, Vokabelkarte]]:
+                           zeit: int, max_anzahl: int = 20) -> list[tuple[Vokabelkarte, Vokabelkarte]]:
         filter_liste = [
             KartenfilterTupel(funktion=FilterVokabelbox(vokabelbox=self.aktuelle_box()).filter),
             KartenfilterTupel(funktion=FilterKartenstatistik(strategie=StatistikfilterPruefen,
                                                              vokabelbox=self.aktuelle_box(),
-                                                             zeit=zeit).filter)]
-        zu_testende_karten = KartenfilterStrategie.filter_karten(filter_liste, self.alle_vokabelkarten())  # 3. Filter
-        ersten_x_karten = random.sample(zu_testende_karten[:20],
-                                        len(zu_testende_karten[:20]))           # 4. Begrenze auf x Karten und mische
-        return list(map(lambda karte: (karte, test_funktion(karte)), ersten_x_karten))  # 5. Fuehre Test durch
+                                                             zeit=zeit).filter),
+            KartenfilterTupel(funktion=FilterKartenanzahl(max_anzahl=max_anzahl).filter),
+            KartenfilterTupel(funktion=FilterMischen().filter)
+        ]
+        return list(map(lambda karte: (karte, test_funktion(karte)),
+                        KartenfilterStrategie.filter_karten(filter_liste, self.alle_vokabelkarten())))  # 5. Testen
 
     @staticmethod
     def datum_der_letzten_antwort() -> int:
