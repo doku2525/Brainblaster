@@ -1,6 +1,4 @@
 from unittest import TestCase
-from src.classes.statistikfilter import (StatistikfilterPruefen, StatistikfilterNeue, StatistikfilterNeueAlle,
-                                         StatistikfilterLernen, StatistikfilterLernenAlle)
 from src.classes.statistikmanager import StatistikManager
 from src.classes.frageeinheit import (FrageeinheitChinesischBedeutung, FrageeinheitChinesischPinyin,
                                       FrageeinheitChinesischEintrag)
@@ -31,6 +29,8 @@ class test_Statistikfilter(TestCase):
              })
 
     def test_filter_pruefen(self):
+        from src.classes.statistikfilter import StatistikfilterPruefen
+
         self.assertFalse(StatistikfilterPruefen().filter(self.stat_manager, FrageeinheitChinesischBedeutung,
                                                          24 * 3_600_000))
         self.assertTrue(StatistikfilterPruefen().filter(self.stat_manager, FrageeinheitChinesischBedeutung,
@@ -41,6 +41,8 @@ class test_Statistikfilter(TestCase):
                                                          14 * 24 * 3_600_000))
 
     def test_filter_neu(self):
+        from src.classes.statistikfilter import StatistikfilterNeue
+
         self.assertFalse(StatistikfilterNeue().filter(self.stat_manager, FrageeinheitChinesischBedeutung,
                                                       24 * 3_600_000))
         self.assertFalse(StatistikfilterNeue().filter(self.stat_manager, FrageeinheitChinesischPinyin,
@@ -57,6 +59,8 @@ class test_Statistikfilter(TestCase):
                                                       24 * 3_600_000), "Vorherige Abfrage LernenModus")
 
     def test_filter_neu_alle(self):
+        from src.classes.statistikfilter import StatistikfilterNeueAlle
+
         # Tests aus test_filter_neu kopiert und muessten bei allen FrageEinheiten ohne Antwort True ergeben
         self.assertFalse(StatistikfilterNeueAlle().filter(self.stat_manager, FrageeinheitChinesischBedeutung,
                                                           24 * 3_600_000), "Nicht leer")
@@ -74,6 +78,8 @@ class test_Statistikfilter(TestCase):
                                                          24 * 3_600_000), "Vorherige Abfrage LernenModus")
 
     def test_filter_lernen(self):
+        from src.classes.statistikfilter import StatistikfilterLernen
+
         self.assertFalse(StatistikfilterLernen().filter(self.stat_manager, FrageeinheitChinesischBedeutung,
                                                         24 * 3_600_000))
         self.assertFalse(StatistikfilterLernen().filter(self.stat_manager, FrageeinheitChinesischPinyin,
@@ -84,6 +90,8 @@ class test_Statistikfilter(TestCase):
                                                         24 * 3_600_000))
 
     def test_filter_alle_lernen(self):
+        from src.classes.statistikfilter import StatistikfilterLernenAlle
+
         self.assertFalse(StatistikfilterLernenAlle().filter(self.stat_manager, FrageeinheitChinesischBedeutung,
                                                             24 * 3_600_000))
         self.assertTrue(StatistikfilterLernenAlle().filter(self.stat_manager, FrageeinheitChinesischPinyin,

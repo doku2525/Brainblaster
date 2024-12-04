@@ -63,7 +63,6 @@ class test_VokabelboxRepository(TestCase):
         self.obj.vokabelboxen = []
         self.obj.speichern()
 
-
     def test_add_box(self):
         obj = copy.deepcopy(self.obj)
         obj.add_box(Vokabelbox("Titel 1", LerneinheitJapanisch, []))

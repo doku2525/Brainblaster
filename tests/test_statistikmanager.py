@@ -3,6 +3,7 @@ from src.classes.statistikmanager import StatistikManager, Frageeinheit
 from src.classes.lerneinheit import LerneinheitChinesisch
 from src.utils.utils_dataclass import mein_asdict
 
+
 class test_statistikmanager(TestCase):
 
     def setUp(self):
@@ -57,8 +58,8 @@ class test_statistikmanager(TestCase):
     #     self.assertEquals(einheiten[1], self.obj.folgende_frageeinheit(einheiten[0]))
 
     def test_suche_frageeinheit_nach_titel(self):
-        titelListe = self.obj.titel_der_frageeinheiten()
-        for index, titel in enumerate(titelListe):
+        titel_liste = self.obj.titel_der_frageeinheiten()
+        for index, titel in enumerate(titel_liste):
             result = self.obj.suche_frageeinheit_nach_titel(titel)
             self.assertEquals(titel, result().titel())
             self.assertEquals(index+1, result().rank)

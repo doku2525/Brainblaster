@@ -4,6 +4,7 @@ import datetime
 from typing import TYPE_CHECKING
 from src.classes.lernuhr import Lernuhr
 from src.classes.vokabeltrainermodell import VokabeltrainerModell
+from src.classes.filterlistenfactory import FilterlistenFactory
 
 
 class VokabeltrainerController:
@@ -37,11 +38,12 @@ class VokabeltrainerController:
         self.modell.vokabelkarten.laden()
         self.modell.vokabelboxen.laden()
         self.modell = replace(self.modell, index_aktuelle_box=80)
-        result = VokabeltrainerModell.filter_und_execute(funktion=lambda karte: karte.lerneinheit.eintrag,
-                                                         filter_liste=self.modell.filterliste_vokabeln_pruefen(
+        result = FilterlistenFactory.filter_und_execute(funktion=lambda karte: karte.lerneinheit.eintrag,
+                                                        filter_liste=FilterlistenFactory.filterliste_vokabeln_pruefen(
+                                                             vokabelbox=self.modell.aktuelle_box(),
                                                              zeit=self.uhr.now(Lernuhr.echte_zeit()),
                                                              max_anzahl=20),
-                                                         liste_der_vokabeln=self.modell.alle_vokabelkarten())
+                                                        liste_der_vokabeln=self.modell.alle_vokabelkarten())
         print("Zum Pruefen:\n\t",
               "\n\t".join([karte.lerneinheit.eintrag for karte, _ in result]),
               "\n\n")

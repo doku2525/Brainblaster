@@ -1,6 +1,6 @@
 from unittest import TestCase
-from src.classes.lerneinheit import (LerneinheitFactory, LerneinheitJapanisch, LerneinheitChinesisch, LerneinheitStandard,
-                                     LerneinheitJapanischKanji)
+from src.classes.lerneinheit import (LerneinheitFactory, LerneinheitJapanisch, LerneinheitChinesisch,
+                                     LerneinheitStandard, LerneinheitJapanischKanji)
 from src.utils.utils_dataclass import mein_asdict
 
 
@@ -12,11 +12,7 @@ class test_Lerneinheit(TestCase):
         self.objA = LerneinheitStandard(self.listeA[1].eintrag,
                                         self.listeA[1].beschreibung,
                                         self.listeA[1].erzeugt,
-                                        self.listeA[1].daten.update({"plus": 0}))
-        obj_b = LerneinheitStandard(self.listeA[1].eintrag,
-                                    self.listeA[1].beschreibung,
-                                    self.listeA[1].erzeugt,
-                                    self.listeA[1].daten)
+                                        self.listeA[1].daten | {"plus": 0})
         self.listeC = LerneinheitFactory.erzeuge_japanisch_beispiele(anzahl=10)
         self.listeD = LerneinheitFactory.erzeuge_japanisch_kanji_beispiele(anzahl=10)
         self.listeE = LerneinheitFactory.erzeuge_chinesisch_beispiele(anzahl=10)

@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.utils.utils_dataclass import mein_asdict
+
 from src.classes.frageeinheit import Frageeinheit, FrageeinheitJapanischBedeutung, FrageeinheitJapanischSchreiben
 from src.classes.lerneinheit import LerneinheitStandard, LerneinheitJapanisch
 
@@ -12,6 +12,8 @@ class test_Frageeinheit(TestCase):
         self.standardJapanisch = Frageeinheit.suche_frageeinheiten_der_lernklasse(LerneinheitJapanisch)
 
     def test_fromdict(self):
+        from src.utils.utils_dataclass import mein_asdict
+
         result = {'rank': 1, 'lerneinheit': 'Japanisch', 'warte_sekunden_auf_antwort': 3}
         self.assertEqual(result, mein_asdict(FrageeinheitJapanischBedeutung()))
         self.assertEqual(FrageeinheitJapanischBedeutung(),

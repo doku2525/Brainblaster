@@ -1,7 +1,6 @@
 from unittest import TestCase
 
 from src.classes.antwort import Antwort
-from src.utils.utils_dataclass import mein_asdict
 
 
 class test_Antwort(TestCase):
@@ -13,6 +12,8 @@ class test_Antwort(TestCase):
         self.ant4 = Antwort(0, 3000)
 
     def test_fromdict(self):
+        from src.utils.utils_dataclass import mein_asdict
+
         self.assertEqual(self.ant1, Antwort.fromdict(mein_asdict(self.ant1)))
         self.assertEqual(Antwort(), Antwort.fromdict(mein_asdict(Antwort())))
 

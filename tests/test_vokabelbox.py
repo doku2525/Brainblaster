@@ -1,14 +1,14 @@
 from unittest import TestCase
 
-from src.classes import frageeinheit, lerneinheit
+from src.classes.lerneinheit import LerneinheitJapanisch
 from src.classes.vokabelbox import Vokabelbox
-from src.classes.vokabelkarte import Vokabelkarte
-from src.utils.utils_dataclass import mein_asdict
 
 
 class test_vokabelbox(TestCase):
 
     def setUp(self):
+        from src.classes.vokabelkarte import Vokabelkarte
+
         self.kartenListe = Vokabelkarte.lieferBeispielKarten(100, "Chinesisch")
         self.kartenListe += Vokabelkarte.lieferBeispielKarten(200, "Japanisch")
         self.japBox = Vokabelbox('Japanisch', self.kartenListe[-1].lerneinheit.__class__, [])
@@ -16,6 +16,8 @@ class test_vokabelbox(TestCase):
         self.assertEquals(300, len(self.kartenListe))
 
     def test_fromdict_asdict(self):
+        from src.utils.utils_dataclass import mein_asdict
+        
         self.assertEqual(self.japBox, Vokabelbox.fromdict(mein_asdict(self.japBox)))
         self.assertEqual(self.chiBox, Vokabelbox.fromdict(mein_asdict(self.chiBox)))
 
@@ -36,38 +38,44 @@ class test_vokabelbox(TestCase):
         result = self.japBox.verfuegbare_frageeinheiten()
         self.assertEquals(4, len(result))
         self.assertEquals("JapanischBedeutung", result[0]().titel())
-        obj_a = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [])
-        obj_b = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [], result[-1])
+        obj_a = Vokabelbox('Test', LerneinheitJapanisch, [])
+        obj_b = Vokabelbox('Test', LerneinheitJapanisch, [], result[-1])
         self.assertEquals(obj_a.aktuelle_frage().titel(), "JapanischBedeutung")
         self.assertEquals(obj_b.aktuelle_frage().titel(), "JapanischSchreiben")
 
     def test_ist_erste_frageeinheit(self):
-        einheiten = frageeinheit.Frageeinheit.suche_frageeinheiten_der_lernklasse(lerneinheit.LerneinheitJapanisch)
-        obj_a = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [])
-        obj_aa = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [], einheiten[1])
-        obj_b = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [], einheiten[-1])
-        obj_bb = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [], einheiten[3])
+        from src.classes.frageeinheit import Frageeinheit
+
+        einheiten = Frageeinheit.suche_frageeinheiten_der_lernklasse(LerneinheitJapanisch)
+        obj_a = Vokabelbox('Test', LerneinheitJapanisch, [])
+        obj_aa = Vokabelbox('Test', LerneinheitJapanisch, [], einheiten[1])
+        obj_b = Vokabelbox('Test', LerneinheitJapanisch, [], einheiten[-1])
+        obj_bb = Vokabelbox('Test', LerneinheitJapanisch, [], einheiten[3])
         self.assertTrue(obj_a.ist_erste_frageeinheit())
         self.assertFalse(obj_aa.ist_erste_frageeinheit())
         self.assertFalse(obj_b.ist_erste_frageeinheit())
         self.assertFalse(obj_bb.ist_erste_frageeinheit())
 
     def test_ist_letzte_frageeinheit(self):
-        einheiten = frageeinheit.Frageeinheit.suche_frageeinheiten_der_lernklasse(lerneinheit.LerneinheitJapanisch)
-        obj_a = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [])
-        obj_aa = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [], einheiten[1])
-        obj_b = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [], einheiten[-1])
-        obj_bb = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [], einheiten[3])
+        from src.classes.frageeinheit import Frageeinheit
+
+        einheiten = Frageeinheit.suche_frageeinheiten_der_lernklasse(LerneinheitJapanisch)
+        obj_a = Vokabelbox('Test', LerneinheitJapanisch, [])
+        obj_aa = Vokabelbox('Test', LerneinheitJapanisch, [], einheiten[1])
+        obj_b = Vokabelbox('Test', LerneinheitJapanisch, [], einheiten[-1])
+        obj_bb = Vokabelbox('Test', LerneinheitJapanisch, [], einheiten[3])
         self.assertFalse(obj_a.ist_letzte_frageeinheit())
         self.assertFalse(obj_aa.ist_letzte_frageeinheit())
         self.assertTrue(obj_b.ist_letzte_frageeinheit())
         self.assertTrue(obj_bb.ist_letzte_frageeinheit())
 
     def test_naechste_frageeinheit(self):
-        einheiten = frageeinheit.Frageeinheit.suche_frageeinheiten_der_lernklasse(lerneinheit.LerneinheitJapanisch)
-        obj_a = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [])
+        from src.classes.frageeinheit import Frageeinheit
+
+        einheiten = Frageeinheit.suche_frageeinheiten_der_lernklasse(LerneinheitJapanisch)
+        obj_a = Vokabelbox('Test', LerneinheitJapanisch, [])
         obj_aa = obj_a.naechste_frageeinheit()
-        obj_b = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [], einheiten[-1])
+        obj_b = Vokabelbox('Test', LerneinheitJapanisch, [], einheiten[-1])
         obj_bb = obj_b.naechste_frageeinheit()
         self.assertEquals(einheiten[0], obj_a.aktuelle_frage)
         self.assertEquals(einheiten[-1], obj_b.aktuelle_frage)
@@ -75,10 +83,12 @@ class test_vokabelbox(TestCase):
         self.assertEquals(einheiten[0], obj_bb.aktuelle_frage)
 
     def test_vorherige_frageeinheit(self):
-        einheiten = frageeinheit.Frageeinheit.suche_frageeinheiten_der_lernklasse(lerneinheit.LerneinheitJapanisch)
-        obj_a = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [])
+        from src.classes.frageeinheit import Frageeinheit
+
+        einheiten = Frageeinheit.suche_frageeinheiten_der_lernklasse(LerneinheitJapanisch)
+        obj_a = Vokabelbox('Test', LerneinheitJapanisch, [])
         obj_aa = obj_a.vorherige_frageeinheit()
-        obj_b = Vokabelbox('Test', lerneinheit.LerneinheitJapanisch, [], einheiten[-1])
+        obj_b = Vokabelbox('Test', LerneinheitJapanisch, [], einheiten[-1])
         obj_bb = obj_b.vorherige_frageeinheit()
         self.assertEquals(einheiten[0], obj_a.aktuelle_frage)
         self.assertEquals(einheiten[-1], obj_b.aktuelle_frage)
