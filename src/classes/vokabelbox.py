@@ -91,7 +91,7 @@ class Vokabelbox:
         return Vokabelbox(self.titel, self.lernklasse, self.selektor,
                           self.verfuegbare_frageeinheiten()[current_index - 1])
 
-    def filter_vokabelkarten(self, kartenliste: list[Vokabelkarte]) -> list[Vokabelkarte]:
+    def filter_vokabelkarten(self, kartenliste: list[Vokabelkarte]) -> Iterable[Vokabelkarte]:
         karten_der_lernklasse = [karte for karte in kartenliste if karte.lerneinheit.__class__ is self.lernklasse]
 
         def filter_rekursiv(result: Iterable[Vokabelkarte], filter_funcs: list[str]):

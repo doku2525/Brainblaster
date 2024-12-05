@@ -25,14 +25,15 @@ class StatModusNeu(StatModusStrategy):
     def add_antwort(self, statistik: Statistik, antwort: Antwort) -> Statistik:
         """ Da es sinnlos ist, noch nicht gelernte Vokabeln in den Pruefen-Kreislauf aufzunehmen,
         ist der Falsch-Zweig deaktiviert."""
+        return Statistik(StatModus.PRUEFEN, statistik.antworten + [antwort]) if antwort.ist_richtig() else statistik
         # if antwort.ist_falsch():
         #     return Statistik(StatModus.LERNEN, statistik.antworten + [antwort])
         # else:
         #     return Statistik(StatModus.PRUEFEN, statistik.antworten + [antwort])
-        if antwort.ist_richtig():
-            return Statistik(StatModus.PRUEFEN, statistik.antworten + [antwort])
-        else:
-            return statistik
+#        if antwort.ist_richtig():
+#            return Statistik(StatModus.PRUEFEN, statistik.antworten + [antwort])
+#        else:
+#            return statistik
 
     def srs_zeit_in_millis(self, statistik: Statistik) -> int:
         return 0
@@ -42,8 +43,7 @@ class StatModusPruefen(StatModusStrategy):
     def add_antwort(self, statistik: Statistik, antwort: Antwort) -> Statistik:
         if antwort.ist_falsch():
             return Statistik(StatModus.LERNEN, statistik.antworten + [antwort])
-        else:
-            return Statistik(StatModus.PRUEFEN, statistik.antworten + [antwort])
+        return Statistik(StatModus.PRUEFEN, statistik.antworten + [antwort])
 
     def srs_zeit_in_millis(self, statistik: Statistik) -> int:
         def sekunden_pro_tag(sekunden: int) -> int:
@@ -62,10 +62,9 @@ class StatModusLernen(StatModusStrategy):
     def add_antwort(self, statistik: Statistik, antwort: Antwort) -> Statistik:
         if antwort.ist_richtig() and StatistikCalculations.berechne_lernindex(statistik) == 1:
             return Statistik(StatModus.PRUEFEN, statistik.antworten + [Antwort(7, antwort.erzeugt)])
-        elif antwort.ist_richtig() and StatistikCalculations.berechne_lernindex(statistik) < 1:
+        if antwort.ist_richtig() and StatistikCalculations.berechne_lernindex(statistik) < 1:
             return Statistik(StatModus.LERNEN, statistik.antworten + [Antwort(7, antwort.erzeugt)])
-        else:
-            return Statistik(StatModus.LERNEN, statistik.antworten + [Antwort(0, antwort.erzeugt)])
+        return Statistik(StatModus.LERNEN, statistik.antworten + [Antwort(0, antwort.erzeugt)])
 
     def srs_zeit_in_millis(self, statistik: Statistik) -> int:
         lernindex = StatistikCalculations.berechne_lernindex(statistik)
