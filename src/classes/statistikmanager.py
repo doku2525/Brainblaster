@@ -1,11 +1,14 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import Type
+from typing import Callable, Type, TYPE_CHECKING
 from src.classes.frageeinheit import Frageeinheit
-from src.classes.lerneinheit import Lerneinheit
 from src.classes.statistik import Statistik, StatModus
 
 import src.utils.utils_klassen as k_utils
+
+if TYPE_CHECKING:
+    from src.classes.antwort import Antwort
+    from src.classes.lerneinheit import Lerneinheit
 
 
 @dataclass(frozen=True)
@@ -28,6 +31,10 @@ class StatistikManager:
 
     def suche_frageeinheit_nach_titel(self, suchstring: str) -> Type[Frageeinheit]:
         return [frage_klasse for frage_klasse in self.statistiken.keys() if frage_klasse().titel() == suchstring][0]
+
+    def update_statistik_mit_antwort(self, frageeinheit: Type[Frageeinheit], antwort: Antwort) -> StatistikManager:
+        return StatistikManager(
+            statistiken=self.statistiken | {frageeinheit: self.statistiken[frageeinheit].add_neue_antwort(antwort)})
 
     # TODO Issue #6 Noch viele auskommentierte Funktionen
     # def ist_erste_frageeinheit(self, frage_klasse: Type[Frageeinheit]) -> bool:

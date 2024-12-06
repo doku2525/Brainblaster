@@ -63,3 +63,33 @@ class test_statistikmanager(TestCase):
             result = self.obj.suche_frageeinheit_nach_titel(titel)
             self.assertEquals(titel, result().titel())
             self.assertEquals(index+1, result().rank)
+
+    def test_update_statistik_mit_antwort(self):
+        from src.classes.antwort import Antwort
+        from src.classes.statistik import Statistik
+
+        frageeinheit = self.obj.liste_der_frageeinheiten()[0]
+        objekt = self.obj.update_statistik_mit_antwort(frageeinheit, Antwort(6, 0))
+        self.assertEqual(0, len(self.obj.statistiken[frageeinheit].antworten))
+        self.assertEqual(1, len(objekt.statistiken[frageeinheit].antworten))
+        self.assertIsInstance(objekt.statistiken[frageeinheit].antworten[0], Antwort)
+        self.assertEqual('PRUEFEN', objekt.statistiken[frageeinheit].modus.name)
+        self.assertEqual(6, objekt.statistiken[frageeinheit].antworten[0].antwort)
+        # Fuege Antwort zur zweiten Freigeeinheit hinzu
+        frageeinheit2 = self.obj.liste_der_frageeinheiten()[1]
+        objekt = objekt.update_statistik_mit_antwort(frageeinheit2, Antwort(5, 0))
+        self.assertEqual(0, len(self.obj.statistiken[frageeinheit2].antworten))
+        self.assertEqual(1, len(objekt.statistiken[frageeinheit2].antworten))
+        self.assertIsInstance(objekt.statistiken[frageeinheit2].antworten[0], Antwort)
+        self.assertEqual('PRUEFEN', objekt.statistiken[frageeinheit2].modus.name)
+        self.assertEqual(0, len(self.obj.statistiken[frageeinheit2].antworten))
+        self.assertEqual(1, len(objekt.statistiken[frageeinheit2].antworten))
+        self.assertIsInstance(objekt.statistiken[frageeinheit2].antworten[0], Antwort)
+        self.assertEqual('PRUEFEN', objekt.statistiken[frageeinheit2].modus.name)
+        self.assertEqual(5, objekt.statistiken[frageeinheit2].antworten[0].antwort)
+        # Pruefe, ob die Veraenderung in der ersten Frageeinheit immer noch existieren
+        self.assertEqual(0, len(self.obj.statistiken[frageeinheit].antworten))
+        self.assertEqual(1, len(objekt.statistiken[frageeinheit].antworten))
+        self.assertIsInstance(objekt.statistiken[frageeinheit].antworten[0], Antwort)
+        self.assertEqual('PRUEFEN', objekt.statistiken[frageeinheit].modus.name)
+        self.assertEqual(6, objekt.statistiken[frageeinheit].antworten[0].antwort)
