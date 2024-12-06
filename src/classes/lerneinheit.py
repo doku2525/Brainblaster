@@ -3,8 +3,9 @@ from abc import ABC
 from dataclasses import dataclass, field
 from random import randint
 from typing import Type, Any
+
 from src.classes.frageeinheit import Frageeinheit
-from src.classes import lernuhr         # TODO Issue #3 Warum nicht Lernuhr importiert?
+from src.classes import lernuhr
 import src.utils.utils_klassen as k_utils
 
 
@@ -32,10 +33,6 @@ class Lerneinheit(ABC):
 
     def absolut_gleich_wie(self, lerneinheit: Lerneinheit) -> bool:
         return self.gleiche_lerneinheit_wie(lerneinheit) and self.erzeugt == lerneinheit.erzeugt
-
-    # def to_lerneinheit(self) -> Lerneinheit:
-    #     # TODO Issue #3 der Sinn dieser Methode ist mir noch komplett schleierhaft!
-    #     return LerneinheitStandard(eintrag, beschreibung, erzeugt, daten)
 
     @classmethod
     def suche_meine_frageeinheiten(cls) -> list[Type[Frageeinheit]]:
