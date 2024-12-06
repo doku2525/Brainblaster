@@ -56,10 +56,8 @@ class Frageeinheit:
     def suche_frageeinheit_fuer_lernklasse_mit_titel(lernklasse: Type[Lerneinheit],
                                                      titel_frageeinheit: str) -> Frageeinheit:
         """Liefer die Frageeinheit, mit dem Titel fTitel, die zur Subklasse von Lerneinheit gehoert"""
-        # TODO Issue #2 Ersetze lambda-filter_funktion durch definierte Funktion im Typeannotation
         def filter_funktion(elem: Type[Frageeinheit]) -> bool:
             return "Frageeinheit" + titel_frageeinheit == elem.__name__
-#        filter_funktion = lambda elem: "Frageeinheit" + titel_frageeinheit == elem.__name__
         return list(filter(filter_funktion, Frageeinheit.suche_frageeinheiten_der_lernklasse(lernklasse)))[0]
 
     @staticmethod
