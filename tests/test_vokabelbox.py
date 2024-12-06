@@ -97,23 +97,21 @@ class test_vokabelbox(TestCase):
         self.assertEquals(einheiten[-2], obj_bb.aktuelle_frage)
 
     def test_filter_vokabelkarten(self):
+        from typing import Iterable
+
+        # filter_vokabelkarten() liefert nicht liste, sondern iterable
         result = self.japBox.filter_vokabelkarten(self.kartenListe)
-        self.assertEquals(200, len(result))
+        self.assertIsInstance(result, Iterable)
+        self.assertEquals(200, len(list(result)))
         result = self.chiBox.filter_vokabelkarten(self.kartenListe)
-        self.assertEquals(100, len(result))
+        self.assertEquals(100, len(list(result)))
         hsk = []
         for i, elem in enumerate(result):
             if i < 30:
                 elem.lerneinheit.daten["HSK"] = 1
             hsk.append(elem)
-        self.assertEquals(len(hsk), len(result))
+        self.assertEquals(len(hsk), len(list(result)))
         fun = "('HSK',1) in a.lerneinheit.daten.items()"
         hsk_box = Vokabelbox("HSK 1", self.chiBox.lernklasse, [fun])
         hskresult = hsk_box.filter_vokabelkarten(self.kartenListe)
         self.assertEquals(len(list(hskresult)), 30)
-
-    def test_mische_karten(self):
-        liste = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-        result = Vokabelbox.mische_karten(liste)
-        self.assertNotEqual(liste, result)
-        self.assertEquals(liste, sorted(result))

@@ -2,6 +2,7 @@ from unittest import TestCase
 from dataclasses import replace
 
 from src.classes.lerninfos import Lerninfos
+from src.classes.kartenfilter import FilterVokabelbox
 
 
 class test_Lerninfos(TestCase):
@@ -23,17 +24,33 @@ class test_Lerninfos(TestCase):
 
     def test_gesamtzahl(self):
         self.komplett = replace(self.komplett, index_aktuelle_box=40)
-        objekt = Lerninfos(self.komplett.aktuelle_box(),
-                           self.komplett.aktuelle_box().filter_vokabelkarten(self.komplett.alle_vokabelkarten()))
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
         self.assertEqual(40, objekt.gesamtzahl)
+
+    def test_erzeuge_info_dict_lektion_1(self):
+        from src.classes.lernuhr import Lernuhr
+        from src.classes.frageeinheit import FrageeinheitChinesischBedeutung, Frageeinheit
+
+        self.komplett = replace(self.komplett, index_aktuelle_box=40)
+        objekt = (Lerninfos(
+            box=self.komplett.aktuelle_box(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten())).
+                  erzeuge_info_dict(Lernuhr.isostring_to_millis("2024-06-22 13:00:00.000")))
+        self.assertIsInstance(objekt, Lerninfos)
+        self.assertIsInstance(objekt.infos, dict)
+        self.assertTrue(issubclass(list(objekt.infos.keys())[0], Frageeinheit))
+        self.assertIn(FrageeinheitChinesischBedeutung, objekt.infos.keys())
 
     def test_sammle_infos_lektion_1(self):
         from src.classes.lernuhr import Lernuhr
         from src.classes.lerninfos import InfotypStatModus
 
         self.komplett = replace(self.komplett, index_aktuelle_box=40)
-        objekt = Lerninfos(self.komplett.aktuelle_box(),
-                           self.komplett.aktuelle_box().filter_vokabelkarten(self.komplett.alle_vokabelkarten()))
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
         result = objekt.sammle_infos(Lernuhr.isostring_to_millis("2024-06-22 13:00:00.000"))
         self.assertEqual(3, len(result))
         for index in range(3):
@@ -44,8 +61,9 @@ class test_Lerninfos(TestCase):
         self.assertEqual(0, len(result[1].aktuell))
         self.assertEqual(0, len(result[2].insgesamt))
         self.assertEqual(0, len(result[2].aktuell))
-        objekt = Lerninfos(self.komplett.aktuelle_box(),
-                           self.komplett.aktuelle_box().filter_vokabelkarten(self.komplett.alle_vokabelkarten()))
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
         result = objekt.sammle_infos(Lernuhr.isostring_to_millis("2025-06-22 13:00:00.000"))
         self.assertEqual(3, len(result))
         for index in range(3):
@@ -62,8 +80,9 @@ class test_Lerninfos(TestCase):
         from src.classes.lerninfos import InfotypStatModus
 
         self.komplett = replace(self.komplett, index_aktuelle_box=80)
-        objekt = Lerninfos(self.komplett.aktuelle_box().vorherige_frageeinheit(),
-                           self.komplett.aktuelle_box().filter_vokabelkarten(self.komplett.alle_vokabelkarten()))
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box().vorherige_frageeinheit(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
         result = objekt.sammle_infos(Lernuhr.isostring_to_millis("2024-06-22 13:00:00.000"))
         self.assertEqual(3, len(result))
         for index in range(3):
@@ -75,8 +94,9 @@ class test_Lerninfos(TestCase):
         self.assertEqual(0, len(result[1].aktuell))
         self.assertEqual(830, len(result[2].insgesamt))
         self.assertEqual(9, len(result[2].aktuell))
-        objekt = Lerninfos(self.komplett.aktuelle_box().vorherige_frageeinheit(),
-                           self.komplett.aktuelle_box().filter_vokabelkarten(self.komplett.alle_vokabelkarten()))
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box().vorherige_frageeinheit(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
         result = objekt.sammle_infos(Lernuhr.isostring_to_millis("2024-07-12 13:00:00.000"))
         self.assertEqual(3, len(result))
         for index in range(3):
@@ -88,8 +108,9 @@ class test_Lerninfos(TestCase):
         self.assertEqual(14, len(result[1].aktuell))
         self.assertEqual(830, len(result[2].insgesamt))
         self.assertEqual(80, len(result[2].aktuell))
-        objekt = Lerninfos(self.komplett.aktuelle_box().vorherige_frageeinheit(),
-                           self.komplett.aktuelle_box().filter_vokabelkarten(self.komplett.alle_vokabelkarten()))
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box().vorherige_frageeinheit(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
         result = objekt.sammle_infos(Lernuhr.isostring_to_millis("2024-12-30 13:00:00.000"))
         self.assertEqual(3, len(result))
         for index in range(3):
@@ -107,8 +128,9 @@ class test_Lerninfos(TestCase):
         from src.classes.lerninfos import InfotypStatModus
 
         self.komplett = replace(self.komplett, index_aktuelle_box=80)
-        objekt = Lerninfos(self.komplett.aktuelle_box().naechste_frageeinheit(),
-                           self.komplett.aktuelle_box().filter_vokabelkarten(self.komplett.alle_vokabelkarten()))
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box().naechste_frageeinheit(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
         result = objekt.sammle_infos(Lernuhr.isostring_to_millis("2024-06-22 13:00:00.000"))
         self.assertEqual(3, len(result))
         for index in range(3):
@@ -120,8 +142,9 @@ class test_Lerninfos(TestCase):
         self.assertEqual(0, len(result[1].aktuell))
         self.assertEqual(337, len(result[2].insgesamt))
         self.assertEqual(59, len(result[2].aktuell))
-        objekt = Lerninfos(self.komplett.aktuelle_box().naechste_frageeinheit(),
-                           self.komplett.aktuelle_box().filter_vokabelkarten(self.komplett.alle_vokabelkarten()))
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box().naechste_frageeinheit(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
         result = objekt.sammle_infos(Lernuhr.isostring_to_millis("2024-07-11 13:00:00.000"))
         self.assertEqual(3, len(result))
         for index in range(3):
@@ -133,8 +156,9 @@ class test_Lerninfos(TestCase):
         self.assertEqual(9, len(result[1].aktuell))
         self.assertEqual(337, len(result[2].insgesamt))
         self.assertEqual(290, len(result[2].aktuell))
-        objekt = Lerninfos(self.komplett.aktuelle_box().naechste_frageeinheit(),
-                           self.komplett.aktuelle_box().filter_vokabelkarten(self.komplett.alle_vokabelkarten()))
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box().naechste_frageeinheit(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
         result = objekt.sammle_infos(Lernuhr.isostring_to_millis("2024-12-30 13:00:00.000"))
         self.assertEqual(3, len(result))
         for index in range(3):
@@ -149,14 +173,14 @@ class test_Lerninfos(TestCase):
 
     def test_split_vokabelliste_by_status(self):
         self.komplett = replace(self.komplett, index_aktuelle_box=40)
-        vokabelliste = list(self.komplett.aktuelle_box().filter_vokabelkarten(self.komplett.alle_vokabelkarten()))
+        vokabelliste = FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten())
         result = Lerninfos.split_vokabelliste_by_status(
             vokabelliste,
             self.komplett.aktuelle_box().aktuelle_frage)
         self.assertEqual((40, 0, 0), (len(result[0]), len(result[1]), len(result[2])))
 
         self.komplett = replace(self.komplett, index_aktuelle_box=81)
-        vokabelliste = list(self.komplett.aktuelle_box().filter_vokabelkarten(self.komplett.alle_vokabelkarten()))
+        vokabelliste = FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten())
         result = Lerninfos.split_vokabelliste_by_status(
             vokabelliste,
             self.komplett.aktuelle_box().aktuelle_frage)

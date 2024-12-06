@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from dataclasses import dataclass, field
 from functools import reduce
-from typing import Type, TYPE_CHECKING
+from typing import Iterable, Type, TYPE_CHECKING
 import random
 
 if TYPE_CHECKING:
@@ -65,7 +65,7 @@ class FilterVokabelbox:
     vokabelbox: Vokabelbox
 
     def filter(self, karten_liste: list[Vokabelkarte]) -> list[Vokabelkarte]:
-        return self.vokabelbox.filter_vokabelkarten(karten_liste)
+        return list(self.vokabelbox.filter_vokabelkarten(karten_liste))
 
 
 @dataclass(frozen=True)

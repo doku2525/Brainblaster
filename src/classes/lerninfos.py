@@ -1,6 +1,6 @@
 from __future__ import annotations
 from collections import defaultdict, namedtuple
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from itertools import groupby
 from typing import Iterable, NamedTuple, Type, TYPE_CHECKING
 
@@ -20,28 +20,37 @@ InfotypStatModus = namedtuple('InfotypStatModus', ['insgesamt', 'aktuell'])
 @dataclass(frozen=True)
 class Lerninfos:
     box: Vokabelbox
-    karten: Iterable[Vokabelkarte] = field(default_factory=Iterable)
+    karten: list[Vokabelkarte] = field(default_factory=Iterable)
     infos: dict = field(default_factory=dict)
 
     @property
     def gesamtzahl(self) -> int:
-        return len(list(self.karten))
+        return len(self.karten)
 
-    def sammle_infos(self, uhrzeit: int) -> list[InfotypStatModus]:
+    def erzeuge_info_dict(self, uhrzeit: int) -> Lerninfos:
+        info_dict = {f_einheit: self.sammle_infos_zu_frageeinheit(uhrzeit, f_einheit)
+                     for f_einheit
+                     in self.box.verfuegbare_frageeinheiten()}
+        return replace(self, infos=info_dict)
+
+    def sammle_infos_zu_frageeinheit(self, uhrzeit: int, frageeinheit: Type[Frageeinheit]) -> list[InfotypStatModus]:
 
         def build_entry(stat_filter: Type[SatistikfilterStrategie],
                         result: list[Vokabelkarte]) -> InfotypStatModus:
             return InfotypStatModus(insgesamt=result,
                                     aktuell=[karte for karte
                                              in result if stat_filter().filter(karte.lernstats,
-                                                                               self.box.aktuelle_frage, uhrzeit)])
+                                                                               frageeinheit, uhrzeit)])
 
-        tmp = Lerninfos.split_vokabelliste_by_status(list(self.karten), self.box.aktuelle_frage)
+        tmp = Lerninfos.split_vokabelliste_by_status(list(self.karten), frageeinheit)
         return [
             build_entry(StatistikfilterPruefen, tmp[0]),
             build_entry(StatistikfilterLernen, tmp[1]),
             build_entry(StatistikfilterNeue, tmp[2]),
         ]
+
+    def sammle_infos(self, uhrzeit: int) -> list[InfotypStatModus]:
+        return self.sammle_infos_zu_frageeinheit(uhrzeit, self.box.aktuelle_frage)
 
     @staticmethod
     def split_vokabelliste_by_status(vokabelliste: list[Vokabelkarte],

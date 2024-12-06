@@ -12,9 +12,10 @@ if TYPE_CHECKING:
     from src.classes.vokabelkarte import Vokabelkarte
 
 """ Das Attribut selektor enthaelt eine Liste mit Strings, die Tests enthalten, welche durch eval() ausgwertet werden.
+siehe Funktion filter_vokabelkarten()
 Zum Beispiel: ('satz', True) in a.lerneinheit.daten.items()"""
-# TODO Issue #7 Ein Weg finden, keine Strings mit eval() verwenden zu muessen. Siehe Funktion filter_rekursiv()
-# TODO Issue #7 Fuer die Liste von Strings mit Tests einen eigenen Datentyp erstellen
+# TODO Issue #22 Ein Weg finden, keine Strings mit eval() verwenden zu muessen. Siehe Funktion filter_rekursiv()
+# TODO Issue #22 Fuer die Liste von Strings mit Tests einen eigenen Datentyp erstellen
 
 
 @dataclass(frozen=True)
@@ -25,12 +26,16 @@ class Vokabelbox:
     aktuelle_frage: Type[Frageeinheit] = None
 
     def __post_init__(self):
-        # TODO Issue #7 Mit solchen Tricks zu arbeiten ist vielleicht nicht die beste Idee und ein Zeichen dafuer,
-        #   am Design etwas zu veraendern.
-        #   ??? Muss aktuelleFrage wirklich als Attribut gespeichert werden oder sollte es nicht eine Funktion sein?
+        # TODO Mit solchen Tricks zu arbeiten ist vielleicht nicht die beste Idee und ein Zeichen dafuer,
+        #   am Design etwas zu veraendern. Siehe auskommentierte Funktion aktuelle_frage()
         object.__setattr__(self,
                            'aktuelle_frage',
                            self.verfuegbare_frageeinheiten()[0] if not self.aktuelle_frage else self.aktuelle_frage)
+
+    # @property
+    # # Zum setzen einer neuen aktuellen_frage durch replace() kann ich nicht auf das Attribut aktuelle_frage zugreifen.
+    # def aktuelle_frage(self) -> Type[Frageeinheit]:
+    #     return self.verfuegbare_frageeinheiten()[0] if self._aktuelle_frage is None else self._aktuelle_frage
 
     @classmethod
     def fromdict(cls, source_dict: dict) -> cls:
@@ -101,49 +106,3 @@ class Vokabelbox:
             else:
                 return filter_rekursiv(filter(lambda a: eval(filter_funcs[0]), result), filter_funcs[1:])
         return filter_rekursiv(karten_der_lernklasse, self.selektor)
-
-    def sammle_infos(self, alle_vokabelkarten: list[Vokabelkarte], uhrzeit: int) -> dict[str, int]:
-        # TODO Issue #7 Die Funktion sollte vielleicht eher in Vokabeltrainer existieren. "zuPruefen", "zuLernen" etc.
-        #       sind keine Verantwortlichkeiten fuer eine Vokabelbox
-        # TODO Issue #7 Die for-Schleife koennte vielleicht in eine Funktion ausgelagert werden
-        #  oder mit Listcomprehension geschrieben werden?
-        result = {}
-        karten_dieser_vokabelbox = list(self.filter_vokabelkarten(alle_vokabelkarten))
-        liste_der_statistikmanager_der_karten = [karte.lernstats
-                                                 for karte
-                                                 in karten_dieser_vokabelbox]
-        result["karten"] = len(karten_dieser_vokabelbox)
-        for statmod in statistik.StatModus:
-            result_key = str(statmod).replace("StatModus.", "")
-            result[result_key] = len([stats
-                                      for stats
-                                      in liste_der_statistikmanager_der_karten
-                                      if stats.statistiken[self.aktuelle_frage].modus == statmod])
-        result["zuPruefen"] = len([stats
-                                   for stats
-                                   in liste_der_statistikmanager_der_karten
-                                   if statistikfilter.StatistikfilterPruefen().filter(stats, self.aktuelle_frage,
-                                                                                      uhrzeit)])
-        result["zuLernen"] = len([stats
-                                  for stats
-                                  in liste_der_statistikmanager_der_karten
-                                  if statistikfilter.StatistikfilterLernen().filter(stats, self.aktuelle_frage, uhrzeit)])
-        result["zuNeu"] = len([stats
-                               for stats
-                               in liste_der_statistikmanager_der_karten
-                               if statistikfilter.StatistikfilterNeue().filter(stats, self.aktuelle_frage, uhrzeit)])
-        return result
-
-    @staticmethod
-    def mische_karten(liste_der_karten: list[Vokabelkarte]) -> list[Vokabelkarte]:
-        return random.sample(liste_der_karten, len(liste_der_karten))
-
-
-# TODO Issue #7
-"""
-    karte.lernstats.statistiken[trainer.aktuellerIndex.aktuelleFrage].zeitZumLernen(0)
-    for karte in trainer.aktuellerIndex.filterVokabelkarten(vt.Vokabeltrainer.vokabelkarten)]
-
-liste[0].lernstats.statistiken[trainer.aktuellerIndex.aktuelleFrage] = 
-                                                liste[0].lernstats.statistiken[trainer.aktuellerIndex.aktuelleFrage]
-"""
