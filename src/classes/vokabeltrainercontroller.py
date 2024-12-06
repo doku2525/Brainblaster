@@ -2,9 +2,12 @@ from __future__ import annotations
 from dataclasses import replace
 import datetime
 from typing import TYPE_CHECKING
+
 from src.classes.lernuhr import Lernuhr
-from src.classes.vokabeltrainermodell import VokabeltrainerModell
 from src.classes.filterlistenfactory import FilterlistenFactory
+
+if TYPE_CHECKING:
+    from src.classes.vokabeltrainermodell import VokabeltrainerModell
 
 
 class VokabeltrainerController:

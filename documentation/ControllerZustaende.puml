@@ -1,0 +1,46 @@
+@startuml
+state Start {
+[*] --> Initialisieren : Programm gestartet
+    Initialisieren : Repositories
+    Initialisieren : Views
+    Initialisieren : Modell
+}
+
+Initialisieren --> Zustand_1 : setze index_aktuelle_box auf 0
+state Zustand_1 {
+    VokabelboxenAnzeigen : index_aktuelle_box
+    VokabelboxenAnzeigen : list[alle_boxen]
+    VokabelboxenAnzeigen --> VokabelboxenAnzeigen : aendere index_aktuelle_box
+}
+
+Zustand_2 --> Zustand_1 : zurueck zu Zustand 1
+state Zustand_2 {
+    Zustand_1 --> VokabelboxInfoAnzeigen
+    VokabelboxInfoAnzeigen --> VokabelboxInfoAnzeigen : Aendere aktuelle_frage
+    VokabelboxInfoAnzeigen : index_aktuelle_box
+    VokabelboxInfoAnzeigen : aktuelle_frage
+    VokabelboxInfoAnzeigen : fuer alle Frageeinheiten die Lerninfos anzeigen
+}
+AktualisiereVokabelboxInfos --> VokabelboxInfoAnzeigen
+AktualisiereVokabelboxInfos: Teste, ob Aktualisierung notwendig ist
+AktualisiereVokabelboxInfos: Wenn noetig, dann rufe Funktion auf.
+
+VokabelboxInfoAnzeigen --> Zustand_3 : fuehre Aktion auf aktuelle Box mit aktueller Frageeinheit aus
+Zustand_3 --> AktualisiereVokabelboxInfos : abgebrochen
+state Zustand_3 {
+    Zustand_3 --> Zustand_3 : markieren
+    VokabelkartePruefen: funktion = 'PRUEFEN'
+    VokabelkartePruefen: karten =KartenfilterPruefen(karten_der_box)
+    VokabelkarteLernen: funktion = 'LERNEN'
+    VokabelkarteLernen: karten = KartenfilterLernen(karten_der_box)
+    VokabelkarteNeu: funktion = 'NEU'
+    VokabelkarteNeu: karten = KartenfilterNeu(karten_der_box)
+}
+
+    Zustand_3 --> Zustand_4 : antworten mit 1 - 6
+    Zustand_4 --> Zustand_3 : True
+    Zustand_4 --> AktualisiereVokabelboxInfos : False
+state Zustand_4: Pruefe, ob Liste noch zu pruefende Karten hat.
+
+
+@enduml
