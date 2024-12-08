@@ -8,6 +8,7 @@ from src.repositories.vokabelkarten_repository import InMemoryVokabelkartenRepos
 from src.repositories.vokabelbox_repository import InMemeoryVokabelboxRepository, JSONDateiformatVokabelbox
 from src.views.flaskview import FlaskView
 
+
 def main() -> None:
     pass
 
