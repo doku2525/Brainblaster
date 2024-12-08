@@ -16,7 +16,7 @@ siehe Funktion filter_vokabelkarten()
 Zum Beispiel: ('satz', True) in a.lerneinheit.daten.items()"""
 # TODO Issue #22 Ein Weg finden, keine Strings mit eval() verwenden zu muessen. Siehe Funktion filter_rekursiv()
 # TODO Issue #22 Fuer die Liste von Strings mit Tests einen eigenen Datentyp erstellen
-
+""" Arbeite mit dictionarys, um strings in funktioen umzuwandeln."""
 
 @dataclass(frozen=True)
 class Vokabelbox:
