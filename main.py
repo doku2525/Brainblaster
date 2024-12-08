@@ -22,8 +22,8 @@ if __name__ == "__main__":
                                                    speicher_methode=JSONDateiformatVokabelbox))
     uhr = Lernuhr.lade_aus_jsondatei("daten/data/uhrzeit.json")
 
-#    flask_html_view = FlaskView()
-#    flask_html_view.start_server()
+    flask_html_view = FlaskView()
+    flask_html_view.start_server()
 
-    controller = VokabeltrainerController(modell=modell, uhr=uhr)
+    controller = VokabeltrainerController(modell=modell, uhr=uhr, view=flask_html_view)
     controller.programm_loop()

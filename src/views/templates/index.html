@@ -35,23 +35,19 @@
                 <th> <h2> Statistiken </h2> </th>
                 <th> <h2> Links </h2></th>
             </tr>
-                {% for counter, box in boxen: %}
+                {% for index, box in data: %}
                 {% set count = counter | string() %}
-                {% set urlboxindex = "index?l=" + count %}
-                {% set urlvokabelbox = "vokabelbox?l=" + count %}
-                {% if box == current %}
+                {% set urlboxindex = "/kommando/c=" + index | string() %}
+                {% set urlvokabelbox = "vokabelbox?l=" + index | string() %}
+                {% if index == aktueller_index %}
                 <tr>
                     <td>●</td>
                     <td><b> {{ box }} </b></td>
-                    <td> {{ statistiken[counter]['karten'] }} </td>
-                    <td><a href={{urlvokabelbox}}> {{ currentFrage }}</a></td>
                 </tr>
                 {% else %}
                 <tr>
                     <td></td>
                     <td><a href={{urlboxindex}}> {{ box }} </a></td>
-                    <td> {{ statistiken[counter]['karten'] }} </td>
-                    <td><a href={{urlvokabelbox}}> {{ currentFrage }} </a></td>
                 </tr>
                 {% endif %}
 	            {% endfor %}

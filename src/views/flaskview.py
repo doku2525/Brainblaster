@@ -1,48 +1,38 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect, url_for
 from threading import Thread
+import time
 
-from src.classes.lerneinheit import LerneinheitJapanisch
-from src.classes.vokabelbox import Vokabelbox
-from src.routes.flaskroutes import FlaskRoutes
-from src.routes.index import IndexRoute
 
 class FlaskView:
 
     def __init__(self) -> None:
 
         self.app = Flask(__name__, template_folder='templates')
-        self.routes = FlaskRoutes(self.app)
-        self.routes.register_routes()
 
-        @self.app.route('/create_box', methods=['POST'])
-        def create_box():
-            titel = request.form['titel']
-#            lernklasse = ...  # Hier die Lernklasse basierend auf der Benutzereingabe bestimmen
-#            selektor =   # ...
-            neue_box = Vokabelbox(titel,LerneinheitJapanisch)
-            #vokabelboxen_repo.append(neue_box)
-            print(f"Neue Box {neue_box}")
-            return render_template('success.html')
+#        self.routes = FlaskRoutes(self.app)
+#        self.routes.register_routes()
 
-        # route_index = IndexRoute('index.html')
-        #route_index = IndexRoute(trainer, 'index.html')
+        self.data = {}
+        self.cmd = None
+        self.warte_zeit = 0.25      # siehe Funktion warte_auf_update()
 
-        # @self.app.route('/')
-        # @self.app.route('/index')
-        # def index():
-        #     return route_index.render_template()
-        #
-        # @self.app.route('/vokabelbox')
-        # def vokabelbox():
-        #     return route_vokabelbox.render_template()
-        #
-        # @self.app.route('/testfrage')
-        # def testfrage():
-        #     return route_testfrage.render_template()
-        #
-        # @self.app.route('/vokabeln')
-        # def vokabeln():
-        #     return route_vokabeln.render_template()
+        @self.app.route('/')
+        @self.app.route('/index')
+        def index():
+            return render_template('index.html',
+                                   data=enumerate(self.data['liste']),
+                                   aktueller_index=self.data['aktueller_index'])
+
+        @self.app.route('/kommando/<cmd>')
+        def antwort(cmd):
+            self.cmd = cmd
+            self.warte_auf_update()
+            return redirect(url_for('index'))
+
+    def warte_auf_update(self):
+        """ Wartet solange, bis der Controller self.cmd gelesen hat und self.data mit neuen Daten geupdated hat."""
+        while self.cmd:
+            time.sleep(self.warte_zeit)
 
     def run(self):
         """Startet den Flask-Server in einem separaten Thread."""
