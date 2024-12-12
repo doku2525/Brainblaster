@@ -37,6 +37,7 @@ class VokabeltrainerController:
                 self.view.cmd = None
                 print(self.aktueller_zustand.daten_text_konsole())
             self.aktueller_zustand = self.aktueller_zustand.update_zeit(self.uhr.as_iso_format(Lernuhr.echte_zeit()))
+            self.view.data = self.aktueller_zustand.data
             time.sleep(0.25)
 
         print(self.aktueller_zustand.info_text_konsole())

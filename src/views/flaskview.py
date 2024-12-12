@@ -21,13 +21,19 @@ class FlaskView:
         def index():
             return render_template('index.html',
                                    data=enumerate(self.data['liste']),
-                                   aktueller_index=self.data['aktueller_index'])
+                                   aktueller_index=self.data['aktueller_index'],
+                                   aktuelle_uhrzeit=self.data['aktuelle_uhrzeit'][:-7])
 
         @self.app.route('/kommando/<cmd>')
         def antwort(cmd):
             self.cmd = cmd
             self.warte_auf_update()
             return redirect(url_for('index'))
+
+        @self.app.route('/get_aktuelle_uhrzeit')
+        def get_aktuelle_uhrzeit():
+            print(f" {self.data['aktuelle_uhrzeit']} ")
+            return jsonify(self.data['aktuelle_uhrzeit'][:-7])
 
     def warte_auf_update(self):
         """ Wartet solange, bis der Controller self.cmd gelesen hat und self.data mit neuen Daten geupdated hat."""
