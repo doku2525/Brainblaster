@@ -5,13 +5,14 @@ from typing import Any, Callable
 
 
 @dataclass(frozen=True)
-class Zustand:
+class Zustand(ABC):
     data: dict = field(default_factory=dict)
     parent: Zustand | None = field(default=None)
     child: list[Zustand] = field(default_factory=list)
     beschreibung: str = field(default_factory=str)
     titel: str = field(default_factory=str)
     kommandos: list[str] = field(default_factory=list)
+    aktuelle_zeit: str = field(default_factory=str)
 
     def daten_text_konsole(self, presenter: Callable[[dict], str] = None) -> str | None:
         """Erzeuge prettyprint-String der Daten des Zsuatnds fuer die Konsole"""
@@ -30,6 +31,9 @@ class Zustand:
     def verarbeite_userinput(self, index_child: str) -> tuple[Zustand, Callable, tuple]:
         """Verarbeite den userinput"""
         return (self.child[int(index_child)], lambda: None, tuple()) if index_child else (self, lambda: None, tuple())
+
+    def update_zeit(self, neue_zeit_im_iso_format: str):
+        return replace(self, aktuelle_zeit=neue_zeit_im_iso_format)
 
 
 @dataclass(frozen=True)
@@ -54,13 +58,16 @@ class ZustandStart(Zustand):
     def __post_init__(self):
         object.__setattr__(self,
                            'data',
-                           {'liste': self.liste, 'aktueller_index': self.aktueller_index} if self.liste else {})
+                           {'liste': self.liste,
+                            'aktueller_index': self.aktueller_index,
+                            'aktuelle_uhrzeit': self.aktuelle_zeit} if self.liste else {})
 
     def daten_text_konsole(self, presenter: Callable = None) -> str:
         """Erzeuge prettyprint-String der Daten des Zustands fuer die Konsole"""
         return (f" {self.titel}\n" +
                 f"\t {self.beschreibung}\n" +
                 ''.join([f"{index:2d} : {boxtitel}\n" for index, boxtitel in enumerate(self.liste)]) +
+                f" Aktuelle Uhrzeit: {self.aktuelle_zeit}\n" +
                 f" Aktuelle Box: {self.liste[self.aktueller_index]}") if not presenter else presenter(self.data)
 
     def verarbeite_userinput(self, index_child: str) -> tuple[Zustand, Callable, tuple]:

@@ -22,11 +22,11 @@ class VokabeltrainerController:
         self.view = view
 
     def programm_loop(self):
-        fortsetzen = True
         self.modell.vokabelkarten.laden()
         self.modell.vokabelboxen.laden()
         self.aktueller_zustand = ZustandStart(liste=self.modell.vokabelboxen.titel_aller_vokabelboxen(),
-                                              aktueller_index=self.modell.index_aktuelle_box)
+                                              aktueller_index=self.modell.index_aktuelle_box,
+                                              aktuelle_zeit=self.uhr.as_iso_format(Lernuhr.echte_zeit()))
         self.view.data = self.aktueller_zustand.data
         print(self.aktueller_zustand.daten_text_konsole())
 
@@ -36,6 +36,7 @@ class VokabeltrainerController:
                 self.view.data = self.aktueller_zustand.data
                 self.view.cmd = None
                 print(self.aktueller_zustand.daten_text_konsole())
+            self.aktueller_zustand = self.aktueller_zustand.update_zeit(self.uhr.as_iso_format(Lernuhr.echte_zeit()))
             time.sleep(0.25)
 
         print(self.aktueller_zustand.info_text_konsole())
