@@ -142,8 +142,8 @@ class ZustandVeraenderLernuhr(Zustand):
 
     def verarbeite_userinput(self, index_child: str) -> tuple[Zustand, Callable, tuple]:
         def replace_datum_element_in_uhr_ersetzen(meine_uhr: Lernuhr, attribut: str, neuer_wert: str) -> Lernuhr:
-            sekunden = datetime.datetime.fromisoformat(neuer_wert).timestamp()
-            return replace(meine_uhr, **{attribut: sekunden})
+            zeit_in_millis = Lernuhr.isostring_to_millis(neuer_wert)
+            return replace(meine_uhr, **{attribut: zeit_in_millis})
 
         def replace_datum_element_in_uhr_zeitspanne(meine_uhr: Lernuhr, attribut: str, zeit_spanne: str) -> Lernuhr:
             einheit = zeit_spanne[-1]
@@ -166,12 +166,18 @@ class ZustandVeraenderLernuhr(Zustand):
             return self, lambda: None, tuple()
         if "s" == index_child[0]:
             return (replace(self,
-                            neue_uhr=select_replace_funktion(self.neue_uhr, 'start_zeit', index_child[1:])),
+                            **{'neue_uhr': select_replace_funktion(self.neue_uhr,
+                                                                   'start_zeit', index_child[1:]),
+                               'data': self.data | {'neue_uhrzeit':
+                                                    self.neue_uhr.as_iso_format(self.neue_uhr.echte_zeit())}}),
                     lambda: None,
                     tuple())
         if "k" == index_child[0]:
             return (replace(self,
-                            neue_uhr=select_replace_funktion(self.neue_uhr, 'kalkulations_zeit', index_child[1:])),
+                            **{'neue_uhr': select_replace_funktion(self.neue_uhr,
+                                                                   'kalkulations_zeit', index_child[1:]),
+                               'data': self.data | {'neue_uhrzeit':
+                                                    self.neue_uhr.as_iso_format(self.neue_uhr.echte_zeit())}}),
                     lambda: None,
                     tuple())
         if "t" == index_child[0]:
@@ -186,5 +192,10 @@ class ZustandVeraenderLernuhr(Zustand):
                 uhr = replace(self.neue_uhr, modus=UhrStatus.LAEUFT)
             else:
                 return self, lambda: None, tuple()
-            return replace(self, neue_uhr=uhr), lambda: None, tuple()
+            return (replace(self,
+                            **{'neue_uhr': uhr,
+                               'data': self.data | {'neue_uhrzeit':
+                                                    self.neue_uhr.as_iso_format(self.neue_uhr.echte_zeit())}}),
+                    lambda: None,
+                    tuple())
         return self, lambda: None, tuple()

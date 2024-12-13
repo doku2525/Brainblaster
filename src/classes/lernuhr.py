@@ -18,6 +18,8 @@ class UhrStatus(Enum):
 
 
 """
+Die Lernuhr rechnet intern in Millisekunden. Deshalb sollten keine externen Funktionen aus dem datetime-Modul benutzt
+werden. Hier in Lernuhr sind Funktionen echte_zeit(), isostring_to_millis() und as_isostring() definiert.
 Der Standardfall fuer Lernuhr waere eine Pause beim Testen usw. wieder aufzuholen.
     Problem: Seit 10 Tagen das Programm nicht mehr benutzt und jetzt ist ein riesen Zahl an zu testenden Vokabeln.
     Loesung: start_zeit=jetzt-10Tage und kalkulations_zeit=jetzt und tempo=2.0
@@ -29,6 +31,7 @@ Der Standardfall fuer Lernuhr waere eine Pause beim Testen usw. wieder aufzuhole
 
 @dataclass(frozen=True)
 class Lernuhr:
+    """Alle Zeitangaben sind in Millisekunden. Bei Werten in Sekunden wird das expliziet angegeben!"""
     kalkulations_zeit: int = 0
     start_zeit: int = 0
     tempo: float = 1.0
@@ -45,6 +48,8 @@ class Lernuhr:
 
     @staticmethod
     def echte_zeit() -> int:
+        """Liefert die reale Zeit vom System in Millisekunden.
+        Diese Funktion ist die Schnittstelle zum Betriebssystem"""
         return int(time.time() * 1000)
 
     def speicher_in_jsondatei(self, json_dateiname: str) -> None:
@@ -63,9 +68,9 @@ class Lernuhr:
         return replace(result, start_zeit=Lernuhr.isostring_to_millis(result.start_zeit))
 
     @staticmethod
-    def isostring_to_millis(isostring: String) -> int:
+    def isostring_to_millis(isostring: str) -> int:
         """Zum Beispiel: isostring_to_millis('2024-04-11 06:00')"""
-        return int(datetime.datetime.fromisoformat(isostring).timestamp()*1000)
+        return int(datetime.datetime.fromisoformat(isostring).timestamp() * 1000)
 
     def now(self, zeitpunkt_in_ms: int | float = 0) -> int:
         """Als Normalfall sollte die aktuelle Zeit Lernuhr.echte_zeit() uebergeben werden"""
@@ -96,7 +101,7 @@ class Lernuhr:
             return Lernuhr(self.kalkulations_zeit + pausen_ende_in_ms - self.pause,
                            self.start_zeit, self.tempo, 0, UhrStatus.LAEUFT)
 
-    def reset(self, neue_kalkulations_zeit: int = 0) -> Lernuhr:
+    def reset(self, neue_kalkulations_zeit_in_ms: int = 0) -> Lernuhr:
         """
         Als Normalfall sollte die aktuelle Zeit Lernuhr.echte_zeit() uebergeben werden
 
@@ -107,12 +112,12 @@ class Lernuhr:
             Zum Beispiel:
                 100 Tage Unterschied und Aenderung um 0.1 ist ein Sprung von 10 Tagen.
                 1 Tag Unterschied und eine Aenderung um 0.1 ist ein Sprung von 144 Minuten"""
-        return Lernuhr(neue_kalkulations_zeit, self.start_zeit, self.tempo, 0, UhrStatus.LAEUFT)
+        return Lernuhr(neue_kalkulations_zeit_in_ms, self.start_zeit, self.tempo, 0, UhrStatus.LAEUFT)
 
-    def as_iso_format(self, zeit: int | float = 0) -> str:
+    def as_iso_format(self, zeit_in_ms: int | float = 0) -> str:
         """Als Normalfall sollte die aktuelle Zeit Lernuhr.echte_zeit() uebergeben werden"""
-        return datetime.datetime.fromtimestamp(self.now(zeit) / 1000).strftime('%F %T.%f')
+        return datetime.datetime.fromtimestamp(self.now(zeit_in_ms) / 1000).strftime('%F %T.%f')
 
-    def as_date(self, zeit: int | float = 0) -> datetime.date:
+    def as_date(self, zeit_in_ms: int | float = 0) -> datetime.date:
         """Als Normalfall sollte die aktuelle Zeit Lernuhr.echte_zeit() uebergeben werden"""
-        return datetime.datetime.fromtimestamp(self.now(zeit) / 1000).date()
+        return datetime.datetime.fromtimestamp(self.now(zeit_in_ms) / 1000).date()
