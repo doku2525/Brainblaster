@@ -42,6 +42,11 @@ class VokabeltrainerController:
         while not isinstance(self.aktueller_zustand, ZustandENDE):
             if self.view.cmd and self.view.cmd[0] == 'c':
                 self.aktueller_zustand, cmd, args = self.aktueller_zustand.verarbeite_userinput(self.view.cmd[1:])
+                # TODO Problem mit neuen Zustaenden.
+                #   Jeder Zustand bekommt create-Klassenvariable. diese wird als cmd uebergeben. ZustandX().creeate.
+                #   self.aktuellerZustand ist dann None. args ist dann die Funktion zum bauen der Argumente.
+                #   f() -> dict. So dass dann cmd(**args()) aufgerufen wird, wenn aktueller_zustand None ist
+
                 print(f"AktuellerZustand {self.aktueller_zustand}")
                 self.view.data = self.aktueller_zustand.data
                 self.view.cmd = None
