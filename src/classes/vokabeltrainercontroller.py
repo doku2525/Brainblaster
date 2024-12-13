@@ -25,7 +25,8 @@ class VokabeltrainerController:
     def buildZustandStart(self, zustand: ZustandStart) -> ZustandStart:
         return replace(zustand, **{'liste': self.modell.vokabelboxen.titel_aller_vokabelboxen(),
                                    'aktueller_index': self.modell.index_aktuelle_box,
-                                   'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit())})
+                                   'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit()),
+                                   'child': (ZustandVeraenderLernuhr(), ZustandENDE())})
 
     def buildZustandVeraenderLernuhr(self, zustand: ZustandVeraenderLernuhr) -> ZustandVeraenderLernuhr:
         raise NotImplementedError
@@ -36,15 +37,16 @@ class VokabeltrainerController:
         self.aktueller_zustand = self.buildZustandStart(ZustandStart())
         self.view.data = self.aktueller_zustand.data
         print(self.aktueller_zustand.daten_text_konsole())
+        print(self.aktueller_zustand.info_text_konsole())
 
         while not isinstance(self.aktueller_zustand, ZustandENDE):
             if self.view.cmd and self.view.cmd[0] == 'c':
                 self.aktueller_zustand, cmd, args = self.aktueller_zustand.verarbeite_userinput(self.view.cmd[1:])
-                if self.aktueller_zustand is None:
-                    self.aktueller_zustand = cmd(args)
+                print(f"AktuellerZustand {self.aktueller_zustand}")
                 self.view.data = self.aktueller_zustand.data
                 self.view.cmd = None
                 print(self.aktueller_zustand.daten_text_konsole())
+                print(self.aktueller_zustand.info_text_konsole())
             self.aktueller_zustand = self.aktueller_zustand.update_zeit(self.uhr.as_iso_format(Lernuhr.echte_zeit()))
             self.view.data = self.aktueller_zustand.data
             time.sleep(0.25)

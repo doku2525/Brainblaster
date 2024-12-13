@@ -35,6 +35,12 @@ class FlaskView:
             print(f" {self.data['aktuelle_uhrzeit']} ")
             return jsonify(self.data['aktuelle_uhrzeit'][:-7])
 
+        @self.app.route('/kommando_konsole/<cmd>')
+        def kommando_konsole(cmd):
+            self.cmd = cmd
+            self.warte_auf_update()
+            return jsonify(self.data)
+
     def warte_auf_update(self):
         """ Wartet solange, bis der Controller self.cmd gelesen hat und self.data mit neuen Daten geupdated hat."""
         while self.cmd:
