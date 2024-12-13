@@ -26,10 +26,14 @@ class VokabeltrainerController:
         return replace(zustand, **{'liste': self.modell.vokabelboxen.titel_aller_vokabelboxen(),
                                    'aktueller_index': self.modell.index_aktuelle_box,
                                    'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit()),
-                                   'child': (ZustandVeraenderLernuhr(), ZustandENDE())})
+                                   'child': (self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),
+                                             ZustandENDE())})
 
     def buildZustandVeraenderLernuhr(self, zustand: ZustandVeraenderLernuhr) -> ZustandVeraenderLernuhr:
-        raise NotImplementedError
+        if zustand.aktuelle_zeit == '':
+            return replace(zustand, **{'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit()),
+                                        'neue_uhr': self.uhr})
+        return zustand
 
     def programm_loop(self):
         self.modell.vokabelkarten.laden()
