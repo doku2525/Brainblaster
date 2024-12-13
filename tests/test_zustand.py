@@ -401,3 +401,7 @@ class test_Zustand(TestCase):
         self.assertEqual('1970-01-01 01:01:00',
                          f"{datetime.datetime.fromtimestamp(result.neue_uhr.start_zeit):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.start_zeit)
+
+# TODO Schreibe noch Tests, die die richtige Funktionalitaet der Uhr prueft. Hatte grosse Probleme,
+#  weil in der '='-Hilfsfunktion nicht die Funktion iso_to_millis() aus Lerhnuhr, sondern die Funktion aus datetime
+#  benutzt wurde und deshalb Sekunden-Werte in mein Millisekunden-Lernuhrsystem kamen.
