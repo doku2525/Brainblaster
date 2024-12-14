@@ -117,7 +117,6 @@ class test_Zustand(TestCase):
     def test_info_text_konsole(self):
         objekt = Zustand()
         expected_output = ("----------\n" +
-                           "* Die verfuegbaren Zustaende\n" +
                            "* Die verfuegbaren Kommandos\n")
         self.assertEqual(expected_output, objekt.info_text_konsole())
 
@@ -125,7 +124,7 @@ class test_Zustand(TestCase):
         objekt = ZustandStart()
         expected_output = ("----------\n" +
                            "* Die verfuegbaren Zustaende\n" +
-                           "\t0 ENDE : Beende Programm\n" +
+                           "\t1 ENDE : Beende Programm\n" +
                            "* Die verfuegbaren Kommandos\n" +
                            "\t'+' + Zahl\n" +
                            "\t'-' + Zahl\n" +
@@ -135,7 +134,6 @@ class test_Zustand(TestCase):
     def test_info_text_konsole_zustand_veraender_lernuhr(self):
         objekt = ZustandVeraenderLernuhr()
         expected_output = ("----------\n" +
-                           "* Die verfuegbaren Zustaende\n" +
                            "* Die verfuegbaren Kommandos\n" +
                            "\t's' + Zahl\n" +
                            "\t'k' + Zahl\n" +
@@ -252,14 +250,15 @@ class test_Zustand(TestCase):
 
         iso_string = '2024-01-01 00:00:00'
         result, fun, args = objekt.verarbeite_userinput(f"k={iso_string}")
-        sekunden = datetime.datetime.fromisoformat(iso_string).timestamp()
+        sekunden = datetime.datetime.fromisoformat(iso_string).timestamp() * 1000
 
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
         self.assertEqual(sekunden, result.neue_uhr.kalkulations_zeit)
-        self.assertEqual(iso_string,
-                         f"{datetime.datetime.fromtimestamp(result.neue_uhr.kalkulations_zeit):%Y-%m-%d %H:%M:%S}")
+        self.assertEqual(
+            iso_string,
+            f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.kalkulations_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.kalkulations_zeit)
 
         # iso_string = '2024-01-01 00:00:00'
@@ -269,9 +268,10 @@ class test_Zustand(TestCase):
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
-        self.assertEqual(24 * 60 * 60, result.neue_uhr.kalkulations_zeit)
-        self.assertEqual('1970-01-02 01:00:00',
-                         f"{datetime.datetime.fromtimestamp(result.neue_uhr.kalkulations_zeit):%Y-%m-%d %H:%M:%S}")
+        self.assertEqual(24 * 60 * 60 * 1000, result.neue_uhr.kalkulations_zeit)
+        self.assertEqual(
+            '1970-01-02 01:00:00',
+            f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.kalkulations_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.kalkulations_zeit)
 
         # iso_string = '2024-01-01 00:00:00'
@@ -281,9 +281,10 @@ class test_Zustand(TestCase):
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
-        self.assertEqual(24 * 60 * 60 * -1, result.neue_uhr.kalkulations_zeit)
-        self.assertEqual('1969-12-31 01:00:00',
-                         f"{datetime.datetime.fromtimestamp(result.neue_uhr.kalkulations_zeit):%Y-%m-%d %H:%M:%S}")
+        self.assertEqual(24 * 60 * 60 * -1000, result.neue_uhr.kalkulations_zeit)
+        self.assertEqual(
+            '1969-12-31 01:00:00',
+            f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.kalkulations_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.kalkulations_zeit)
 
         # iso_string = '2024-01-01 00:00:00'
@@ -293,9 +294,10 @@ class test_Zustand(TestCase):
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
-        self.assertEqual(60 * 60, result.neue_uhr.kalkulations_zeit)
-        self.assertEqual('1970-01-01 02:00:00',
-                         f"{datetime.datetime.fromtimestamp(result.neue_uhr.kalkulations_zeit):%Y-%m-%d %H:%M:%S}")
+        self.assertEqual(60 * 60 * 1000, result.neue_uhr.kalkulations_zeit)
+        self.assertEqual(
+            '1970-01-01 02:00:00',
+            f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.kalkulations_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.kalkulations_zeit)
 
         # iso_string = '2024-01-01 00:00:00'
@@ -305,9 +307,10 @@ class test_Zustand(TestCase):
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
-        self.assertEqual(60 * 60 * -1, result.neue_uhr.kalkulations_zeit)
-        self.assertEqual('1970-01-01 00:00:00',
-                         f"{datetime.datetime.fromtimestamp(result.neue_uhr.kalkulations_zeit):%Y-%m-%d %H:%M:%S}")
+        self.assertEqual(60 * 60 * -1000, result.neue_uhr.kalkulations_zeit)
+        self.assertEqual(
+            '1970-01-01 00:00:00',
+            f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.kalkulations_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.kalkulations_zeit)
 
         # iso_string = '2024-01-01 00:00:00'
@@ -317,9 +320,10 @@ class test_Zustand(TestCase):
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
-        self.assertEqual(60, result.neue_uhr.kalkulations_zeit)
-        self.assertEqual('1970-01-01 01:01:00',
-                         f"{datetime.datetime.fromtimestamp(result.neue_uhr.kalkulations_zeit):%Y-%m-%d %H:%M:%S}")
+        self.assertEqual(60 * 1000, result.neue_uhr.kalkulations_zeit)
+        self.assertEqual(
+            '1970-01-01 01:01:00',
+            f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.kalkulations_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.kalkulations_zeit)
 
     def test_verarbeite_userinput_zustand_veraender_lernuhr_option_s(self):
@@ -332,14 +336,15 @@ class test_Zustand(TestCase):
 
         iso_string = '2024-01-01 00:00:00'
         result, fun, args = objekt.verarbeite_userinput(f"s={iso_string}")
-        sekunden = datetime.datetime.fromisoformat(iso_string).timestamp()
+        sekunden = datetime.datetime.fromisoformat(iso_string).timestamp() * 1000
 
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
         self.assertEqual(sekunden, result.neue_uhr.start_zeit)
-        self.assertEqual(iso_string,
-                         f"{datetime.datetime.fromtimestamp(result.neue_uhr.start_zeit):%Y-%m-%d %H:%M:%S}")
+        self.assertEqual(
+            iso_string,
+            f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.start_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.start_zeit)
 
         # iso_string = '2024-01-01 00:00:00'
@@ -349,9 +354,10 @@ class test_Zustand(TestCase):
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
-        self.assertEqual(24 * 60 * 60, result.neue_uhr.start_zeit)
-        self.assertEqual('1970-01-02 01:00:00',
-                         f"{datetime.datetime.fromtimestamp(result.neue_uhr.start_zeit):%Y-%m-%d %H:%M:%S}")
+        self.assertEqual(24 * 60 * 60 * 1000, result.neue_uhr.start_zeit)
+        self.assertEqual(
+            '1970-01-02 01:00:00',
+            f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.start_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.start_zeit)
 
         # iso_string = '2024-01-01 00:00:00'
@@ -361,9 +367,10 @@ class test_Zustand(TestCase):
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
-        self.assertEqual(24 * 60 * 60 * -1, result.neue_uhr.start_zeit)
-        self.assertEqual('1969-12-31 01:00:00',
-                         f"{datetime.datetime.fromtimestamp(result.neue_uhr.start_zeit):%Y-%m-%d %H:%M:%S}")
+        self.assertEqual(24 * 60 * 60 * -1000, result.neue_uhr.start_zeit)
+        self.assertEqual(
+            '1969-12-31 01:00:00',
+            f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.start_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.start_zeit)
 
         # iso_string = '2024-01-01 00:00:00'
@@ -373,9 +380,10 @@ class test_Zustand(TestCase):
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
-        self.assertEqual(60 * 60, result.neue_uhr.start_zeit)
-        self.assertEqual('1970-01-01 02:00:00',
-                         f"{datetime.datetime.fromtimestamp(result.neue_uhr.start_zeit):%Y-%m-%d %H:%M:%S}")
+        self.assertEqual(60 * 60 * 1000, result.neue_uhr.start_zeit)
+        self.assertEqual(
+            '1970-01-01 02:00:00',
+            f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.start_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.start_zeit)
 
         # iso_string = '2024-01-01 00:00:00'
@@ -385,9 +393,10 @@ class test_Zustand(TestCase):
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
-        self.assertEqual(60 * 60 * -1, result.neue_uhr.start_zeit)
-        self.assertEqual('1970-01-01 00:00:00',
-                         f"{datetime.datetime.fromtimestamp(result.neue_uhr.start_zeit):%Y-%m-%d %H:%M:%S}")
+        self.assertEqual(60 * 60 * -1000, result.neue_uhr.start_zeit)
+        self.assertEqual(
+            '1970-01-01 00:00:00',
+            f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.start_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.start_zeit)
 
         # iso_string = '2024-01-01 00:00:00'
@@ -397,9 +406,10 @@ class test_Zustand(TestCase):
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
-        self.assertEqual(60, result.neue_uhr.start_zeit)
-        self.assertEqual('1970-01-01 01:01:00',
-                         f"{datetime.datetime.fromtimestamp(result.neue_uhr.start_zeit):%Y-%m-%d %H:%M:%S}")
+        self.assertEqual(60 * 1000, result.neue_uhr.start_zeit)
+        self.assertEqual(
+            '1970-01-01 01:01:00',
+            f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.start_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.start_zeit)
 
 # TODO Schreibe noch Tests, die die richtige Funktionalitaet der Uhr prueft. Hatte grosse Probleme,

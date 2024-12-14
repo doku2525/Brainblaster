@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 from src.classes.lernuhr import Lernuhr
 from src.classes.filterlistenfactory import FilterlistenFactory
-from src.classes.zustand import Zustand, ZustandStart, ZustandENDE, ZustandVeraenderLernuhr
+from src.classes.zustand import Zustand, ZustandStart, ZustandENDE, ZustandVeraenderLernuhr, ZustandReturnValue
 
 if TYPE_CHECKING:
     from src.classes.vokabeltrainermodell import VokabeltrainerModell
@@ -32,8 +32,18 @@ class VokabeltrainerController:
     def buildZustandVeraenderLernuhr(self, zustand: ZustandVeraenderLernuhr) -> ZustandVeraenderLernuhr:
         if zustand.aktuelle_zeit == '':
             return replace(zustand, **{'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit()),
-                                        'neue_uhr': self.uhr})
+                                       'neue_uhr': self.uhr})
         return zustand
+
+    def update_uhr(self, neue_uhr: Lernuhr) -> None:
+        self.uhr = neue_uhr
+
+    def execute_kommando(self, kommando_string: str) -> Zustand:
+        commands = {'update_uhr': self.update_uhr}
+        result = self.aktueller_zustand.verarbeite_userinput(kommando_string)
+        if cmd := commands.get(result.cmd, False):
+            cmd(*result.args)
+        return result.zustand
 
     def programm_loop(self):
         self.modell.vokabelkarten.laden()
@@ -45,7 +55,9 @@ class VokabeltrainerController:
 
         while not isinstance(self.aktueller_zustand, ZustandENDE):
             if self.view.cmd and self.view.cmd[0] == 'c':
-                self.aktueller_zustand, cmd, args = self.aktueller_zustand.verarbeite_userinput(self.view.cmd[1:])
+                # Scheibe funktion self.execute_kommando_interpreter(zustand, interpreter, cmd
+                #   das systemcommands des vokabeltrainers mit uebergibt.
+                self.aktueller_zustand = self.execute_kommando(self.view.cmd[1:])
                 # TODO Problem mit neuen Zustaenden.
                 #   Jeder Zustand bekommt create-Klassenvariable. diese wird als cmd uebergeben. ZustandX().creeate.
                 #   self.aktuellerZustand ist dann None. args ist dann die Funktion zum bauen der Argumente.

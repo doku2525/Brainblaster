@@ -1,10 +1,17 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+from collections import namedtuple
 from dataclasses import dataclass, field, replace
 import datetime
-from typing import Any, Callable, TYPE_CHECKING
+from typing import Any, Callable, NamedTuple, TYPE_CHECKING
 
 from src.classes.lernuhr import Lernuhr, UhrStatus
+
+
+class ZustandReturnValue(NamedTuple):
+    zustand: Zustand
+    cmd: Callable
+    args: tuple
 
 
 @dataclass(frozen=True)
@@ -23,17 +30,27 @@ class Zustand(ABC):
 
     def info_text_konsole(self) -> str:
         """Erzeuge prettyprint-String mit den moeglichen Aktionen des Zustands fuer die Konsole"""
+        # Zeige zuerst Parent mit 0 als index an
+        # Dann alle Child mit 1 ... x
+        # Dann alle Kommandos des Zustands
         return (
             f"{'-'*10}\n" +
-            "* Die verfuegbaren Zustaende\n" +
-            "".join(
-                [f"\t{index} {zustand.titel} : {zustand.beschreibung}\n" for index, zustand in enumerate(self.child)]) +
+            (f"* Zureck\n\t0 {self.parent.titel} : {self.parent.beschreibung}\n" if self.parent else "") +
+            ("* Die verfuegbaren Zustaende\n" +
+             "".join(
+                [f"\t{index} {zustand.titel} : {zustand.beschreibung}\n"
+                 for index, zustand
+                 in enumerate(self.child, 1)]) if self.child else "") +
             f"* Die verfuegbaren Kommandos\n" +
             "".join([f"\t'{command}' + Zahl\n" for command in self.kommandos]))
 
-    def verarbeite_userinput(self, index_child: str) -> tuple[Zustand, Callable, tuple]:
+    def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:
         """Verarbeite den userinput"""
-        return (self.child[int(index_child)], lambda: None, tuple()) if index_child else (self, lambda: None, tuple())
+        if index_child and int(index_child[0]) == 0:    # 0 = Zurueck zum vorherigen Zustand
+            return ZustandReturnValue(self.parent, lambda: None, tuple())
+        return ZustandReturnValue(
+            zustand=replace(self.child[int(index_child) - 1], parent=self), cmd=lambda: None, args=tuple()
+        ) if index_child else ZustandReturnValue(self, lambda: None, tuple())  # Leere String => self als neuer Zustand
 
     def update_zeit(self, neue_zeit_im_iso_format: str):
         return replace(self, aktuelle_zeit=neue_zeit_im_iso_format)
@@ -46,7 +63,7 @@ class ZustandENDE(Zustand):
 
     def info_text_konsole(self) -> str:
         """Erzeuge prettyprint-String mit den moeglichen Aktionen des Zustands fuer die Konsole"""
-        return f"Ciao!"
+        return f"Ciao! {self.parent}"
 
 
 @dataclass(frozen=True)
@@ -64,6 +81,7 @@ class ZustandStart(Zustand):
                            {'liste': self.liste,
                             'aktueller_index': self.aktueller_index,
                             'aktuelle_uhrzeit': self.aktuelle_zeit} if self.liste else {})
+        object.__setattr__(self, 'parent', None)    # Der StartZustand hat kein parent!!!
 
     def daten_text_konsole(self, presenter: Callable = None) -> str:
         """Erzeuge prettyprint-String der Daten des Zustands fuer die Konsole"""
@@ -73,23 +91,22 @@ class ZustandStart(Zustand):
                 f" Aktuelle Uhrzeit: {self.aktuelle_zeit}\n" +
                 f" Aktuelle Box: {self.liste[self.aktueller_index]}") if not presenter else presenter(self.data)
 
-    def verarbeite_userinput(self, index_child: str) -> tuple[Zustand, Callable, tuple]:
+    def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:
         """Verarbeite den userinput"""
         if index_child == '':
-            return self, lambda: None, tuple()
+            return ZustandReturnValue(self, lambda: None, tuple())
         if "+" == index_child[0]:
-            return (replace(self,
-                            aktueller_index=min(len(self.liste)-1, self.aktueller_index + int(index_child[1:]))),
-                    lambda: None,
-                    tuple())
+            return ZustandReturnValue(replace(self,
+                                              aktueller_index=min(len(self.liste)-1,
+                                                                  self.aktueller_index + int(index_child[1:]))),
+                                      lambda: None, tuple())
         if "-" == index_child[0]:
-            return (replace(self,
-                            aktueller_index=max(0, self.aktueller_index - int(index_child[1:]))),
-                    lambda: None,
-                    tuple())
+            return ZustandReturnValue(replace(self,
+                                              aktueller_index=max(0, self.aktueller_index - int(index_child[1:]))),
+                                      lambda: None, tuple())
         if "=" == index_child[0]:
             kontrollierter_wert = min(len(self.liste)-1, max(0, int(index_child[1:])))
-            return replace(self, aktueller_index=kontrollierter_wert), lambda: None, tuple()
+            return ZustandReturnValue(replace(self, aktueller_index=kontrollierter_wert), lambda: None, tuple())
         return super().verarbeite_userinput(index_child)
 
 
@@ -106,6 +123,7 @@ class ZustandVeraenderLernuhr(Zustand):
     #  um neue_uhrzeit zu definieren. Alle weiteren Vorkommen von self.neue_uhr koennte man auch durch
     #  Operationen auf das JSON-Dictionary ausfuehren und dann im Controller die neue Lernuhr mit Lernuhr.fromdict()
     #  wieder zusammenbauen.
+    # TODO Es sollte auch die echte_zeit uebergeben werden. Z.B. fuer Rest usw.
 
     def __post_init__(self):
         object.__setattr__(self,
@@ -113,6 +131,7 @@ class ZustandVeraenderLernuhr(Zustand):
                            ({'aktuelle_uhrzeit': self.aktuelle_zeit if self.aktuelle_zeit else ''} |
                             {'neue_uhrzeit': self.neue_uhr.as_iso_format(Lernuhr.echte_zeit())
                              if self.neue_uhr else ''}))
+        object.__setattr__(self, 'child', [self.parent] if self.parent else [])
 
     def daten_text_konsole(self, presenter: Callable = None) -> str:
         """Erzeuge prettyprint-String der Daten des Zustands fuer die Konsole"""
@@ -140,7 +159,7 @@ class ZustandVeraenderLernuhr(Zustand):
         oder Speichern. Dann wird das Kommando wechsel_uhr(neue_uhr) [Muss noch implemntiert werden] in
         vokabeltrainercontroller aufgerufen. return neuerZustand, wechsel_uhr, (self.neue_uhr,)"""
 
-    def verarbeite_userinput(self, index_child: str) -> tuple[Zustand, Callable, tuple]:
+    def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:
         def replace_datum_element_in_uhr_ersetzen(meine_uhr: Lernuhr, attribut: str, neuer_wert: str) -> Lernuhr:
             zeit_in_millis = Lernuhr.isostring_to_millis(neuer_wert)
             return replace(meine_uhr, **{attribut: zeit_in_millis})
@@ -153,7 +172,8 @@ class ZustandVeraenderLernuhr(Zustand):
                 case 'h': time_delta = datetime.timedelta(hours=dauer)
                 case 'm': time_delta = datetime.timedelta(minutes=dauer)
                 case _: return meine_uhr    # kein definiertes Kommando gefunden.
-            return replace(meine_uhr, **{attribut: meine_uhr.__getattribute__(attribut) + time_delta.total_seconds()})
+            return replace(meine_uhr,
+                           **{attribut: meine_uhr.__getattribute__(attribut) + time_delta.total_seconds() * 1000})
 
         def select_replace_funktion(meine_uhr: Lernuhr, attribut: str, kommando_str: str) -> Lernuhr:
             if '=' == kommando_str[0]:
@@ -163,26 +183,26 @@ class ZustandVeraenderLernuhr(Zustand):
             return meine_uhr    # Kein definiertes Kommando gefunden
 
         if index_child == '':
-            return self, lambda: None, tuple()
+            return ZustandReturnValue(self, lambda: None, tuple())
         if "s" == index_child[0]:
-            return (replace(self,
-                            **{'neue_uhr': select_replace_funktion(self.neue_uhr,
-                                                                   'start_zeit', index_child[1:]),
-                               'data': self.data | {'neue_uhrzeit':
-                                                    self.neue_uhr.as_iso_format(self.neue_uhr.echte_zeit())}}),
-                    lambda: None,
-                    tuple())
+            return ZustandReturnValue(replace(self,
+                                              **{'neue_uhr': select_replace_funktion(
+                                                  self.neue_uhr, 'start_zeit', index_child[1:]),
+                                                  'data': self.data | {'neue_uhrzeit':
+                                                                       self.neue_uhr.as_iso_format(
+                                                                           self.neue_uhr.echte_zeit())}}),
+                                      lambda: None, tuple())
         if "k" == index_child[0]:
-            return (replace(self,
-                            **{'neue_uhr': select_replace_funktion(self.neue_uhr,
-                                                                   'kalkulations_zeit', index_child[1:]),
-                               'data': self.data | {'neue_uhrzeit':
-                                                    self.neue_uhr.as_iso_format(self.neue_uhr.echte_zeit())}}),
-                    lambda: None,
-                    tuple())
+            return ZustandReturnValue(replace(self,
+                                              **{'neue_uhr': select_replace_funktion(
+                                                  self.neue_uhr, 'kalkulations_zeit', index_child[1:]),
+                                                  'data': self.data | {'neue_uhrzeit':
+                                                                       self.neue_uhr.as_iso_format(
+                                                                           self.neue_uhr.echte_zeit())}}),
+                                      lambda: None, tuple())
         if "t" == index_child[0]:
             uhr = replace(self.neue_uhr, tempo=float(index_child[1:]))
-            return replace(self, neue_uhr=uhr), lambda: None, tuple()
+            return ZustandReturnValue(replace(self, neue_uhr=uhr), lambda: None, tuple())
         if "z" == index_child[0]:
             if index_child[1] == "e":
                 uhr = replace(self.neue_uhr, modus=UhrStatus.ECHT)
@@ -191,11 +211,17 @@ class ZustandVeraenderLernuhr(Zustand):
             elif index_child[1] == "l":
                 uhr = replace(self.neue_uhr, modus=UhrStatus.LAEUFT)
             else:
-                return self, lambda: None, tuple()
-            return (replace(self,
-                            **{'neue_uhr': uhr,
-                               'data': self.data | {'neue_uhrzeit':
-                                                    self.neue_uhr.as_iso_format(self.neue_uhr.echte_zeit())}}),
-                    lambda: None,
-                    tuple())
-        return self, lambda: None, tuple()
+                return ZustandReturnValue(self, lambda: None, tuple())
+            return ZustandReturnValue(replace(self,
+                                              **{'neue_uhr': uhr,
+                                                 'data': self.data | {'neue_uhrzeit':
+                                                                      self.neue_uhr.as_iso_format(
+                                                                          self.neue_uhr.echte_zeit())}}),
+                                      lambda: None, tuple())
+        return (
+            super().verarbeite_userinput(index_child)
+        ) if (not index_child) or (index_child[0] == "0") else (   # Wenn 0 fuer Zurueck verwerfe Aenderungen
+            super().verarbeite_userinput(index_child)._replace(**{'cmd': 'update_uhr', 'args': (self.neue_uhr,)})
+        )
+
+    # TODO Kommandos fuer PAUSE und RESET implementieren
