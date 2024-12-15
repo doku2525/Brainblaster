@@ -190,48 +190,68 @@ class ZustandVeraenderLernuhr(Zustand):
             return {'neue_uhr': func(),
                     'data': self.data | {'neue_uhrzeit': meine_uhr.as_iso_format(meine_uhr.echte_zeit())}}
 
-        if index_child == '':                   # Leerer String
+        def handle_zustand(sub_kommando) -> ZustandReturnValue:
+            """Behandle die Kommandos fuer z = Zustand/Modus"""
+            sub_kommando_handler = {
+                "e": replace(self.neue_uhr, modus=UhrStatus.ECHT),
+                "p": replace(self.neue_uhr, modus=UhrStatus.PAUSE),
+                "l": replace(self.neue_uhr, modus=UhrStatus.LAEUFT)
+            }
+            if sub_kommando:
+                meine_uhr = sub_kommando_handler.get(sub_kommando[0], False)
+                return ZustandReturnValue(
+                    (replace(self,**erzeuge_dict_fuer_replace_command(self.neue_uhr, lambda: meine_uhr)
+                            ) if meine_uhr else self),
+                    lambda: None, tuple())
             return ZustandReturnValue(self, lambda: None, tuple())
-        if "s" == index_child[0]:               # 's' zum Stellen der start_zeit
-            return ZustandReturnValue(
-                replace(self,
-                        **erzeuge_dict_fuer_replace_command(
-                            self.neue_uhr,
-                            lambda: select_replace_funktion(self.neue_uhr, 'start_zeit', index_child[1:]))),
-                lambda: None, tuple())
-        if "k" == index_child[0]:               # 'k' zum Stellen der kalkulations_zeit
-            return ZustandReturnValue(
-                replace(self,
-                        **erzeuge_dict_fuer_replace_command(
-                            self.neue_uhr,
-                            lambda: select_replace_funktion(self.neue_uhr, 'kalkulations_zeit', index_child[1:]))),
-                lambda: None, tuple())
-        if "t" == index_child[0]:               # 't' zum Stellen des Tempos
-            uhr = replace(self.neue_uhr, tempo=float(index_child[1:]))
-            return ZustandReturnValue(replace(self, neue_uhr=uhr), lambda: None, tuple())
-        if "z" == index_child[0]:               # 'z' zum Stellen des Zustands/Modus
-            if index_child[1] == "e":
-                uhr = replace(self.neue_uhr, modus=UhrStatus.ECHT)
-            elif index_child[1] == "p":
-                uhr = replace(self.neue_uhr, modus=UhrStatus.PAUSE)
-            elif index_child[1] == "l":
-                uhr = replace(self.neue_uhr, modus=UhrStatus.LAEUFT)
-            else:
-                return ZustandReturnValue(self, lambda: None, tuple())
-            return ZustandReturnValue(replace(self, **erzeuge_dict_fuer_replace_command(self.neue_uhr, lambda: uhr)),
-                                      lambda: None, tuple())
-        if "p" == index_child[0]:               # 'p' zum Wechseln zwischen Pause und nicht Pause
-            uhr = self.neue_uhr
-            if index_child[1] == "b":       # Beginne Pause
-                uhr = self.neue_uhr.pausiere(self.neue_uhr.echte_zeit())
-            if index_child[1] == "e":       # Beende Pause
-                uhr = self.neue_uhr.beende_pause(self.neue_uhr.echte_zeit())
-            return ZustandReturnValue(replace(self, **erzeuge_dict_fuer_replace_command(self.neue_uhr, lambda: uhr)),
-                                      lambda: None, tuple())
-        if "r" == index_child[0]:               # 'r' zum Resten
-            uhr = self.neue_uhr.reset(self.neue_uhr.echte_zeit())
-            return ZustandReturnValue(replace(self, **erzeuge_dict_fuer_replace_command(self.neue_uhr, lambda: uhr)),
-                                      lambda: None, tuple())
+
+        def handle_pause(sub_kommando) -> ZustandReturnValue:
+            """Behandle die Kommandos fuer p = Pause"""
+            sub_kommando_handler = {
+                "b": self.neue_uhr.beende_pause(self.neue_uhr.echte_zeit()),
+                "e": self.neue_uhr.pausiere(self.neue_uhr.echte_zeit())
+            }
+            if sub_kommando:
+                meine_uhr = sub_kommando_handler.get(sub_kommando[0], False)
+                return ZustandReturnValue(
+                    (replace(self,**erzeuge_dict_fuer_replace_command(self.neue_uhr, lambda: meine_uhr)
+                            ) if meine_uhr else self),
+                    lambda: None, tuple())
+            return ZustandReturnValue(self, lambda: None, tuple())
+
+        # Definiere die Kommandohandler in der ersten Ebene.
+        kommando_handlers = {
+            's': lambda: ZustandReturnValue(replace(self,
+                                                    **erzeuge_dict_fuer_replace_command(
+                                                        self.neue_uhr, lambda: select_replace_funktion(
+                                                            self.neue_uhr, 'start_zeit', index_child[1:]))
+                                                    ), lambda: None, tuple()),
+            'k': lambda: ZustandReturnValue(replace(self,
+                                                    **erzeuge_dict_fuer_replace_command(
+                                                        self.neue_uhr, lambda: select_replace_funktion(
+                                                            self.neue_uhr, 'kalkulations_zeit', index_child[1:]))
+                                                    ), lambda: None, tuple()),
+            't': lambda: ZustandReturnValue(replace(self,
+                                                    neue_uhr=replace(self.neue_uhr, tempo=float(index_child[1:]))),
+                                            lambda: None, tuple()),
+            'z': lambda: handle_zustand(index_child[1]),                # Kommando mit 2. Ebene, suche dort
+            'p': lambda: handle_pause(index_child[1]),                  # Kommando mit 2. Ebene, suche dort
+            'r': lambda: ZustandReturnValue(replace(self,
+                                                    **erzeuge_dict_fuer_replace_command(
+                                                        self.neue_uhr, lambda: self.neue_uhr.reset(
+                                                            self.neue_uhr.echte_zeit()))), lambda: None, tuple())
+        }
+
+        # Leerer String
+        if index_child == '':
+            return ZustandReturnValue(self, lambda: None, tuple())
+
+        # Suche Kommando in unserem kommando_handler
+        neuer_zustand = kommando_handlers.get(index_child[0], None)
+        if neuer_zustand is not None:
+            return neuer_zustand()
+
+        # Kommando unbekannt und wird an die Superklasse weitergeleitet
         return (
             super().verarbeite_userinput(index_child)
         ) if (not index_child) or (index_child[0] == "0") else (   # Wenn 0 fuer Zurueck verwerfe Aenderungen
