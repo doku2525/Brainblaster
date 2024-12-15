@@ -161,10 +161,12 @@ class ZustandVeraenderLernuhr(Zustand):
 
     def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:
         def replace_datum_element_in_uhr_ersetzen(meine_uhr: Lernuhr, attribut: str, neuer_wert: str) -> Lernuhr:
+            """Hilfsfunktion fuer select_replace_funktion()"""
             zeit_in_millis = Lernuhr.isostring_to_millis(neuer_wert)
             return replace(meine_uhr, **{attribut: zeit_in_millis})
 
         def replace_datum_element_in_uhr_zeitspanne(meine_uhr: Lernuhr, attribut: str, zeit_spanne: str) -> Lernuhr:
+            """Fuehre die Berechnungen mit Zeitspannen aus. Hilfsfunktion fuer select_replace_funktion()"""
             einheit = zeit_spanne[-1]
             dauer = int(zeit_spanne[:-1])
             match einheit:
@@ -176,34 +178,38 @@ class ZustandVeraenderLernuhr(Zustand):
                            **{attribut: meine_uhr.__getattribute__(attribut) + time_delta.total_seconds() * 1000})
 
         def select_replace_funktion(meine_uhr: Lernuhr, attribut: str, kommando_str: str) -> Lernuhr:
+            """Ersetze das Attribut der Lernuhr mit dem Namen attribut"""
             if '=' == kommando_str[0]:
                 return replace_datum_element_in_uhr_ersetzen(meine_uhr, attribut, kommando_str[1:])
             if kommando_str[0] in ('+', '-'):
                 return replace_datum_element_in_uhr_zeitspanne(meine_uhr, attribut, kommando_str)
             return meine_uhr    # Kein definiertes Kommando gefunden
 
-        if index_child == '':
+        def erzeuge_dict_fuer_replace_command(meine_uhr: Lernuhr, func: Callable) -> dict:
+            """Erzeuge das dictionary, das als kwargs in replace zum erzeugen der neuen Uhr benutzt wird"""
+            return {'neue_uhr': func(),
+                    'data': self.data | {'neue_uhrzeit': meine_uhr.as_iso_format(meine_uhr.echte_zeit())}}
+
+        if index_child == '':                   # Leerer String
             return ZustandReturnValue(self, lambda: None, tuple())
-        if "s" == index_child[0]:
-            return ZustandReturnValue(replace(self,
-                                              **{'neue_uhr': select_replace_funktion(
-                                                  self.neue_uhr, 'start_zeit', index_child[1:]),
-                                                  'data': self.data | {'neue_uhrzeit':
-                                                                       self.neue_uhr.as_iso_format(
-                                                                           self.neue_uhr.echte_zeit())}}),
-                                      lambda: None, tuple())
-        if "k" == index_child[0]:
-            return ZustandReturnValue(replace(self,
-                                              **{'neue_uhr': select_replace_funktion(
-                                                  self.neue_uhr, 'kalkulations_zeit', index_child[1:]),
-                                                  'data': self.data | {'neue_uhrzeit':
-                                                                       self.neue_uhr.as_iso_format(
-                                                                           self.neue_uhr.echte_zeit())}}),
-                                      lambda: None, tuple())
-        if "t" == index_child[0]:
+        if "s" == index_child[0]:               # 's' zum Stellen der start_zeit
+            return ZustandReturnValue(
+                replace(self,
+                        **erzeuge_dict_fuer_replace_command(
+                            self.neue_uhr,
+                            lambda: select_replace_funktion(self.neue_uhr, 'start_zeit', index_child[1:]))),
+                lambda: None, tuple())
+        if "k" == index_child[0]:               # 'k' zum Stellen der kalkulations_zeit
+            return ZustandReturnValue(
+                replace(self,
+                        **erzeuge_dict_fuer_replace_command(
+                            self.neue_uhr,
+                            lambda: select_replace_funktion(self.neue_uhr, 'kalkulations_zeit', index_child[1:]))),
+                lambda: None, tuple())
+        if "t" == index_child[0]:               # 't' zum Stellen des Tempos
             uhr = replace(self.neue_uhr, tempo=float(index_child[1:]))
             return ZustandReturnValue(replace(self, neue_uhr=uhr), lambda: None, tuple())
-        if "z" == index_child[0]:
+        if "z" == index_child[0]:               # 'z' zum Stellen des Zustands/Modus
             if index_child[1] == "e":
                 uhr = replace(self.neue_uhr, modus=UhrStatus.ECHT)
             elif index_child[1] == "p":
@@ -212,31 +218,19 @@ class ZustandVeraenderLernuhr(Zustand):
                 uhr = replace(self.neue_uhr, modus=UhrStatus.LAEUFT)
             else:
                 return ZustandReturnValue(self, lambda: None, tuple())
-            return ZustandReturnValue(replace(self,
-                                              **{'neue_uhr': uhr,
-                                                 'data': self.data | {'neue_uhrzeit':
-                                                                      self.neue_uhr.as_iso_format(
-                                                                          self.neue_uhr.echte_zeit())}}),
+            return ZustandReturnValue(replace(self, **erzeuge_dict_fuer_replace_command(self.neue_uhr, lambda: uhr)),
                                       lambda: None, tuple())
-        if "p" == index_child[0]:
+        if "p" == index_child[0]:               # 'p' zum Wechseln zwischen Pause und nicht Pause
             uhr = self.neue_uhr
             if index_child[1] == "b":       # Beginne Pause
                 uhr = self.neue_uhr.pausiere(self.neue_uhr.echte_zeit())
             if index_child[1] == "e":       # Beende Pause
                 uhr = self.neue_uhr.beende_pause(self.neue_uhr.echte_zeit())
-            return ZustandReturnValue(replace(self,
-                                              **{'neue_uhr': uhr,
-                                                 'data': self.data | {'neue_uhrzeit':
-                                                                      self.neue_uhr.as_iso_format(
-                                                                          self.neue_uhr.echte_zeit())}}),
+            return ZustandReturnValue(replace(self, **erzeuge_dict_fuer_replace_command(self.neue_uhr, lambda: uhr)),
                                       lambda: None, tuple())
-        if "r" == index_child[0]:
+        if "r" == index_child[0]:               # 'r' zum Resten
             uhr = self.neue_uhr.reset(self.neue_uhr.echte_zeit())
-            return ZustandReturnValue(replace(self,
-                                              **{'neue_uhr': uhr,
-                                                 'data': self.data | {'neue_uhrzeit':
-                                                                      self.neue_uhr.as_iso_format(
-                                                                          self.neue_uhr.echte_zeit())}}),
+            return ZustandReturnValue(replace(self, **erzeuge_dict_fuer_replace_command(self.neue_uhr, lambda: uhr)),
                                       lambda: None, tuple())
         return (
             super().verarbeite_userinput(index_child)
