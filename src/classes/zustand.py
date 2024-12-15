@@ -200,8 +200,8 @@ class ZustandVeraenderLernuhr(Zustand):
             if sub_kommando:
                 meine_uhr = sub_kommando_handler.get(sub_kommando[0], False)
                 return ZustandReturnValue(
-                    (replace(self,**erzeuge_dict_fuer_replace_command(self.neue_uhr, lambda: meine_uhr)
-                            ) if meine_uhr else self),
+                    (replace(self, **erzeuge_dict_fuer_replace_command(self.neue_uhr, lambda: meine_uhr)
+                             ) if meine_uhr else self),
                     lambda: None, tuple())
             return ZustandReturnValue(self, lambda: None, tuple())
 
@@ -214,8 +214,8 @@ class ZustandVeraenderLernuhr(Zustand):
             if sub_kommando:
                 meine_uhr = sub_kommando_handler.get(sub_kommando[0], False)
                 return ZustandReturnValue(
-                    (replace(self,**erzeuge_dict_fuer_replace_command(self.neue_uhr, lambda: meine_uhr)
-                            ) if meine_uhr else self),
+                    (replace(self, **erzeuge_dict_fuer_replace_command(self.neue_uhr, lambda: meine_uhr)
+                             ) if meine_uhr else self),
                     lambda: None, tuple())
             return ZustandReturnValue(self, lambda: None, tuple())
 
