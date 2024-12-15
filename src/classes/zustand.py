@@ -229,6 +229,14 @@ class ZustandVeraenderLernuhr(Zustand):
                                                                       self.neue_uhr.as_iso_format(
                                                                           self.neue_uhr.echte_zeit())}}),
                                       lambda: None, tuple())
+        if "r" == index_child[0]:
+            uhr = self.neue_uhr.reset(self.neue_uhr.echte_zeit())
+            return ZustandReturnValue(replace(self,
+                                              **{'neue_uhr': uhr,
+                                                 'data': self.data | {'neue_uhrzeit':
+                                                                      self.neue_uhr.as_iso_format(
+                                                                          self.neue_uhr.echte_zeit())}}),
+                                      lambda: None, tuple())
         return (
             super().verarbeite_userinput(index_child)
         ) if (not index_child) or (index_child[0] == "0") else (   # Wenn 0 fuer Zurueck verwerfe Aenderungen
