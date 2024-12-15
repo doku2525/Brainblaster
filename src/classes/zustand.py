@@ -243,5 +243,3 @@ class ZustandVeraenderLernuhr(Zustand):
         ) if (not index_child) or (index_child[0] == "0") else (   # Wenn 0 fuer Zurueck verwerfe Aenderungen
             super().verarbeite_userinput(index_child)._replace(**{'cmd': 'update_uhr', 'args': (self.neue_uhr,)})
         )
-
-    # TODO Kommandos fuer PAUSE und RESET implementieren
