@@ -218,6 +218,17 @@ class ZustandVeraenderLernuhr(Zustand):
                                                                       self.neue_uhr.as_iso_format(
                                                                           self.neue_uhr.echte_zeit())}}),
                                       lambda: None, tuple())
+        if "p" == index_child[0]:
+            if index_child[1] == "b":       # Beginne Pause
+                uhr = self.neue_uhr.pausiere(self.neue_uhr.echte_zeit())
+            if index_child[1] == "e":       # Beende Pause
+                uhr = self.neue_uhr.beende_pause(self.neue_uhr.echte_zeit())
+            return ZustandReturnValue(replace(self,
+                                              **{'neue_uhr': uhr,
+                                                 'data': self.data | {'neue_uhrzeit':
+                                                                      self.neue_uhr.as_iso_format(
+                                                                          self.neue_uhr.echte_zeit())}}),
+                                      lambda: None, tuple())
         return (
             super().verarbeite_userinput(index_child)
         ) if (not index_child) or (index_child[0] == "0") else (   # Wenn 0 fuer Zurueck verwerfe Aenderungen
