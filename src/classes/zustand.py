@@ -219,6 +219,7 @@ class ZustandVeraenderLernuhr(Zustand):
                                                                           self.neue_uhr.echte_zeit())}}),
                                       lambda: None, tuple())
         if "p" == index_child[0]:
+            uhr = self.neue_uhr
             if index_child[1] == "b":       # Beginne Pause
                 uhr = self.neue_uhr.pausiere(self.neue_uhr.echte_zeit())
             if index_child[1] == "e":       # Beende Pause
