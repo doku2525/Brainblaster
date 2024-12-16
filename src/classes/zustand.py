@@ -44,9 +44,27 @@ class Zustand(ABC):
             f"* Die verfuegbaren Kommandos\n" +
             "".join([f"\t'{command}' + Zahl\n" for command in self.kommandos]))
 
+    def position_zustand_in_child_mit_namen(self, klassen_name: str) -> str:
+        """Da 0 fuer die Position parrent reserviert ist, ist result = '' oder '1..n'  """
+        return "".join([str(index)
+                        for index, zustand
+                        in enumerate(self.child, 1) if zustand.__class__.__name__ == klassen_name])
+
     def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:
-        """Verarbeite den userinput"""
-        if index_child and int(index_child[0]) == 0:    # 0 = Zurueck zum vorherigen Zustand
+        """Verarbeite den userinput.
+        Der normale userinput, der nicht gefiltert wird ist eine Zahl, die die Position innerhalb
+        der Liste aus parrent und child angibt und dann diesen Zustand zurueckgibt.
+        0 - Gibt den Zustand in parrent zurueck
+        1...n Gibt den x. Zustand aus child zurueck.
+        @name Gibt den Zustand mit dem Namen name zurueck.
+        Oder """
+
+        # Wandle nicht numerische Kommandos in numerische um
+        if index_child and index_child[0] == "@":                              # @ = Suche index nach Namen
+            index_child = self.position_zustand_in_child_mit_namen(index_child[1:])
+
+        # Veraerbeite regulaere Kommandos
+        if index_child and int(index_child[0]) == 0:                           # 0 = Zurueck zum vorherigen Zustand
             return ZustandReturnValue(self.parent, lambda: None, tuple())
         return ZustandReturnValue(
             zustand=replace(self.child[int(index_child) - 1], parent=self), cmd=lambda: None, args=tuple()
