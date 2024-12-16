@@ -270,8 +270,11 @@ class ZustandVeraenderLernuhr(Zustand):
             return neuer_zustand()
 
         # Kommando unbekannt und wird an die Superklasse weitergeleitet
-        return (
-            super().verarbeite_userinput(index_child)
-        ) if (not index_child) or (index_child[0] == "0") else (   # Wenn 0 fuer Zurueck verwerfe Aenderungen
-            super().verarbeite_userinput(index_child)._replace(**{'cmd': 'update_uhr', 'args': (self.neue_uhr,)})
-        )
+        """Da ZustandVeraenderLernuhr auf jeden Fall ein parrent hat, kann mit
+        0 -> Zurueck ohne die Veraenderungen in neue_uhr als neue Uhrzeit im Controller zu speichern
+        n -> Liefert einen Zustand aus child (beim Erzeugen des aktuellen Zustands wird parrent auch in child kopiert),
+                aber der Befehl 'update_uhr' mit dem args neue_uhr wird dem ZustandReturnValue() hinzugefuegt"""
+        if (not index_child) or (index_child[0] == "0") or (f"@{self.__class__.__name__}" in index_child):
+            return super().verarbeite_userinput(index_child)
+        # Fuege dem ZustandReturnValue den Befehl zum Updaten der Uhr hinzu
+        return super().verarbeite_userinput(index_child)._replace(**{'cmd': 'update_uhr', 'args': (self.neue_uhr,)})
