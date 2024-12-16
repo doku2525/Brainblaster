@@ -1,0 +1,61 @@
+<!-editor_lernuhr.html->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Uhr-Steuerung</title>
+</head>
+<body>
+    <h1>Uhr-Steuerung</h1>
+    <div class="menue" id="aktuelle_uhrzeit">{{aktuelle_uhrzeit}}</div><br>
+    <div class="menue" id="neue_uhrzeit">{{neue_uhrzeit}}</div><br>
+    <form action="/kommando/" method="POST">
+        <label for="start_zeit">Startzeit:</label>
+        <input type="date" name="birthday">
+        <input type="time" name="opening_hours" min="09:00" max="17:00" step="30">
+        <br>
+        <label for="kalkulations_zeit">Kalkulationszeit:</label>
+        <input type="date" name="birthday">
+        <input type="time" name="opening_hours" min="09:00" max="17:00" step="30">
+        <br>
+        <div class="scrollbar-container">
+
+        <label for="command">Tempo:</label>
+        <input type="range" min="0" max="2" value="1" step="0.01">
+        <input type="range" min="0" max="1000" value="1">
+
+        <input type="text" id="command" name="command">
+        <br>
+        <label>Wähle einen UhrStatus:</label>
+        <input type="radio" id="zustand_e" name="zustand" value="e">
+        <label for="zustand_e">Echtzeit</label>
+        <input type="radio" id="pause_b" name="pause" value="b">
+        <label for="pause_b">Beginne Pause</label>
+        <input type="radio" id="pause_e" name="pause" value="e">
+        <label for="pause_e">Beende Pause</label>
+
+        <button type="submit">Senden</button>
+    </form>
+    <div id="zurueck_ohne_speichern"><a href="/kommando/cs=2024-12-01 18:00:00"> Startzeit setzen</a></div>
+    <div id="zurueck_ohne_speichern"><a href="/kommando/ct1000"> Tempo setzen</a></div>
+    <div id="zurueck_ohne_speichern"><a href="/index?lernuhr=ohne_speichern"> Zurueck ohne Speichern FERTIG</a></div>
+    <div id="zurueck_ohne_speichern"><a href="/index?lernuhr=mit_speichern"> Zurueck mit Speichern FERTIG</a></div>
+    <script>
+        // JavaScript-Code zur dynamischen Anpassung der Benutzeroberfläche
+        function fetchUhrzeit() {
+            fetch('/get_aktuelle_und_neue_uhrzeit')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('aktuelle_uhrzeit').textContent = data.aktuelle_uhrzeit;
+                document.getElementById('neue_uhrzeit').textContent = data.neue_uhrzeit;
+            })
+            .catch(error => {
+                console.error('Fehler beim Abrufen der Uhrzeit:', error);
+            });
+        }
+
+        // Daten alle 0.5 Sekunden abrufen
+        setInterval(fetchUhrzeit, 1000);
+
+    </script>
+</body>
+</html>
