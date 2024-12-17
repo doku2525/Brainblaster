@@ -83,16 +83,18 @@ class test_Zustand(TestCase):
     def test_daten_text_konsole_zustand_veraender_lernuhr(self):
         from src.classes.lernuhr import Lernuhr, UhrStatus
         uhr = Lernuhr()
-        uhr_zeit = uhr.as_iso_format(Lernuhr.echte_zeit())
-        objekt = ZustandVeraenderLernuhr(aktuelle_zeit=uhr.as_iso_format(Lernuhr.echte_zeit()))
+        gestoppte_zeit = Lernuhr.echte_zeit()
+        uhr_zeit = uhr.as_iso_format(gestoppte_zeit)
+        objekt = ZustandVeraenderLernuhr(aktuelle_zeit=uhr.as_iso_format(gestoppte_zeit))
         expected_output = (' ZustandStelleUhr\n' +
                            '\t Zustand, zum Stellen der Uhr.\n' +
                            f' Aktuelle Uhrzeit: {uhr_zeit}\n' +
                            f' Neue Uhrzeit: \n' +
                            '\t Startzeit : \t Kalkulationszeit : \t Tempo : \t Modus : ')
+        self.assertTrue(objekt)
         self.assertEqual(expected_output, objekt.daten_text_konsole())
 
-        objekt = ZustandVeraenderLernuhr(aktuelle_zeit=uhr.as_iso_format(Lernuhr.echte_zeit()),
+        objekt = ZustandVeraenderLernuhr(aktuelle_zeit=uhr.as_iso_format(gestoppte_zeit),
                                          neue_uhr=uhr)
         expected_output = (' ZustandStelleUhr\n' +
                            '\t Zustand, zum Stellen der Uhr.\n' +
@@ -105,6 +107,7 @@ class test_Zustand(TestCase):
         objekt = ZustandVeraenderLernuhr(aktuelle_zeit=uhr.as_iso_format(zeit_punkt),
                                          neue_uhr=replace(
                                              uhr, **{'modus': UhrStatus.LAEUFT, 'kalkulations_zeit': 1_000_000_000}))
+        uhr_zeit = uhr.as_iso_format(zeit_punkt)
         neue_zeit = objekt.neue_uhr.as_iso_format(zeit_punkt)
         expected_output = (f' ZustandStelleUhr\n' +
                            f'\t Zustand, zum Stellen der Uhr.\n' +

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections import namedtuple
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, field, replace, asdict
 import datetime
 from typing import Any, Callable, NamedTuple, TYPE_CHECKING
 
@@ -144,11 +144,12 @@ class ZustandVeraenderLernuhr(Zustand):
     # TODO Es sollte auch die echte_zeit uebergeben werden. Z.B. fuer Rest usw.
 
     def __post_init__(self):
-        object.__setattr__(self,
+        object.__setattr__(self,            # Baue Dictionary, das die Daten fuer die Views enthaelt
                            'data',
                            ({'aktuelle_uhrzeit': self.aktuelle_zeit if self.aktuelle_zeit else ''} |
                             {'neue_uhrzeit': self.neue_uhr.as_iso_format(Lernuhr.echte_zeit())
-                             if self.neue_uhr else ''}))
+                             if self.neue_uhr else ''} |
+                            ({'neue_uhr': self.neue_uhr.as_iso_dict()} if self.neue_uhr else {})))
         object.__setattr__(self, 'child', [self.parent] if self.parent else [])
 
     def daten_text_konsole(self, presenter: Callable = None) -> str:
