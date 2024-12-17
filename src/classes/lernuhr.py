@@ -93,7 +93,7 @@ class Lernuhr:
     def beende_pause(self, pausen_ende_in_ms: int = 0) -> Lernuhr:
         """Als Normalfall sollte die aktuelle Zeit Lernuhr.echte_zeit() uebergeben werden"""
         if self.modus == UhrStatus.ECHT:
-            return self.Lernuhr(self.kalkulations_zeit, self.start_zeit, self.tempo, pausen_ende_in_ms, self.modus)
+            return Lernuhr(self.kalkulations_zeit, self.start_zeit, self.tempo, pausen_ende_in_ms, self.modus)
         if self.modus == UhrStatus.LAEUFT:
             return self
         else:

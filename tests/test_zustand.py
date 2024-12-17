@@ -51,7 +51,7 @@ class test_Zustand(TestCase):
         self.assertEqual('', objekt.aktuelle_zeit)
         self.assertEqual({'aktuelle_uhrzeit': '', 'neue_uhrzeit': ''}, objekt.data)
         self.assertIsNone(objekt.neue_uhr)
-        self.assertEqual(('s', 'k', 't', 'z'), objekt.kommandos)
+        self.assertEqual(('s', 'k', 't', 'z', 'p', 'r', 'c'), objekt.kommandos)
         self.assertEqual(None, objekt.parent)
         self.assertEqual([], objekt.child)
 
@@ -141,7 +141,10 @@ class test_Zustand(TestCase):
                            "\t's' + Zahl\n" +
                            "\t'k' + Zahl\n" +
                            "\t't' + Zahl\n" +
-                           "\t'z' + Zahl\n")
+                           "\t'z' + Zahl\n" +
+                           "\t'p' + Zahl\n" +
+                           "\t'r' + Zahl\n" +
+                           "\t'c' + Zahl\n")
         self.assertEqual(expected_output, objekt.info_text_konsole())
 
     def test_verarbeite_userinput(self):
@@ -433,6 +436,71 @@ class test_Zustand(TestCase):
             '1970-01-01 01:01:00',
             f"{datetime.datetime.fromtimestamp(int(result.neue_uhr.start_zeit / 1000)):%Y-%m-%d %H:%M:%S}")
         self.assertEqual(0, objekt.neue_uhr.start_zeit)
+
+    def test_verarbeite_userinput_zustand_veraender_lernuhr_option_r(self):
+        from src.classes.lernuhr import Lernuhr, UhrStatus
+
+        uhr = Lernuhr()
+        gestoppte_zeit = Lernuhr.echte_zeit()
+        objekt = ZustandVeraenderLernuhr(aktuelle_zeit=uhr.as_iso_format(gestoppte_zeit),
+                                         neue_uhr=uhr)
+
+        result, fun, args = objekt.verarbeite_userinput('r')
+        self.assertNotEqual(result, objekt)
+        self.assertIsNone(fun())
+        self.assertEqual(tuple(), args)
+        self.assertAlmostEqual(gestoppte_zeit, result.neue_uhr.kalkulations_zeit,delta=1_000)
+        self.assertNotAlmostEquals(uhr.kalkulations_zeit, result.neue_uhr.kalkulations_zeit, delta=1_000)
+
+    def test_verarbeite_userinput_zustand_veraender_lernuhr_option_c(self):
+        from src.classes.lernuhr import Lernuhr, UhrStatus
+
+        uhr = Lernuhr(kalkulations_zeit=200_000)
+        gestoppte_zeit = Lernuhr.echte_zeit()
+        objekt = ZustandVeraenderLernuhr(aktuelle_zeit=uhr.as_iso_format(gestoppte_zeit),
+                                         neue_uhr=uhr)
+
+        result, fun, args = objekt.verarbeite_userinput('c')
+        self.assertNotEqual(result, objekt)
+        self.assertIsNone(fun())
+        self.assertEqual(tuple(), args)
+        self.assertAlmostEqual(gestoppte_zeit, result.neue_uhr.start_zeit, delta=1_000)
+        self.assertNotAlmostEqual(uhr.start_zeit, result.neue_uhr.start_zeit, delta=1_000)
+
+    def test_verarbeite_userinput_zustand_veraender_lernuhr_option_p(self):
+        from src.classes.lernuhr import Lernuhr, UhrStatus
+
+        uhr = Lernuhr(modus=UhrStatus.LAEUFT)
+        gestoppte_zeit = Lernuhr.echte_zeit()
+        objekt = ZustandVeraenderLernuhr(aktuelle_zeit=uhr.as_iso_format(gestoppte_zeit),
+                                         neue_uhr=uhr)
+        self.assertEqual(UhrStatus.LAEUFT, uhr.modus)
+        result, fun, args = objekt.verarbeite_userinput('pe')
+        self.assertNotEqual(result, objekt)
+        self.assertIsNone(fun())
+        self.assertEqual(tuple(), args)
+        self.assertEqual(UhrStatus.LAEUFT, result.neue_uhr.modus)
+        result, fun, args = objekt.verarbeite_userinput('pb')
+        self.assertNotEqual(result, objekt)
+        self.assertIsNone(fun())
+        self.assertEqual(tuple(), args)
+        self.assertEqual(UhrStatus.PAUSE, result.neue_uhr.modus)
+
+        uhr = Lernuhr(modus=UhrStatus.PAUSE)
+        gestoppte_zeit = Lernuhr.echte_zeit()
+        objekt = ZustandVeraenderLernuhr(aktuelle_zeit=uhr.as_iso_format(gestoppte_zeit),
+                                         neue_uhr=uhr)
+        self.assertEqual(UhrStatus.PAUSE, uhr.modus)
+        result, fun, args = objekt.verarbeite_userinput('pe')
+        self.assertNotEqual(result, objekt)
+        self.assertIsNone(fun())
+        self.assertEqual(tuple(), args)
+        self.assertEqual(UhrStatus.LAEUFT, result.neue_uhr.modus)
+        result, fun, args = objekt.verarbeite_userinput('pb')
+        self.assertEqual(result, objekt)
+        self.assertIsNone(fun())
+        self.assertEqual(tuple(), args)
+        self.assertEqual(UhrStatus.PAUSE, result.neue_uhr.modus)
 
 # TODO Schreibe noch Tests, die die richtige Funktionalitaet der Uhr prueft. Hatte grosse Probleme,
 #  weil in der '='-Hilfsfunktion nicht die Funktion iso_to_millis() aus Lerhnuhr, sondern die Funktion aus datetime

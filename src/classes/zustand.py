@@ -135,7 +135,7 @@ class ZustandVeraenderLernuhr(Zustand):
     titel: str = 'ZustandStelleUhr'
     beschreibung: str = 'Zustand, zum Stellen der Uhr.'
     child: list[Zustand] = field(default_factory=list)
-    kommandos: list[str] = field(default=('s', 'k', 't', 'z'))
+    kommandos: list[str] = field(default=('s', 'k', 't', 'z', 'p', 'r', 'c'))
     neue_uhr: Lernuhr | None = field(default=None)   # TODO Waere gut wenn JSON der neuen Zeit Uhr
     # TODO Ersetzen Lernuhr durch JSON: Der einzige Aufruf von Lernuhr ist in __post__init__,
     #  um neue_uhrzeit zu definieren. Alle weiteren Vorkommen von self.neue_uhr koennte man auch durch
@@ -225,10 +225,12 @@ class ZustandVeraenderLernuhr(Zustand):
             return ZustandReturnValue(self, lambda: None, tuple())
 
         def handle_pause(sub_kommando) -> ZustandReturnValue:
-            """Behandle die Kommandos fuer p = Pause"""
+            """Behandle die Kommandos fuer p = Pause
+            b = Beginn Pause
+            e = Ende Pause"""
             sub_kommando_handler = {
-                "b": self.neue_uhr.beende_pause(self.neue_uhr.echte_zeit()),
-                "e": self.neue_uhr.pausiere(self.neue_uhr.echte_zeit())
+                "b": self.neue_uhr.pausiere(Lernuhr.echte_zeit()),
+                "e": self.neue_uhr.beende_pause(Lernuhr.echte_zeit())
             }
             if sub_kommando:
                 meine_uhr = sub_kommando_handler.get(sub_kommando[0], False)
@@ -258,6 +260,10 @@ class ZustandVeraenderLernuhr(Zustand):
             'r': lambda: ZustandReturnValue(replace(self,
                                                     **erzeuge_dict_fuer_replace_command(
                                                         self.neue_uhr, lambda: self.neue_uhr.reset(
+                                                            self.neue_uhr.echte_zeit()))), lambda: None, tuple()),
+            'c': lambda: ZustandReturnValue(replace(self,
+                                                    **erzeuge_dict_fuer_replace_command(
+                                                        self.neue_uhr, lambda: self.neue_uhr.calibrate(
                                                             self.neue_uhr.echte_zeit()))), lambda: None, tuple())
         }
 
