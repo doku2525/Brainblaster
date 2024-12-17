@@ -113,7 +113,7 @@ class Lernuhr:
                 1 Tag Unterschied und eine Aenderung um 0.1 ist ein Sprung von 144 Minuten"""
         return Lernuhr(neue_kalkulations_zeit_in_ms, self.start_zeit, self.tempo, 0, UhrStatus.LAEUFT)
 
-    def recalibrate(self,  zeitpunkt_in_ms: int | float = 0) -> Lernuhr:
+    def calibrate(self, zeitpunkt_in_ms: int | float = 0) -> Lernuhr:
         """
         Setzt die Startzeit auf die aktuelle Uhrzeit der Lernuhr. Zusammen mit einem Reset hat man dann wieder eine
         frische Uhr, mit wirksamen Tempoveraenderungen.

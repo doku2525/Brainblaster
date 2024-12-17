@@ -213,12 +213,12 @@ class test_LernUhr(TestCase):
                            self.normal.reset(Lernuhr.echte_zeit()).now(Lernuhr.echte_zeit()),
                            "Nach Reset ist die Zeit zurueckgesetzt")
 
-    def test_recalibrate(self):
+    def test_calibrate(self):
         objekt = Lernuhr(100_000, 0, 1.0, 0, UhrStatus.LAEUFT)
         self.assertEqual(100_000, objekt.now(200_000))
-        self.assertEqual(100_000, objekt.recalibrate(200_000).start_zeit)
-        self.assertNotEqual(100_000, objekt.recalibrate(200_000).now(200_000))
-        self.assertEqual(100_000, objekt.recalibrate(200_000).reset(200_000).now(200_000))
+        self.assertEqual(100_000, objekt.calibrate(200_000).start_zeit)
+        self.assertNotEqual(100_000, objekt.calibrate(200_000).now(200_000))
+        self.assertEqual(100_000, objekt.calibrate(200_000).reset(200_000).now(200_000))
 
     def test_as_iso_format(self):
         uhr = Lernuhr(0, 0, 0, 0, UhrStatus.PAUSE)
