@@ -53,9 +53,7 @@ class Lernuhr:
         return int(time.time() * 1000)
 
     def speicher_in_jsondatei(self, json_dateiname: str) -> None:
-        dic = u_dataclass.mein_asdict(self)
-        dic["kalkulations_zeit"] = datetime.datetime.fromtimestamp(self.kalkulations_zeit / 1000).strftime('%F %T.%f')
-        dic["start_zeit"] = datetime.datetime.fromtimestamp(self.start_zeit / 1000).strftime('%F %T.%f')
+        dic = self.as_iso_dict()
         with open(json_dateiname, "w") as file:
             json.dump(dic, file, indent=4, ensure_ascii=True)
 
@@ -63,9 +61,10 @@ class Lernuhr:
     def lade_aus_jsondatei(json_dateiname: str) -> Lernuhr:
         with open(json_dateiname, "r") as file:
             data = json.load(file)
-        result = Lernuhr.fromdict(data)
-        result = replace(result, kalkulations_zeit=Lernuhr.isostring_to_millis(result.kalkulations_zeit))
-        return replace(result, start_zeit=Lernuhr.isostring_to_millis(result.start_zeit))
+        return Lernuhr.from_iso_dict(data)
+        # result = Lernuhr.fromdict(data)
+        # result = replace(result, kalkulations_zeit=Lernuhr.isostring_to_millis(result.kalkulations_zeit))
+        # return replace(result, start_zeit=Lernuhr.isostring_to_millis(result.start_zeit))
 
     @staticmethod
     def isostring_to_millis(isostring: str) -> int:
@@ -121,3 +120,17 @@ class Lernuhr:
     def as_date(self, zeit_in_ms: int | float = 0) -> datetime.date:
         """Als Normalfall sollte die aktuelle Zeit Lernuhr.echte_zeit() uebergeben werden"""
         return datetime.datetime.fromtimestamp(self.now(zeit_in_ms) / 1000).date()
+
+    def as_iso_dict(self) -> dict:
+        """Wandle die Zeiteingaben von Millisekunden ins ISO-Format um"""
+        dic = u_dataclass.mein_asdict(self)
+        dic["kalkulations_zeit"] = datetime.datetime.fromtimestamp(self.kalkulations_zeit / 1000).strftime('%F %T.%f')
+        dic["start_zeit"] = datetime.datetime.fromtimestamp(self.start_zeit / 1000).strftime('%F %T.%f')
+        return dic
+
+    @staticmethod
+    def from_iso_dict(dic_mit_iso: dict) -> Lernuhr:
+        """Wandle ein Dictionary mit Zeitangaben im ISO-Fromat in eine Lernuhr um."""
+        result = Lernuhr.fromdict(dic_mit_iso)
+        result = replace(result, kalkulations_zeit=Lernuhr.isostring_to_millis(result.kalkulations_zeit))
+        return replace(result, start_zeit=Lernuhr.isostring_to_millis(result.start_zeit))

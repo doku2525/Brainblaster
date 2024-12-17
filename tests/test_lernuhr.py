@@ -223,3 +223,47 @@ class test_LernUhr(TestCase):
     def test_as_date(self):
         uhr = Lernuhr(0, 0, 0, 0, UhrStatus.PAUSE)
         self.assertEqual(date(1970, 1, 1), uhr.as_date())
+
+    def test_iso_dict(self):
+        uhr = Lernuhr()
+        dic = uhr.as_iso_dict()
+        print(f"\n<{dic}>")
+        self.assertEqual('1970-01-01 01:00:00.000000', dic['kalkulations_zeit'])
+        self.assertEqual('1970-01-01 01:00:00.000000', dic['start_zeit'])
+        self.assertEqual(1.0, dic['tempo'])
+        self.assertEqual(0, dic['pause'])
+        self.assertEqual('ECHT', dic['modus'])
+        uhr = Lernuhr(1720743153000, 1720743153000, 1.0, 0, UhrStatus.LAEUFT)
+        dic = uhr.as_iso_dict()
+        print(f"\n<{dic}>")
+        self.assertEqual('2024-07-12 02:12:33.000000', dic['kalkulations_zeit'])
+        self.assertEqual('2024-07-12 02:12:33.000000', dic['start_zeit'])
+        self.assertEqual(1.0, dic['tempo'])
+        self.assertEqual(0, dic['pause'])
+        self.assertEqual('LAEUFT', dic['modus'])
+
+    def test_from_iso_dict(self):
+        dict_uhr1 = {'kalkulations_zeit': '1970-01-01 01:00:00.000000',
+                     'start_zeit': '1970-01-01 01:00:00.000000',
+                     'tempo': 1.0,
+                     'pause': 0,
+                     'modus': 'ECHT'}
+        dict_uhr2 = {'kalkulations_zeit': '2024-07-12 02:12:33.000000',
+                     'start_zeit': '2024-07-12 02:12:33.000000',
+                     'tempo': 2.0,
+                     'pause': 0,
+                     'modus': 'LAEUFT'}
+        uhr = Lernuhr.from_iso_dict(dict_uhr1)
+        self.assertEqual(0, uhr.kalkulations_zeit)
+        self.assertEqual(0, uhr.start_zeit)
+        self.assertEqual(1, uhr.tempo)
+        self.assertEqual(0, uhr.pause)
+        self.assertEqual(UhrStatus.ECHT, uhr.modus)
+        self.assertEqual(uhr, Lernuhr())
+        uhr = Lernuhr.from_iso_dict(dict_uhr2)
+        self.assertEqual(1720743153000, uhr.kalkulations_zeit)
+        self.assertEqual(1720743153000, uhr.start_zeit)
+        self.assertEqual(2, uhr.tempo)
+        self.assertEqual(0, uhr.pause)
+        self.assertEqual(UhrStatus.LAEUFT, uhr.modus)
+        self.assertEqual(uhr, Lernuhr(1720743153000, 1720743153000, 2.0, 0, UhrStatus.LAEUFT))
