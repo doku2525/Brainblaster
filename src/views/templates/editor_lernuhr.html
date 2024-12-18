@@ -274,6 +274,7 @@ td button {
             fetch('/get_aktuelle_und_neue_uhrzeit')
                 .then(response => response.json())
                 .then(data => {
+                // TODO Wenn reset() oder calibrate() dann setze Flag und Update hier die Kalender und Zeit objekte.
                     document.getElementById('aktuelle_uhrzeit').textContent = data.aktuelle_uhrzeit;
                     document.getElementById('neue_uhrzeit').textContent = data.neue_uhrzeit;
                     document.getElementById('neue_uhr').textContent = JSON.stringify(data.neue_uhr);
