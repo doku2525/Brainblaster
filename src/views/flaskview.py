@@ -3,7 +3,7 @@ from flask import Flask, jsonify, render_template, request, redirect, url_for
 import inspect
 from threading import Thread
 import time
-
+import json
 
 # Dictionary mit den Zustaenden, die eigene Routen haben.
 # TODO Wird noch nicht benutzt
@@ -74,7 +74,8 @@ class FlaskView:
                                    start_zeit_uhrzeit=self.data['neue_uhr']['start_zeit'][11:-7],
                                    tempo_wert=int(self.data['neue_uhr']['tempo'] // 1),
                                    tempo_kommastellen=round(self.data['neue_uhr']['tempo'] % 1, 3),
-                                   neue_uhr=self.data['neue_uhr'])
+                                   modus=self.data['neue_uhr']['modus'],
+                                   neue_uhr=jsonify(self.data['neue_uhr']))
 
         @self.app.route('/kommando/<cmd>')
         def antwort(cmd):
@@ -93,8 +94,7 @@ class FlaskView:
             print(f" {self.data['aktuelle_uhrzeit']} ")
             return jsonify({'aktuelle_uhrzeit': self.data['aktuelle_uhrzeit'][:-7],
                             'neue_uhrzeit': self.data['neue_uhrzeit'][:-7],
-                            'neue_uhr': f"{self.data['neue_uhr']}"}
-                           )
+                            'neue_uhr': self.data['neue_uhr']})
 
         @self.app.route('/kommando_konsole/<cmd>')
         def kommando_konsole(cmd):
