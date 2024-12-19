@@ -14,8 +14,11 @@ class ZustandReturnValue(NamedTuple):
     args: tuple
 
 
+# TODO Das Observer-Pattern integrieren, wo sich Views hier registrieren koennen und bei Veranderungen mit
+#   neuen Daten versorgt werden.
 @dataclass(frozen=True)
 class Zustand(ABC):
+    # TODO data-Feld loeschen
     data: dict = field(default_factory=dict)
     parent: Zustand | None = field(default=None)
     child: list[Zustand] = field(default_factory=list)
@@ -24,10 +27,12 @@ class Zustand(ABC):
     kommandos: list[str] = field(default_factory=list)
     aktuelle_zeit: str = field(default_factory=str)
 
+    # TODO Funktion loeschen
     def daten_text_konsole(self, presenter: Callable[[dict], str] = None) -> str | None:
         """Erzeuge prettyprint-String der Daten des Zsuatnds fuer die Konsole"""
         return presenter(self.data) if presenter else None
 
+    # TODO Funktion loeschen
     def info_text_konsole(self) -> str:
         """Erzeuge prettyprint-String mit den moeglichen Aktionen des Zustands fuer die Konsole"""
         # Zeige zuerst Parent mit 0 als index an
@@ -79,6 +84,7 @@ class ZustandENDE(Zustand):
     titel: str = field(default='ENDE')
     beschreibung: str = field(default='Beende Programm')
 
+    # TODO Funktion loeschen
     def info_text_konsole(self) -> str:
         """Erzeuge prettyprint-String mit den moeglichen Aktionen des Zustands fuer die Konsole"""
         return f"Ciao! {self.parent}"
@@ -93,6 +99,7 @@ class ZustandStart(Zustand):
     child: list[Zustand] = field(default=(ZustandENDE(),))
     kommandos: list[str] = field(default=("+", "-", "="))
 
+    # TODO Den Teil mit data loeschen
     def __post_init__(self):
         object.__setattr__(self,
                            'data',
@@ -102,6 +109,7 @@ class ZustandStart(Zustand):
         object.__setattr__(self, 'parent', None)    # Der StartZustand hat kein parent!!!
 
     def daten_text_konsole(self, presenter: Callable = None) -> str:
+        # TODO Funktion loeschen
         """Erzeuge prettyprint-String der Daten des Zustands fuer die Konsole"""
         return (f" {self.titel}\n" +
                 f"\t {self.beschreibung}\n" +
@@ -144,6 +152,7 @@ class ZustandVeraenderLernuhr(Zustand):
     # TODO Es sollte auch die echte_zeit uebergeben werden. Z.B. fuer Rest usw.
 
     def __post_init__(self):
+        # TODO Den Teil mit data loeschen
         object.__setattr__(self,            # Baue Dictionary, das die Daten fuer die Views enthaelt
                            'data',
                            ({'aktuelle_uhrzeit': self.aktuelle_zeit if self.aktuelle_zeit else ''} |
@@ -153,6 +162,7 @@ class ZustandVeraenderLernuhr(Zustand):
         object.__setattr__(self, 'child', [self.parent] if self.parent else [])
 
     def daten_text_konsole(self, presenter: Callable = None) -> str:
+        # TODO Funktion loeschen
         """Erzeuge prettyprint-String der Daten des Zustands fuer die Konsole"""
         return (f" {self.titel}\n" +
                 f"\t {self.beschreibung}\n" +
@@ -207,6 +217,7 @@ class ZustandVeraenderLernuhr(Zustand):
         def erzeuge_dict_fuer_replace_command(meine_uhr: Lernuhr, func: Callable) -> dict:
             """Erzeuge das dictionary, das als kwargs in replace zum erzeugen der neuen Uhr benutzt wird"""
             return {'neue_uhr': func(),
+                    # TODO den data Teil loeschen
                     'data': self.data | {'neue_uhrzeit': meine_uhr.as_iso_format(meine_uhr.echte_zeit())}}
 
         def handle_zustand(sub_kommando) -> ZustandReturnValue:

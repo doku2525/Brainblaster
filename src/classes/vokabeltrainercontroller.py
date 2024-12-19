@@ -65,6 +65,7 @@ class VokabeltrainerController:
         self.modell.vokabelkarten.laden()
         self.modell.vokabelboxen.laden()
         self.aktueller_zustand = self.buildZustandStart(ZustandStart())
+        # TODO Hier Mediator einbauen ZustandMediator().zustand_to_flaskview_data(self.aktueller_zustand)
         self.view.data = self.aktueller_zustand.data
         print(self.aktueller_zustand.daten_text_konsole())
         print(self.aktueller_zustand.info_text_konsole())
@@ -80,11 +81,15 @@ class VokabeltrainerController:
                 #   f() -> dict. So dass dann cmd(**args()) aufgerufen wird, wenn aktueller_zustand None ist
 
                 print(f"AktuellerZustand {self.aktueller_zustand}")
+                # TODO Hier Mediator einbauen ZustandMediator().zustand_to_flaskview_data(self.aktueller_zustand)
                 self.view.data = self.aktueller_zustand.data
                 self.view.cmd = None
+                # TODO Hier ConsoleView().render() aufrufen
+                # Bzw. spaeter dann wenn der Observer in Zustand integriert wurde, aktueller_zustand.render() aufrufen.
                 print(self.aktueller_zustand.daten_text_konsole())
                 print(self.aktueller_zustand.info_text_konsole())
             self.aktueller_zustand = self.aktueller_zustand.update_zeit(self.uhr.as_iso_format(Lernuhr.echte_zeit()))
+            # TODO Hier Mediator einbauen ZustandMediator().zustand_to_flaskview_data(self.aktueller_zustand)
             self.view.data = self.aktueller_zustand.data
             time.sleep(0.25)
 
