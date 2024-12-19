@@ -16,6 +16,7 @@ class test_Zustand(TestCase):
         self.assertIsNone(objekt.parent)
         self.assertEqual([], objekt.child)
         self.assertEqual([], objekt.kommandos)
+        # TODO data loeschen
         self.assertEqual({}, objekt.data)
 
     def test_init_zustand_start(self):
@@ -29,9 +30,9 @@ class test_Zustand(TestCase):
         self.assertEqual(1, len(objekt.child))
         self.assertEqual((ZustandENDE(),), objekt.child)
         self.assertEqual(("+", "-", "="), objekt.kommandos)
-        self.assertEqual({}, objekt.data)
+        self.assertEqual({}, objekt.data)     # TODO data loeschen
         objekt = ZustandStart(aktueller_index=0, liste=["A", "B"])
-        self.assertEqual({'aktueller_index': 0, 'liste': ["A", "B"], 'aktuelle_uhrzeit': ''}, objekt.data)
+        self.assertEqual({'aktueller_index': 0, 'liste': ["A", "B"], 'aktuelle_uhrzeit': ''}, objekt.data)  # TODO data loeschen
 
     def test_init_zustand_ende(self):
         objekt = ZustandENDE()
@@ -49,18 +50,20 @@ class test_Zustand(TestCase):
         self.assertEqual('ZustandStelleUhr', objekt.titel)
         self.assertEqual('Zustand, zum Stellen der Uhr.', objekt.beschreibung)
         self.assertEqual('', objekt.aktuelle_zeit)
-        self.assertEqual({'aktuelle_uhrzeit': '', 'neue_uhrzeit': ''}, objekt.data)
+        self.assertEqual({'aktuelle_uhrzeit': '', 'neue_uhrzeit': ''}, objekt.data)  # TODO data loeschen
         self.assertIsNone(objekt.neue_uhr)
         self.assertEqual(('s', 'k', 't', 'z', 'p', 'r', 'c'), objekt.kommandos)
         self.assertEqual(None, objekt.parent)
         self.assertEqual([], objekt.child)
 
     def test_daten_text_konsole(self):
+        # TODO Funktion loeschen
         objekt = Zustand()
         self.assertIsNone(objekt.daten_text_konsole())
         self.assertIsNone(objekt.daten_text_konsole(cast(Callable[[dict], str | None], lambda x: None)))
 
     def test_daten_text_konsole_zustand_start(self):
+        # TODO Funktion loeschen
         objekt = ZustandStart(aktueller_index=0, liste=["A", "B"])
         expected_output = (' Zustand 1\n' +
                            '\t Zustand 1, der die aktuelle Box und den Namen der aktuellen Box anzeigt.\n' +
@@ -81,6 +84,7 @@ class test_Zustand(TestCase):
         self.assertEqual(expected_output, objekt.daten_text_konsole())
 
     def test_daten_text_konsole_zustand_veraender_lernuhr(self):
+        # TODO Funktion loeschen
         from src.classes.lernuhr import Lernuhr, UhrStatus
         uhr = Lernuhr()
         gestoppte_zeit = Lernuhr.echte_zeit()
@@ -118,12 +122,14 @@ class test_Zustand(TestCase):
         self.assertEqual(expected_output, objekt.daten_text_konsole())
 
     def test_info_text_konsole(self):
+        # TODO Funktion loeschen
         objekt = Zustand()
         expected_output = ("----------\n" +
                            "* Die verfuegbaren Kommandos\n")
         self.assertEqual(expected_output, objekt.info_text_konsole())
 
     def test_info_text_konsole_zustand_start(self):
+        # TODO Funktion loeschen
         objekt = ZustandStart()
         expected_output = ("----------\n" +
                            "* Die verfuegbaren Zustaende\n" +
@@ -135,6 +141,7 @@ class test_Zustand(TestCase):
         self.assertEqual(expected_output, objekt.info_text_konsole())
 
     def test_info_text_konsole_zustand_veraender_lernuhr(self):
+        # TODO Funktion loeschen
         objekt = ZustandVeraenderLernuhr()
         expected_output = ("----------\n" +
                            "* Die verfuegbaren Kommandos\n" +
