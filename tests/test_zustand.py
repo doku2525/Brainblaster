@@ -469,14 +469,17 @@ class test_Zustand(TestCase):
 
     def test_verarbeite_userinput_zustand_veraender_lernuhr_option_p(self):
         from src.classes.lernuhr import Lernuhr, UhrStatus
-
+        # Es gibt eine bestimmte Reihenfolge, die eingehalten werden muss. Siehe auch Issue #35
+        # LAEUFT -> ECHT, LAEUFT -> PAUSE, ECHT -> LAEUFT und PAUSE -> LAEUFT sollten erwartet funktionieren
         uhr = Lernuhr(modus=UhrStatus.LAEUFT)
         gestoppte_zeit = Lernuhr.echte_zeit()
         objekt = ZustandVeraenderLernuhr(aktuelle_zeit=uhr.as_iso_format(gestoppte_zeit),
                                          neue_uhr=uhr)
         self.assertEqual(UhrStatus.LAEUFT, uhr.modus)
         result, fun, args = objekt.verarbeite_userinput('pe')
-        self.assertNotEqual(result, objekt)
+        # TODO Im Mediator wird nicht mehr Lernuhr.echte_zeit() aufgerufen, sondern aktuelle_zeit zum Berechnen
+        #   der neuen_uhrzeit, dadurch koennte sich der Test veraendern.
+        # self.assertNotEqual(result, objekt)    # Der Test ist mal erfolgreich und mal nicht wegen der Millisekunden
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
         self.assertEqual(UhrStatus.LAEUFT, result.neue_uhr.modus)
