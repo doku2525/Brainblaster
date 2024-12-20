@@ -1,16 +1,32 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
-from typing import Type, TYPE_CHECKING
-
-from src.classes.lernuhr import Lernuhr
+from dataclasses import dataclass, field, replace
+from typing import Callable, Protocol, Type, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.classes.zustand import Zustand
+
+# TODO
+"""Views melden sich mit einer der zustand_zu_...()-Funktionen an
+    - beobachter: list[tuple[Observer, Callable]] = [(FlaskView(), func)] 
+    - beobachter_anmelden(view, func)
+    - beobachter_abmelden(view)
+    - beobachter_updaten(zustand)
+        Hier wird dann [
+Dann koennen sich """
+
+
+# TODO in eigene ObserverManager-Klasse auslagern
+# TODO Beim Loeschen auch Protocol, Type und Callable aus import entfernen
+# class Beobachter(Protocol):
+#     def update(self, data: dict) -> None | Beobachter:
+#         ...
 
 
 @dataclass(frozen=True)
 class ZustandsMediator:
     klassen: dict[str, Type] = field(default_factory=dict)
+    registrierte_view_klassen: dict[Type[Beobachter], Callable] = field(default_factory=dict)
+    beobachter: list[Beobachter] = field(default_factory=dict)
 
     def __post_init__(self):
         object.__setattr__(self,
@@ -19,7 +35,23 @@ class ZustandsMediator:
                             for mediator
                             in [klasse for klasse in self.__class__.__subclasses__()]})
 
-    def zustand_to_flaskview_data(self, zustand: Zustand) -> dict:
+    # TODO in eigene ObserverManager-Klasse auslagern
+    # def beobachter_anmelden(self, beobachter: Beobachter, funktion: Callable) -> ZustandsMediator:
+    #     result = replace(self,
+    #                      registrierte_view_klassen=self.registrierte_view_klassen |
+    #                                                {beobachter.__class__: funktion})
+    #     return replace(result, beobachter=self.beobachter + [beobachter])
+    #
+    # def beobachter_abmelden(self, beobachter: Beobachter) -> ZustandsMediator:
+    #     return replace(self, beobachter=[observer for observer in self.beobachter if observer != beobachter])
+    #
+    # def beobachter_updaten(self, zustand: Zustand) -> ZustandsMediator:
+    #     def suche_cmd(view_obj: Beobachter) -> Callable:
+    #         return self.registrierte_view_klassen.get(view_obj.__class__, lambda data: {})
+    #     [observer.update(self.suche_cmd(observer)(zustand)) for observer in self.beobachter]
+    #     return self
+
+    def zustand_to_flaskview_data(self, zustand: Zustand, zeit_in_ms: int = 0) -> dict:
         """Erstelle das data-Dictionary fuer Flaskview"""
         mediator_objekt = self.klassen[zustand.__class__.__name__]()
         # 'zustand' und 'aktuelle_zeit' sollen in jedem Zustand verfuegbar sein, deshalb hier als dict definiert, das
@@ -28,19 +60,20 @@ class ZustandsMediator:
                 for key, value
                 in ({'zustand': mediator_objekt.zustand,
                      'aktuelle_uhrzeit': zustand.aktuelle_zeit} |
-                    mediator_objekt.zustand_to_flaskview_data(zustand)).items() if value != ''
+                    mediator_objekt.zustand_to_flaskview_data(zustand, zeit_in_ms)).items() if value != ''
                 }
 
-    def zustand_to_consoleview_data(self, zustand: Zustand) -> dict:
+    def zustand_to_consoleview_data(self, zustand: Zustand, zeit_in_ms: int = 0) -> dict:
         mediator_objekt = self.klassen[zustand.__class__.__name__]()
         return {key: value
                 for key, value
                 in {'zustand': mediator_objekt.zustand,
                     'aktuelle_zeit': zustand.aktuelle_zeit,
-                    'daten': mediator_objekt.prepare_consoleview_daten_string(zustand),
-                    'optionen': mediator_objekt.prepare_consoleview_optionen_string(zustand)}.items() if value != ''}
+                    'daten': mediator_objekt.prepare_consoleview_daten_string(zustand, zeit_in_ms),
+                    'optionen': mediator_objekt.prepare_consoleview_optionen_string(zustand)
+                    }.items() if value != ''}
 
-    def prepare_consoleview_daten_string(self, zustand: Zustand) -> str:
+    def prepare_consoleview_daten_string(self, zustand: Zustand, zeit_in_ms: int = 0) -> str:
         """Erzeugt den String fuer das Feld 'daten'.
             Da dieses Feld von dem Zustand abhaengt, sollte es in den erbenden Klassen implementiert werden.
             Da die Funktion zustand_to_consoleview_data leere Felder herausfiltert ist die Funktion hier nur zum
@@ -69,10 +102,10 @@ class ZustandsMediator:
 class ZustandMediatorEnde(ZustandsMediator):
     zustand: str = 'ZustandENDE'
 
-    def zustand_to_flaskview_data(self, zustand: Zustand) -> dict:
+    def zustand_to_flaskview_data(self, zustand: Zustand, zeit_in_ms: int = 0) -> dict:
         return {}
 
-    def prepare_consoleview_optionen_string(self, zustand: Zustand) -> str:
+    def prepare_consoleview_optionen_string(self, zustand: Zustand, zeit_in_ms: int = 0) -> str:
         return f"Ciao! {zustand.parent}"
 
 
@@ -80,12 +113,12 @@ class ZustandMediatorEnde(ZustandsMediator):
 class ZustandsMediatorZustandStart(ZustandsMediator):
     zustand: str = 'ZustandStart'
 
-    def zustand_to_flaskview_data(self, zustand: Zustand) -> dict:
+    def zustand_to_flaskview_data(self, zustand: Zustand, zeit_in_ms: int = 0) -> dict:
         """Liefer die speziellen Daten fuer Flaskview"""
         return {'liste': zustand.liste,
                 'aktueller_index': zustand.aktueller_index} if zustand.liste else {}
 
-    def prepare_consoleview_daten_string(self, zustand: Zustand) -> str:
+    def prepare_consoleview_daten_string(self, zustand: Zustand, zeit_in_ms: int = 0) -> str:
         """Wird in der Elternklasse zum bauen des data-Dicitonarys verwendet"""
         return ((''.join([f"{index:2d} : {titel}\n" for index, titel in enumerate(zustand.liste)])) +
                 f"Aktuelle Box: {zustand.liste[zustand.aktueller_index]}")
@@ -95,20 +128,18 @@ class ZustandsMediatorZustandStart(ZustandsMediator):
 class ZustandsMediatorZustandVeraenderLernuhr(ZustandsMediator):
     zustand: str = 'ZustandVeraenderLernuhr'
 
-    # TODO durch dependencie-injection den Aufruf Lernuhr.echte_zeit() durch Variable ersetzen
     @staticmethod
-    def __berechne_neue_uhrzeit(zustand: Zustand) -> str:
-        return zustand.neue_uhr.as_iso_format(
-            Lernuhr.isostring_to_millis(zustand.aktuelle_zeit)) if zustand.neue_uhr else ''
+    def __berechne_neue_uhrzeit(zustand: Zustand, zeit_in_ms: int) -> str:
+        return zustand.neue_uhr.as_iso_format(zeit_in_ms) if zustand.neue_uhr else ''
 
-    def zustand_to_flaskview_data(self, zustand: Zustand) -> dict:
+    def zustand_to_flaskview_data(self, zustand: Zustand, zeit_in_ms: int = 0) -> dict:
         """Liefer die speziellen Daten fuer Flaskview"""
-        return ({'neue_uhrzeit': self.__class__.__berechne_neue_uhrzeit(zustand)} |
+        return ({'neue_uhrzeit': self.__class__.__berechne_neue_uhrzeit(zustand, zeit_in_ms)} |
                 ({'neue_uhr': zustand.neue_uhr.as_iso_dict()} if zustand.neue_uhr else {}))
 
-    def prepare_consoleview_daten_string(self, zustand: Zustand) -> str:
+    def prepare_consoleview_daten_string(self, zustand: Zustand, zeit_in_ms: int = 0) -> str:
         return ''.join([
-            f"Neue Uhrzeit: {self.__class__.__berechne_neue_uhrzeit(zustand)}\n",
+            f"Neue Uhrzeit: {self.__class__.__berechne_neue_uhrzeit(zustand, zeit_in_ms)}\n",
             f"Startzeit : {zustand.neue_uhr.start_zeit if zustand.neue_uhr is not None else ''}\n",
             f"Kalkulationszeit : {zustand.neue_uhr.kalkulations_zeit if zustand.neue_uhr is not None else ''}\n",
             f"Tempo : {zustand.neue_uhr.tempo if zustand.neue_uhr is not None else ''}\n",

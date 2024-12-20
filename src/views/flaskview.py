@@ -48,11 +48,9 @@ class FlaskView:
         @self.app.route('/index')
         def index():
             # TODO verkuerzen durch Benutzung der Dictionarys oben
-            print(f"{inspect.stack()[0].function =}")
             command = request.args.get('lernuhr', False)
             if command:
                 if command == 'ohne_speichern':
-                    print(f"{ command =}")
                     self.setze_cmd_warte_auf_update('c0', self.warte_zeit)
                 elif command == 'mit_speichern':
                     self.setze_cmd_warte_auf_update('c@ZustandStart', self.warte_zeit)
@@ -102,6 +100,10 @@ class FlaskView:
                 und die data als JSON im Browser angezeigt wird."""
             self.setze_cmd_warte_auf_update(cmd, self.warte_zeit)
             return jsonify(self.data)
+
+    def update(self, daten: dict) -> None:
+        """Funktion fuer die Protokoll-Klasse Beobachter"""
+        self.data = data
 
     def setze_cmd_warte_auf_update(self, cmd: str, wartezeit: float | int = 0.25, versuche: int = 20
                                    ) -> tuple[str, str]:

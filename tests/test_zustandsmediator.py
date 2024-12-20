@@ -18,7 +18,7 @@ class test_ZustandsMediator(TestCase):
         from src.classes.zustand import ZustandENDE
 
         obj = ZustandsMediator()
-        result = obj.zustand_to_consoleview_data(ZustandENDE(aktuelle_zeit='test'))
+        result = obj.zustand_to_consoleview_data(ZustandENDE(aktuelle_zeit='test'), 0)
         self.assertIsInstance(result, dict)
         self.assertEqual('ZustandENDE', result['zustand'])
         self.assertEqual('test', result['aktuelle_zeit'])
@@ -30,7 +30,7 @@ class test_ZustandsMediator(TestCase):
 
         obj = ZustandsMediator()
         zustand_ohne_parrent = ZustandStart(liste=["1", "2", "3"], aktueller_index=0, aktuelle_zeit='test')
-        result = obj.zustand_to_consoleview_data(zustand_ohne_parrent)
+        result = obj.zustand_to_consoleview_data(zustand_ohne_parrent, 0)
         expected_data_str = ' 0 : 1\n 1 : 2\n 2 : 3\nAktuelle Box: 1'
         expected_optionen_str = " 1 ENDE : Beende Programm\n'+' + Zahl\n'-' + Zahl\n'=' + Zahl\n"
         self.assertIsInstance(result, dict)
@@ -41,14 +41,14 @@ class test_ZustandsMediator(TestCase):
 
         zustand_mit_parrent = replace(zustand_ohne_parrent, parent=ZustandStart())
         # Da ZustandStart per Definition kein parent-Zustand hat, veraendert sich nichts.
-        result = obj.zustand_to_consoleview_data(zustand_mit_parrent)
+        result = obj.zustand_to_consoleview_data(zustand_mit_parrent, 0)
         self.assertEqual('ZustandStart', result['zustand'])
         self.assertEqual('test', result['aktuelle_zeit'])
         self.assertEqual(expected_data_str, result['daten'])
         self.assertEqual(expected_optionen_str, result['optionen'])
 
         zustand_mit_zwei_children = replace(zustand_mit_parrent, child=zustand_mit_parrent.child * 2)
-        result = obj.zustand_to_consoleview_data(zustand_mit_zwei_children)
+        result = obj.zustand_to_consoleview_data(zustand_mit_zwei_children, 0)
         expected_optionen_str = (" 1 ENDE : Beende Programm\n 2 ENDE : Beende Programm\n'" +
                                  "+' + Zahl\n'-' + Zahl\n'=' + Zahl\n")
         self.assertEqual('ZustandStart', result['zustand'])
@@ -62,7 +62,7 @@ class test_ZustandsMediator(TestCase):
 
         obj = ZustandsMediator()
         zustand_ohne_parrent = ZustandVeraenderLernuhr(aktuelle_zeit='2024-12-19 15:10:42', neue_uhr=Lernuhr())
-        result = obj.zustand_to_consoleview_data(zustand_ohne_parrent)
+        result = obj.zustand_to_consoleview_data(zustand_ohne_parrent, 0)
         expected_data_str = ['Neue Uhrzeit: 2024-12-19 15:10:42.534000', 'Startzeit : 0',
                              'Kalkulationszeit : 0', 'Tempo : 1.0', 'Modus : UhrStatus.ECHT', '']
         expected_optionen_str = ("'s' + Zahl\n"
@@ -88,7 +88,7 @@ class test_ZustandsMediator(TestCase):
         # Beim hinzufuegen von Parents zur Lernuhr wird automatisch der gleiche Zustand als Child hinzugefuegt,
         #   um entweder zum parent zurueck zu gehen ohne zu speichern oder zum child zu gehen und die
         #   Veraenderungen in Lernuhr zu speichern
-        result = obj.zustand_to_consoleview_data(zustand_mit_parrent)
+        result = obj.zustand_to_consoleview_data(zustand_mit_parrent, 0)
         expected_optionen_str = (
             ' 0 ZustandStelleUhr : Zustand, zum Stellen der Uhr.\n'
             ' 1 ZustandStelleUhr : Zustand, zum Stellen der Uhr.\n') + expected_optionen_str
@@ -106,7 +106,7 @@ class test_ZustandsMediator(TestCase):
 
         zustand_mit_cild = replace(zustand_ohne_parrent, child=[ZustandStart()])
         # Es kann kein Child ohne parent hinzugefuegt werden, da es keine weiteren Child als Zurueck mit speichern gibt
-        result = obj.zustand_to_consoleview_data(zustand_mit_cild)
+        result = obj.zustand_to_consoleview_data(zustand_mit_cild, 0)
         expected_optionen_str = '\n'.join(expected_optionen_str.split("\n")[2:])  # Entferne Zeilen Option "0" und "1"
         self.assertIsInstance(result, dict)
         self.assertEqual('Lernuhr', zustand_ohne_parrent.neue_uhr.__class__.__name__)
@@ -124,7 +124,7 @@ class test_ZustandsMediator(TestCase):
         from src.classes.zustand import ZustandENDE
 
         obj = ZustandsMediator()
-        result = obj.zustand_to_flaskview_data(ZustandENDE(aktuelle_zeit='test'))
+        result = obj.zustand_to_flaskview_data(ZustandENDE(aktuelle_zeit='test'), 0)
         self.assertIsInstance(result, dict)
         self.assertEqual('ZustandENDE', result['zustand'])
         self.assertEqual('test', result['aktuelle_uhrzeit'])
@@ -137,7 +137,7 @@ class test_ZustandsMediator(TestCase):
         ausgangs_liste = ["1", "2", "3"]
         ausgangs_index = 0
         zustand_ohne_parrent = ZustandStart(liste=ausgangs_liste, aktueller_index=ausgangs_index, aktuelle_zeit='test')
-        result = obj.zustand_to_flaskview_data(zustand_ohne_parrent)
+        result = obj.zustand_to_flaskview_data(zustand_ohne_parrent, 0)
         self.assertIsInstance(result, dict)
         self.assertEqual('ZustandStart', result['zustand'])
         self.assertEqual('test', result['aktuelle_uhrzeit'])
@@ -146,7 +146,7 @@ class test_ZustandsMediator(TestCase):
 
         zustand_mit_parrent = replace(zustand_ohne_parrent, parent=ZustandStart())
         # Da an die Flaskview keine Zustaende, sondern nur Daten uebergeben werden, sollte die Test erfolgreich sein.
-        result = obj.zustand_to_flaskview_data(zustand_mit_parrent)
+        result = obj.zustand_to_flaskview_data(zustand_mit_parrent, 0)
         self.assertIsInstance(result, dict)
         self.assertEqual('ZustandStart', result['zustand'])
         self.assertEqual('test', result['aktuelle_uhrzeit'])
@@ -155,7 +155,7 @@ class test_ZustandsMediator(TestCase):
 
         zustand_mit_zwei_children = replace(zustand_mit_parrent, child=zustand_mit_parrent.child * 2)
         # Da an die Flaskview keine Zustaende, sondern nur Daten uebergeben werden, sollte die Test erfolgreich sein.
-        result = obj.zustand_to_flaskview_data(zustand_mit_zwei_children)
+        result = obj.zustand_to_flaskview_data(zustand_mit_zwei_children,0)
         self.assertIsInstance(result, dict)
         self.assertEqual('ZustandStart', result['zustand'])
         self.assertEqual('test', result['aktuelle_uhrzeit'])
@@ -169,7 +169,7 @@ class test_ZustandsMediator(TestCase):
         obj = ZustandsMediator()
         zeit = '1970-01-01 01:01:01'
         zustand_ohne_parrent = ZustandVeraenderLernuhr(aktuelle_zeit=zeit, neue_uhr=Lernuhr())
-        result = obj.zustand_to_flaskview_data(zustand_ohne_parrent)
+        result = obj.zustand_to_flaskview_data(zustand_ohne_parrent, 0)
 
         self.assertIsInstance(result, dict)
         self.assertEqual('Lernuhr', zustand_ohne_parrent.neue_uhr.__class__.__name__)

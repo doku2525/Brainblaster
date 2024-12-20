@@ -66,9 +66,11 @@ class VokabeltrainerController:
         self.modell.vokabelboxen.laden()
         self.aktueller_zustand = self.buildZustandStart(ZustandStart())
         # TODO Hier den Observer aufrufen und alle registrierten View die Nachricht updaten() schicken
-        self.view.data = ZustandsMediator().zustand_to_flaskview_data(self.aktueller_zustand)   # In FlaskView durch updaten() zuweisen
+        self.aktueller_zustand = self.aktueller_zustand.view_anmelden(self.view)
+        self.aktueller_zustand = self.aktueller_zustand.view_anmelden(self.view_console)
+        self.view.data = ZustandsMediator().zustand_to_flaskview_data(self.aktueller_zustand, Lernuhr.echte_zeit())   # In FlaskView durch updaten() zuweisen
         self.view_console = self.view_console.update(
-            ZustandsMediator().zustand_to_consoleview_data(self.aktueller_zustand))
+            ZustandsMediator().zustand_to_consoleview_data(self.aktueller_zustand, Lernuhr.echte_zeit()))
         self.view_console.render()
 
         while not isinstance(self.aktueller_zustand, ZustandENDE):
@@ -81,15 +83,16 @@ class VokabeltrainerController:
                 #   self.aktuellerZustand ist dann None. args ist dann die Funktion zum bauen der Argumente.
                 #   f() -> dict. So dass dann cmd(**args()) aufgerufen wird, wenn aktueller_zustand None ist
 
-                self.view.data = ZustandsMediator().zustand_to_flaskview_data(self.aktueller_zustand)
+                self.view.data = ZustandsMediator().zustand_to_flaskview_data(self.aktueller_zustand,
+                                                                              Lernuhr.echte_zeit())
                 self.view_console = self.view_console.update(
-                    ZustandsMediator().zustand_to_consoleview_data(self.aktueller_zustand))
+                    ZustandsMediator().zustand_to_consoleview_data(self.aktueller_zustand, Lernuhr.echte_zeit()))
                 self.view.cmd = None
                 # Bzw. spaeter dann wenn der Observer in Zustand integriert wurde, aktueller_zustand.render() aufrufen.
                 self.view_console.render()
 
             self.aktueller_zustand = self.aktueller_zustand.update_zeit(self.uhr.as_iso_format(Lernuhr.echte_zeit()))
-            self.view.data = ZustandsMediator().zustand_to_flaskview_data(self.aktueller_zustand)
+            self.view.data = ZustandsMediator().zustand_to_flaskview_data(self.aktueller_zustand, Lernuhr.echte_zeit())
             time.sleep(0.25)
 
         print(self.aktueller_zustand.info_text_konsole())
