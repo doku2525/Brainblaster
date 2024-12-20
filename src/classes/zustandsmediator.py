@@ -27,7 +27,7 @@ class ZustandsMediator:
         return {key: value
                 for key, value
                 in ({'zustand': mediator_objekt.zustand,
-                     'aktuelle_zeit': zustand.aktuelle_zeit} |
+                     'aktuelle_uhrzeit': zustand.aktuelle_zeit} |
                     mediator_objekt.zustand_to_flaskview_data(zustand)).items() if value != ''
                 }
 
@@ -95,16 +95,20 @@ class ZustandsMediatorZustandStart(ZustandsMediator):
 class ZustandsMediatorZustandVeraenderLernuhr(ZustandsMediator):
     zustand: str = 'ZustandVeraenderLernuhr'
 
+    # TODO durch dependencie-injection den Aufruf Lernuhr.echte_zeit() durch Variable ersetzen
+    @staticmethod
+    def __berechne_neue_uhrzeit(zustand: Zustand) -> str:
+        return zustand.neue_uhr.as_iso_format(
+            Lernuhr.isostring_to_millis(zustand.aktuelle_zeit)) if zustand.neue_uhr else ''
+
     def zustand_to_flaskview_data(self, zustand: Zustand) -> dict:
         """Liefer die speziellen Daten fuer Flaskview"""
-        # TODO durch dependencie-injection den Aufruf Lernuhr.echte_zeit() durch Variable ersetzen
-        return ({'neue_uhrzeit': zustand.neue_uhr.as_iso_format(
-                                     Lernuhr.isostring_to_millis(zustand.aktuelle_zeit)) if zustand.neue_uhr else ''} |
+        return ({'neue_uhrzeit': self.__class__.__berechne_neue_uhrzeit(zustand)} |
                 ({'neue_uhr': zustand.neue_uhr.as_iso_dict()} if zustand.neue_uhr else {}))
 
     def prepare_consoleview_daten_string(self, zustand: Zustand) -> str:
         return ''.join([
-            f"Neue Uhrzeit: {zustand.data['neue_uhrzeit']}\n",
+            f"Neue Uhrzeit: {self.__class__.__berechne_neue_uhrzeit(zustand)}\n",
             f"Startzeit : {zustand.neue_uhr.start_zeit if zustand.neue_uhr is not None else ''}\n",
             f"Kalkulationszeit : {zustand.neue_uhr.kalkulations_zeit if zustand.neue_uhr is not None else ''}\n",
             f"Tempo : {zustand.neue_uhr.tempo if zustand.neue_uhr is not None else ''}\n",

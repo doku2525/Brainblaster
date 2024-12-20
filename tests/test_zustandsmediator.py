@@ -61,7 +61,7 @@ class test_ZustandsMediator(TestCase):
         from src.classes.lernuhr import Lernuhr
 
         obj = ZustandsMediator()
-        zustand_ohne_parrent = ZustandVeraenderLernuhr(aktuelle_zeit='test', neue_uhr=Lernuhr())
+        zustand_ohne_parrent = ZustandVeraenderLernuhr(aktuelle_zeit='2024-12-19 15:10:42', neue_uhr=Lernuhr())
         result = obj.zustand_to_consoleview_data(zustand_ohne_parrent)
         expected_data_str = ['Neue Uhrzeit: 2024-12-19 15:10:42.534000', 'Startzeit : 0',
                              'Kalkulationszeit : 0', 'Tempo : 1.0', 'Modus : UhrStatus.ECHT', '']
@@ -75,7 +75,7 @@ class test_ZustandsMediator(TestCase):
         self.assertIsInstance(result, dict)
         self.assertEqual('Lernuhr', zustand_ohne_parrent.neue_uhr.__class__.__name__)
         self.assertEqual('ZustandVeraenderLernuhr', result['zustand'])
-        self.assertEqual('test', result['aktuelle_zeit'])
+        self.assertEqual('2024-12-19 15:10:42', result['aktuelle_zeit'])
         for index, wert in enumerate(expected_data_str):
             if index == 0:
                 self.assertEqual(len(wert), len(result['daten'].split('\n')[index]))
@@ -95,7 +95,7 @@ class test_ZustandsMediator(TestCase):
         self.assertIsInstance(result, dict)
         self.assertEqual('Lernuhr', zustand_ohne_parrent.neue_uhr.__class__.__name__)
         self.assertEqual('ZustandVeraenderLernuhr', result['zustand'])
-        self.assertEqual('test', result['aktuelle_zeit'])
+        self.assertEqual('2024-12-19 15:10:42', result['aktuelle_zeit'])
         for index, wert in enumerate(expected_data_str):
             if index == 0:
                 self.assertEqual(len(wert), len(result['daten'].split('\n')[index]))
@@ -111,7 +111,7 @@ class test_ZustandsMediator(TestCase):
         self.assertIsInstance(result, dict)
         self.assertEqual('Lernuhr', zustand_ohne_parrent.neue_uhr.__class__.__name__)
         self.assertEqual('ZustandVeraenderLernuhr', result['zustand'])
-        self.assertEqual('test', result['aktuelle_zeit'])
+        self.assertEqual('2024-12-19 15:10:42', result['aktuelle_zeit'])
         for index, wert in enumerate(expected_data_str):
             if index == 0:
                 self.assertEqual(len(wert), len(result['daten'].split('\n')[index]))
@@ -127,7 +127,7 @@ class test_ZustandsMediator(TestCase):
         result = obj.zustand_to_flaskview_data(ZustandENDE(aktuelle_zeit='test'))
         self.assertIsInstance(result, dict)
         self.assertEqual('ZustandENDE', result['zustand'])
-        self.assertEqual('test', result['aktuelle_zeit'])
+        self.assertEqual('test', result['aktuelle_uhrzeit'])
         self.assertEqual(2, len(result.keys()))
 
     def test_zustand_flask_view_zustandstart(self):
@@ -140,7 +140,7 @@ class test_ZustandsMediator(TestCase):
         result = obj.zustand_to_flaskview_data(zustand_ohne_parrent)
         self.assertIsInstance(result, dict)
         self.assertEqual('ZustandStart', result['zustand'])
-        self.assertEqual('test', result['aktuelle_zeit'])
+        self.assertEqual('test', result['aktuelle_uhrzeit'])
         self.assertEqual(ausgangs_liste, result['liste'])
         self.assertEqual(ausgangs_index, result['aktueller_index'])
 
@@ -149,7 +149,7 @@ class test_ZustandsMediator(TestCase):
         result = obj.zustand_to_flaskview_data(zustand_mit_parrent)
         self.assertIsInstance(result, dict)
         self.assertEqual('ZustandStart', result['zustand'])
-        self.assertEqual('test', result['aktuelle_zeit'])
+        self.assertEqual('test', result['aktuelle_uhrzeit'])
         self.assertEqual(ausgangs_liste, result['liste'])
         self.assertEqual(ausgangs_index, result['aktueller_index'])
 
@@ -158,7 +158,7 @@ class test_ZustandsMediator(TestCase):
         result = obj.zustand_to_flaskview_data(zustand_mit_zwei_children)
         self.assertIsInstance(result, dict)
         self.assertEqual('ZustandStart', result['zustand'])
-        self.assertEqual('test', result['aktuelle_zeit'])
+        self.assertEqual('test', result['aktuelle_uhrzeit'])
         self.assertEqual(ausgangs_liste, result['liste'])
         self.assertEqual(ausgangs_index, result['aktueller_index'])
 
@@ -174,7 +174,7 @@ class test_ZustandsMediator(TestCase):
         self.assertIsInstance(result, dict)
         self.assertEqual('Lernuhr', zustand_ohne_parrent.neue_uhr.__class__.__name__)
         self.assertEqual('ZustandVeraenderLernuhr', result['zustand'])
-        self.assertEqual(zeit, result['aktuelle_zeit'])
+        self.assertEqual(zeit, result['aktuelle_uhrzeit'])
         self.assertEqual(len(zeit), len(result['neue_uhrzeit'][:-7]))
         self.assertEqual(len(zeit.split()), len(result['neue_uhrzeit'][:-7].split()))
         self.assertIsInstance(result['neue_uhr'], dict)
