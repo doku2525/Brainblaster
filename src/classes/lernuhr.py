@@ -1,10 +1,7 @@
 from __future__ import annotations
-
-import json
 from dataclasses import dataclass, replace
 import datetime
 from enum import Enum
-import jsonpickle
 import time
 
 import src.utils.utils_enum as u_enum
@@ -51,20 +48,6 @@ class Lernuhr:
         """Liefert die reale Zeit vom System in Millisekunden.
         Diese Funktion ist die Schnittstelle zum Betriebssystem"""
         return int(time.time() * 1000)
-
-    def speicher_in_jsondatei(self, json_dateiname: str) -> None:
-        dic = self.as_iso_dict()
-        with open(json_dateiname, "w") as file:
-            json.dump(dic, file, indent=4, ensure_ascii=True)
-
-    @staticmethod
-    def lade_aus_jsondatei(json_dateiname: str) -> Lernuhr:
-        with open(json_dateiname, "r") as file:
-            data = json.load(file)
-        return Lernuhr.from_iso_dict(data)
-        # result = Lernuhr.fromdict(data)
-        # result = replace(result, kalkulations_zeit=Lernuhr.isostring_to_millis(result.kalkulations_zeit))
-        # return replace(result, start_zeit=Lernuhr.isostring_to_millis(result.start_zeit))
 
     @staticmethod
     def isostring_to_millis(isostring: str) -> int:

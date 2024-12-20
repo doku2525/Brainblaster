@@ -67,5 +67,5 @@ class test_FlaskView(TestCase):
         self.assertEqual(500, response.status_code)
         response = self.client_lernuhr.get('/get_aktuelle_und_neue_uhrzeit')
         self.assertEqual(200, response.status_code)
-        expected = b'{"aktuelle_uhrzeit":"2024-12-01 18:00:00","neue_uhr":"{\'kalkulations_zeit\': \'2024-12-03 19:32:33.000000\', \'start_zeit\': \'2024-07-10 09:07:24.987000\', \'tempo\': 1.0, \'pause\': 0, \'modus\': \'LAEUFT\'}","neue_uhrzeit":"2024-12-24 18:00:00"}\n'
+        expected = b'{"aktuelle_uhrzeit":"2024-12-01 18:00:00","neue_uhr":{"kalkulations_zeit":"2024-12-03 19:32:33.000000","modus":"LAEUFT","pause":0,"start_zeit":"2024-07-10 09:07:24.987000","tempo":1.0},"neue_uhrzeit":"2024-12-24 18:00:00"}\n'
         self.assertIn(expected, response.data)

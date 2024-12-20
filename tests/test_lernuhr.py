@@ -4,6 +4,7 @@ from time import sleep, time
 
 from src.classes.lernuhr import Lernuhr
 from src.classes.lernuhr import UhrStatus
+import src.utils.utils_io as u_io
 
 
 class test_LernUhr(TestCase):
@@ -28,7 +29,7 @@ class test_LernUhr(TestCase):
     def test_speicher_in_jsondatei(self):
         dateiname = '__uhr.json'
         uhr = Lernuhr()
-        uhr.speicher_in_jsondatei(dateiname)
+        u_io.speicher_in_jsondatei(uhr.as_iso_dict(), dateiname)
         with open(dateiname, "r") as file:
             string = file.read()
         dic = eval(string)
@@ -38,7 +39,7 @@ class test_LernUhr(TestCase):
         self.assertEqual(0, dic['pause'])
         self.assertEqual('ECHT', dic['modus'])
         uhr = Lernuhr(1720743153000, 1720743153000, 1.0, 0, UhrStatus.LAEUFT)
-        uhr.speicher_in_jsondatei(dateiname)
+        u_io.speicher_in_jsondatei(uhr.as_iso_dict(), dateiname)
         with open(dateiname, "r") as file:
             string = file.read()
         dic = eval(string)
@@ -50,7 +51,7 @@ class test_LernUhr(TestCase):
 
     def test_lade_aus_jsondatei(self):
         dateiname = '__uhr.json'
-        uhr = Lernuhr.lade_aus_jsondatei(dateiname)
+        uhr = Lernuhr.from_iso_dict(u_io.lese_aus_jsondatei(dateiname))
         uhr2 = Lernuhr(1720743153000, 1720743153000, 1.0, 0, UhrStatus.LAEUFT)
         self.assertEqual(uhr, uhr2)
         self.assertIsInstance(uhr.kalkulations_zeit, int)

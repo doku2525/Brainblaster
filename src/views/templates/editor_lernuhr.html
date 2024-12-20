@@ -8,12 +8,12 @@ table {
   /* width: 75%; */
   border-collapse: separate;
   border-spacing: 0; /* Entfernt zusätzlichen Abstand zwischen Zellen */
-  padding: 15px;
+  padding: 10px;
 }
-tr {
+tr.kalk_start_row {
   background-color: lightblue;
   border-bottom: 2px solid white;
-  padding: 25px; /* Passt den inneren Abstand an */
+  padding: 5px; /* Passt den inneren Abstand an */
 }
 td {
   border: none;
@@ -31,9 +31,13 @@ input[type="time"] {
 input[type="range"] {
   padding: 7px;
 }
-td button {
+.optionen_button {
     width: 100%;
     height: 50px;
+}
+td button {
+    width: 100%;
+    height: 60px;
 }
 .laufende_zeit {
     font-size: 32px;
@@ -45,11 +49,22 @@ td button {
     text-align: right;
     font-weight: bold;
 }
+.modis {
+    padding: 6px;
+}
+.modi_namen {
+    /* color: blue; */
+    font-size: 20px;
+    text-align: left;
+    font-weight: bold;
+}
+
 </style>
 </head>
 <body>
     <h1>Uhr-Steuerung</h1>
     <div class="menue" id="neue_uhr">{{neue_uhr}}</div><br>
+    <div class="menue" id="testausgabe"></div><br>
     <table>
         <tr class="laufende_zeit">
             <td class="label_laufende_zeit"><label class="label_laufende_zeit">Aktuelle Zeit:</label></td>
@@ -61,67 +76,79 @@ td button {
             <td class="laufende_zeit" colspan="3">
                 <label class="laufende_zeit" id="neue_uhrzeit">{{neue_uhrzeit}}</label></td>
         </tr>
-        <tr>
+        <tr class="kalk_start_row">
             <td style="text-align: center;" colspan="2"><label>Startzeit</label></td>
             <td style="text-align: center;" colspan="2"><label>Kalkulationszeit</label></td>
         </tr>
-        <tr>
+        <tr class="kalk_start_row">
             <td style="text-align: center;"><label>Datum</label>
                 <p>
                     <input type="date" id="date_start_zeit_datum"
-                       name="date_start_zeit_datum" value={{ start_zeit_datum }}>
+                       name="date_start_zeit_datum" value="">
                 </p>
             </td>
             <td style="text-align: center;"><label>Uhrzeit</label>
                 <p>
                     <input type="time" id="time_start_zeit_uhrzeit"
-                       name="time_start_zeit_uhrzeit" value={{ start_zeit_uhrzeit }}>
+                       name="time_start_zeit_uhrzeit" value="">
                 </p>
             </td>
             <td style="text-align: center;"><label>Datum</label>
                 <p>
                     <input type="date" id="date_kalkulations_zeit_datum"
-                       name="date_kalkulations_zeit_datum" value={{ kalkulations_zeit_datum }}>
+                       name="date_kalkulations_zeit_datum" value="">
                 </p>
             </td>
             <td style="text-align: center;"><label>Uhrzeit</label>
                 <p>
                     <input type="time" id="time_kalkulations_zeit_uhrzeit"
-                       name="time_kalkulations_zeit_uhrzeit" value={{ kalkulations_zeit_uhrzeit }}>
+                       name="time_kalkulations_zeit_uhrzeit" value="">
                 </p>
             </td>
         <tr>
             <td><label>Neuer Tempowert:</label></td>
-            <td colspan="3" style="text-align: center; font-size: 20px;">
-                <label id="neuer_tempo_wert">{{ tempo_wert + tempo_kommastellen }}</label>
+            <td colspan="3" style="text-align: left; font-size: 20px;">
+                <label id="neuer_tempo_wert"></label>
             </td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: center;">
-                <label for="tempo_wert">Tempo Wert (von 0 - 10000 / Schritte: 1):</label></td>
+                <label id="tempo_wert_value"></label><br>
+                <input type="range"
+                       id="tempo_wert" name="tempo_wert" min="0" max="10000" step="1" value=""><br>
+                <label for="tempo_wert">(von 0 - 10000 / Schritte: 1):</label>
+            </td>
             <td colspan="2" style="text-align: center;">
-                <label for="tempo_kommastellen">Tempo Kommastellen (von 0 - 0.999 / Schritte: 0.001):</label></td>
+                <label id="tempo_kommastellen_value"></label><br>
+                <input type="range" id="tempo_kommastellen" name="tempo_kommastellen"
+                       min="0" max="0.999" step="0.001" value=""><br>
+                <label for="tempo_kommastellen">(von 0 - 0.999 / Schritte: 0.001):</label>
+            </td>
+        </tr>
+        <tr class="kalk_start_row">
+            <td style="text-align: right;"><label class="modi_namen">Modus:</label></td>
+            <td style="text-align: left;">
+                <div class="modis">
+                    <input type="radio" id="modus_echt_button" name="modus" value="ze">
+                    <label class="modi_namen" id="modus_label_echt">Echt</label>
+                </div>
+                <div class="modis">
+                    <input type="radio" id="modus_laeuft_button" name="modus" value="zl">
+                    <label class="modi_namen" id="modus_label_laeuft">Läuft</label>
+                </div>
+                <div class="modis">
+                    <input type="radio" id="modus_pause_button" name="modus" value="zp">
+                    <label class="modi_namen" id="modus_label_pause">Pause</label>
+                </div>
+            </td>
+            <td>
+                <button class="optionen_button" type="button" onclick="calibriereLernuhr()">Calibrieren</button>
+            </td>
+            <td>
+                <button class="optionen_button" type="button" onclick="resetLernuhr()">Reset</button>
+            </td>
 
         </tr>
-        <tr>
-            <td colspan="2" style="text-align: center;">
-                <label id="tempo_wert_value">{{ tempo_wert }}</label><br>
-                <input type="range"
-                       id="tempo_wert" name="tempo_wert" min="0" max="10000" step="1" value={{ tempo_wert }}>
-            </td>
-            <td colspan="2" style="text-align: center;">
-                <label id="tempo_kommastellen_value">{{ tempo_kommastellen }}</label><br>
-                <input type="range"
-                       id="tempo_kommastellen" name="tempo_kommastellen" min="0" max="0.999" step="0.001" value={{ tempo_kommastellen }}>
-            </td>
-        </tr>
-        <tr>
-            <td style="text-align: center;"><label>Modus:</label></td>
-            <td colspan="3" style="text-align: left;">
-                <input type="radio" name="modus" value="LAEUFT" checked>Läuft
-                <input type="radio" name="modus" value="PAUSE">Pause
-                <input type="radio" name="modus" value="ECHT">Echt
-            </td></tr>
         <tr>
             <td colspan="2" style="text-align: center">
                 <button type="button" onclick="speicherLernuhr()">Speichern & Zurück</button></td>
@@ -148,6 +175,34 @@ td button {
                 });
         }
 
+        // Ermittle den ausgewaehlten Radiobutton der Modus-Buttons und liefer den in value gespeicherten Wert
+        function getCheckedRadioButtonValue() {
+            // Hole alle Radiobuttons mit dem Namen "modus"
+            const radioButtons = document.getElementsByName("modus");
+
+            // Iteriere über alle Radiobuttons
+            for (let i = 0; i < radioButtons.length; i++) {
+                if (radioButtons[i].checked) {
+                    // Wenn der Button ausgewählt ist, gib seinen Wert zurück und Disable unmoegliche Optionen.
+                    if (radioButtons[i].id === 'modus_pause_button') {
+                        document.getElementById('modus_echt_button').disabled = true;
+                        document.getElementById('modus_label_echt').style.textDecoration = "line-through";}
+                    if (radioButtons[i].id === 'modus_echt_button') {
+                        document.getElementById('modus_pause_button').disabled = true;
+                        document.getElementById('modus_label_pause').style.textDecoration = "line-through";}
+                    if (radioButtons[i].id === 'modus_laeuft_button') {
+                        document.getElementById('modus_pause_button').disabled = false;
+                        document.getElementById('modus_label_pause').style.textDecoration = "none";
+                        document.getElementById('modus_echt_button').disabled = false;
+                        document.getElementById('modus_label_echt').style.textDecoration = "none";}
+                    return radioButtons[i].value;
+                }
+            }
+
+            // Wenn kein Button ausgewählt ist, gib einen Standardwert oder null zurück
+            return null; // Oder einen anderen Standardwert
+        }
+
         // Die Funktionen zum Bauen der Kommandos fuer den Listener
         // Fuer kalkulations_zeit und start_zeit
         function cmd_build_zeit(feldId, parameter) {
@@ -157,6 +212,7 @@ td button {
             console.log('Kommando gebaut: ', cmd);
             return cmd
         }
+
         // Fuer tempo
         function cmd_build_tempo() {
             const wert = document.getElementById('tempo_wert').value;
@@ -168,6 +224,13 @@ td button {
             const neuerWert = Number(wert) + Number(kommastellen);
             document.getElementById('neuer_tempo_wert').textContent = neuerWert;
             const cmd = `/kommando/ct${neuerWert}`;
+            console.log('Kommando gebaut: ', cmd);
+            return cmd
+        }
+
+        function cmd_build_modus() {
+            const wert = getCheckedRadioButtonValue()
+            const cmd = `/kommando/c${wert}`;
             console.log('Kommando gebaut: ', cmd);
             return cmd
         }
@@ -191,6 +254,19 @@ td button {
         document.getElementById('tempo_kommastellen').addEventListener('change', () => {
             const cmd = cmd_build_tempo();
             sende_kommando(cmd)});
+        document.getElementById('modus_echt_button').addEventListener('change', () => {
+            const cmd = cmd_build_modus();
+            sende_kommando(cmd)});
+        document.getElementById('modus_laeuft_button').addEventListener('change', () => {
+            const cmd = cmd_build_modus();
+            sende_kommando('/kommando/cpe');
+            // Wenn der Timeout zu kurz ist, wird das Kommando vom Server nicht verarbeitet
+            setTimeout(function() {sende_kommando(cmd)}, 200);});
+        document.getElementById('modus_pause_button').addEventListener('change', () => {
+            const cmd = cmd_build_modus();
+            sende_kommando('/kommando/cpb');
+            // Wenn der Timeout zu kurz ist, wird das Kommando vom Server nicht verarbeitet
+            setTimeout(function() {sende_kommando(cmd);}, 200)});
 
 
         // JavaScript-Code zur dynamischen Anpassung der Benutzeroberfläche
@@ -198,9 +274,15 @@ td button {
             fetch('/get_aktuelle_und_neue_uhrzeit')
                 .then(response => response.json())
                 .then(data => {
+                // TODO Wenn reset() oder calibrate() dann setze Flag und Update hier die Kalender und Zeit objekte.
                     document.getElementById('aktuelle_uhrzeit').textContent = data.aktuelle_uhrzeit;
                     document.getElementById('neue_uhrzeit').textContent = data.neue_uhrzeit;
-                    document.getElementById('neue_uhr').textContent = data.neue_uhr;
+                    document.getElementById('neue_uhr').textContent = JSON.stringify(data.neue_uhr);
+                    console.log('data =', data);
+                    console.log('data.neue_uhr =', data.neue_uhr);
+                    document.getElementById('testausgabe').textContent = data.neue_uhr.kalkulations_zeit;
+                    console.log('data =', data);
+                    console.log('data.neue_uhr =', data.neue_uhr);
                 })
                 .catch(error => {
                     console.error('Fehler beim Abrufen der Uhrzeit:', error);
@@ -210,6 +292,38 @@ td button {
         // Funktionen fuer die beiden Buttons
         function speicherLernuhr() { window.location.href = '/index?lernuhr=mit_speichern';}
         function verwerfeLernuhr() { window.location.href = '/index?lernuhr=ohne_speichern';}
+        function calibriereLernuhr() { sende_kommando('/kommando/cc');}
+        function resetLernuhr() { sende_kommando('/kommando/cr');}
+
+        // Markiere aktuellen Radiobutton beim Laden der Seite
+        function setRadioByData(data) {
+            // Hole das Element mit der passenden ID
+            const radio = document.getElementById('modus_' + data.toLowerCase() + '_button');
+
+            // Überprüfe, ob das Element gefunden wurde
+            if (radio) {
+                // Setze den Radiobutton als ausgewählt
+                radio.checked = true;
+                // Disable unmoegliche Kombinationen
+                const dummy = getCheckedRadioButtonValue()
+
+            } else {
+                console.error('Kein Radiobutton mit der ID gefunden:', 'modus-' + data.toLowerCase() + '-button');
+            }
+        }
+
+        var aktuellerModus = '{{ modus }}';
+        setRadioByData(aktuellerModus);
+        // Setze Werte der Felder
+        document.getElementById('tempo_wert').value = '{{ tempo_wert }}';
+        document.getElementById('tempo_kommastellen').value = '{{ tempo_kommastellen }}';
+        document.getElementById('tempo_wert_value').textContent = '{{ tempo_wert }}';
+        document.getElementById('tempo_kommastellen_value').textContent = '{{ tempo_wert }}';
+        document.getElementById('neuer_tempo_wert').textContent = '{{ tempo_wert + tempo_kommastellen }}';
+        document.getElementById('date_kalkulations_zeit_datum').value = '{{ kalkulations_zeit_datum }}';
+        document.getElementById('time_kalkulations_zeit_uhrzeit').value = '{{ kalkulations_zeit_uhrzeit }}';
+        document.getElementById('date_start_zeit_datum').value = '{{ start_zeit_datum }}';
+        document.getElementById('time_start_zeit_uhrzeit').value = '{{ start_zeit_uhrzeit }}';
         // Daten alle 0.5 Sekunden abrufen
         setInterval(fetchUhrzeit, 1000);
 
