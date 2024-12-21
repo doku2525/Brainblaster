@@ -1,6 +1,5 @@
 import time
 from typing import Callable, cast
-# import json
 
 from src.classes.eventmanager import EventManager
 from src.classes.lernuhr import Lernuhr
@@ -45,10 +44,6 @@ def main() -> None:
                                           event_manager=event_manager)
     controller.programm_loop()
 
-# TODO ViewObserver mit allen Views erstellen und als Ersatz fuer die Views als Paramter an den Controller uebergeben.
-#   Factory-Funktion mit dictionary der ViewKlassen mit entsprechender Mediator-Funktion
-# TODO Alle unnoetigen imports im Controller loeschen.
-# TODO unten stehenden Code in main-Funktion() veerschieben.
 
 if __name__ == "__main__":
     main()
