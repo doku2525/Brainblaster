@@ -9,8 +9,6 @@ if TYPE_CHECKING:
 @dataclass(frozen=True)
 class ZustandsMediator:
     klassen: dict[str, Type] = field(default_factory=dict)
-#    registrierte_view_klassen: dict[Type[Beobachter], Callable] = field(default_factory=dict)
-#    beobachter: list[Beobachter] = field(default_factory=dict)
 
     def __post_init__(self):
         object.__setattr__(self,
