@@ -1,31 +1,55 @@
 import time
+from typing import cast
 # import json
 
+from src.classes.eventmanager import EventManager
 from src.classes.lernuhr import Lernuhr
 from src.classes.vokabeltrainercontroller import VokabeltrainerController
 from src.classes.vokabeltrainermodell import VokabeltrainerModell
+from src.classes.zustandsbeobachter import Beobachter, ObserverManager
+from src.classes.zustandsmediator import ZustandsMediator
 from src.repositories.vokabelkarten_repository import InMemoryVokabelkartenRepository, JSONDateiformatVokabelkarte
 from src.repositories.vokabelbox_repository import InMemeoryVokabelboxRepository, JSONDateiformatVokabelbox
+from src.views.consoleview import ConsoleView
 from src.views.flaskview import FlaskView
 import src.utils.utils_io as u_io
 
 
+def factory_ViewObserver(view_liste: list[Beobachter]) -> ObserverManager:
+    klassen_mediator_dict_fuer_updaten = {
+        cast(Beobachter, FlaskView): (ZustandsMediator().zustand_to_flaskview_data, ObserverManager().views_updaten),
+        cast(Beobachter, ConsoleView): (ZustandsMediator().zustand_to_consoleview_data, ObserverManager().views_updaten)
+    }
+
+    if not view_liste:
+        return ObserverManager()
+    return factory_ViewObserver(
+        view_liste[1:]).registriere_mapping(view_liste[0],
+                                            *klassen_mediator_dict_fuer_updaten[view_liste[0].__class__])
+
+
 def main() -> None:
-    pass
-
-
-if __name__ == "__main__":
-
     modell = VokabeltrainerModell(
         vokabelkarten=InMemoryVokabelkartenRepository(dateiname='daten/data/vokabelkarten.JSON', verzeichnis='',
                                                       speicher_methode=JSONDateiformatVokabelkarte),
         vokabelboxen=InMemeoryVokabelboxRepository(dateiname='daten/data/vokabelboxen.JSON',
                                                    speicher_methode=JSONDateiformatVokabelbox))
     uhr = Lernuhr.from_iso_dict(u_io.lese_aus_jsondatei("daten/data/uhrzeit.json"))
-    # Lernuhr.lade_aus_jsondatei("daten/data/uhrzeit.json")
+    event_manager = EventManager()
 
-    flask_html_view = FlaskView()
+    flask_html_view = FlaskView(event_manager=event_manager)
     flask_html_view.start_server()
-
-    controller = VokabeltrainerController(modell=modell, uhr=uhr, view=flask_html_view)
+    liste_der_views = [flask_html_view, ConsoleView()]
+    view_observer = factory_ViewObserver(liste_der_views)
+    controller = VokabeltrainerController(modell=modell, uhr=uhr, view_observer=view_observer,
+                                          event_manager=event_manager)
+    controller.event_manager = event_manager
     controller.programm_loop()
+
+# TODO ViewObserver mit allen Views erstellen und als Ersatz fuer die Views als Paramter an den Controller uebergeben.
+#   Factory-Funktion mit dictionary der ViewKlassen mit entsprechender Mediator-Funktion
+# TODO Alle unnoetigen imports im Controller loeschen.
+# TODO unten stehenden Code in main-Funktion() veerschieben.
+
+if __name__ == "__main__":
+    main()

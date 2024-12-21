@@ -3,7 +3,10 @@ from flask import Flask, jsonify, render_template, request, redirect, url_for
 import inspect
 from threading import Thread
 import time
-import json
+from typing import Any
+
+from src.classes.eventmanager import EventManager, EventTyp
+
 
 # Dictionary mit den Zustaenden, die eigene Routen haben.
 # TODO Wird noch nicht benutzt
@@ -30,7 +33,7 @@ def request_to_route(adresse: str, default: str = 'index') -> str:
 
 class FlaskView:
 
-    def __init__(self) -> None:
+    def __init__(self, event_manager: EventManager) -> None:
 
         self.app = Flask(__name__, template_folder='templates')
 
@@ -38,7 +41,8 @@ class FlaskView:
 #        self.routes.register_routes()
 
         self.data = {}
-        self.cmd = None
+        self.event_manager = event_manager
+        self.cmd = False
         self.warte_zeit = 0.25      # siehe Funktion warte_auf_update()
 
         @self.app.route('/')
@@ -106,15 +110,23 @@ class FlaskView:
         self.data = daten
 
     def setze_cmd_warte_auf_update(self, cmd: str, wartezeit: float | int = 0.25, versuche: int = 20
-                                   ) -> tuple[str, str]:
+                                   ) -> tuple[str, bool]:
         """ Wartet solange, bis der Controller self.cmd gelesen hat und self.data mit neuen Daten geupdated hat.
         Falls die Zahl der Versuche erreicht wurde, wird abgebrochen"""
-        self.cmd = cmd
+
+        def kommando_ausgefuehrt(data: Any):
+            self.cmd = False
+
+        self.cmd = True
+        self.event_manager.subscribe(EventTyp.KOMMANDO_EXECUTED, kommando_ausgefuehrt)
+        self.event_manager.publish_event(EventTyp.NEUES_KOMMANDO, cmd)
+
         while self.cmd and versuche > 0:
             time.sleep(wartezeit)
             versuche -= 1
+        self.event_manager.unsubscribe(EventTyp.KOMMANDO_EXECUTED, kommando_ausgefuehrt)
+        self.cmd = False
         return cmd, self.cmd
-
 
     def run(self):
         """Startet den Flask-Server in einem separaten Thread."""

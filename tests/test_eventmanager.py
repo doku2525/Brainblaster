@@ -68,7 +68,7 @@ class test_EventManager(TestCase):
         self.assertEqual(len(self.event_manager.events[EventTyp.NEU_DATEN]), 1)
         self.assertIs(self.event_manager.events[EventTyp.NEU_DATEN][0], handler1)
 
-    def test_benachrichtigen(self):
+    def test_publish_event(self):
         # Test benachrichtigen handlers for an event
         def handler(data):
             self.received_data = data
@@ -86,25 +86,25 @@ class test_EventManager(TestCase):
         self.event_manager.subscribe(EventTyp.NEU_DATEN, obj.handler)
 
         test_data = "This is some test data"
-        self.event_manager.benachrichtigen(EventTyp.NEU_DATEN, test_data)
+        self.event_manager.publish_event(EventTyp.NEU_DATEN, test_data)
 
         self.assertEqual(self.received_data, test_data)
         self.assertEqual(obj.data, test_data)
 
-    def test_benachrichtigen_nonexistent_event(self):
+    def test_publish_event_nonexistent_event(self):
         # Test notifying for a non-existent event type
         def handler(data):
             pass
 
         self.event_manager.subscribe(EventTyp.NEU_DATEN, handler)
         test_data = "This is some test data"
-        self.event_manager.benachrichtigen("nonexistent_event", test_data)
+        self.event_manager.publish_event("nonexistent_event", test_data)
 
         # No assertion needed, notifying for a non-existent event shouldn't raise errors
 
-    def test_benachrichtigen_empty_handlers(self):
+    def test_publish_event_empty_handlers(self):
         # Test notifying with no handlers subscribed to the event
         test_data = "This is some test data"
-        self.event_manager.benachrichtigen(EventTyp.NEU_DATEN, test_data)
+        self.event_manager.publish_event(EventTyp.NEU_DATEN, test_data)
 
         # No assertion needed, notifying with no handlers shouldn't raise errors

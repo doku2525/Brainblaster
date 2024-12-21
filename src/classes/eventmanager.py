@@ -7,6 +7,10 @@ class EventTyp(Enum):
     NEU_DATEN = 0
     UPDATE_VIEW = 1
     RENDER_VIEW = 2
+    NEUES_KOMMANDO = 3
+    KOMMANDO_EXECUTED = 4
+    LOOP_ENDE = 5
+    PROGRAMM_BENDET = 6
 
 
 class EventManager:
@@ -25,7 +29,7 @@ class EventManager:
         self.events = {key: value for key, value in self.events.items() if value}
         return self
 
-    def benachrichtigen(self, event_type: EventTyp, data: Any) -> EventManager:
+    def publish_event(self, event_type: EventTyp, data: Any) -> EventManager:
         if event_type in self.events:
             for func in self.events[event_type]:
                 func(data)

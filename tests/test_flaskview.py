@@ -2,16 +2,16 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 from src.views.flaskview import FlaskView, request_to_route
-
+from src.classes.eventmanager import EventManager
 
 class test_FlaskView(TestCase):
 
     def setUp(self):
-        self.app = FlaskView()
+        self.app = FlaskView(EventManager())
         self.app.cmd = MagicMock()
         self.app.data = {'liste': [1, 2, 3, 4], 'aktuelle_uhrzeit': '2024-07-01 18:00:00.000000', 'aktueller_index': 0}
         self.client = self.app.app.test_client()
-        self.app_lernuhr = FlaskView()
+        self.app_lernuhr = FlaskView(EventManager())
         self.app_lernuhr.data = {'aktuelle_uhrzeit': '2024-12-01 18:00:00.000000',
                                  'neue_uhrzeit': '2024-12-24 18:00:00.000000',
                                  'neue_uhr': {'kalkulations_zeit': '2024-12-03 19:32:33.000000', 'start_zeit': '2024-07-10 09:07:24.987000', 'tempo': 1.0, 'pause': 0, 'modus': 'LAEUFT'}}
