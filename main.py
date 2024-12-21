@@ -1,5 +1,5 @@
 import time
-from typing import cast
+from typing import Callable, cast
 # import json
 
 from src.classes.eventmanager import EventManager
@@ -16,7 +16,7 @@ import src.utils.utils_io as u_io
 
 
 def factory_ViewObserver(view_liste: list[Beobachter]) -> ObserverManager:
-    klassen_mediator_dict_fuer_updaten = {
+    klassen_mediator_dict_fuer_updaten: dict[Beobachter, tuple[Callable, Callable]] = {
         cast(Beobachter, FlaskView): (ZustandsMediator().zustand_to_flaskview_data, ObserverManager().views_updaten),
         cast(Beobachter, ConsoleView): (ZustandsMediator().zustand_to_consoleview_data, ObserverManager().views_updaten)
     }
@@ -40,10 +40,9 @@ def main() -> None:
     flask_html_view = FlaskView(event_manager=event_manager)
     flask_html_view.start_server()
     liste_der_views = [flask_html_view, ConsoleView()]
-    view_observer = factory_ViewObserver(liste_der_views)
+    view_observer: ObserverManager = factory_ViewObserver(liste_der_views)
     controller = VokabeltrainerController(modell=modell, uhr=uhr, view_observer=view_observer,
                                           event_manager=event_manager)
-    controller.event_manager = event_manager
     controller.programm_loop()
 
 # TODO ViewObserver mit allen Views erstellen und als Ersatz fuer die Views als Paramter an den Controller uebergeben.

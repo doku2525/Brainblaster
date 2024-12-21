@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from dataclasses import replace
 import datetime
 import time
-from typing import Type, cast, TYPE_CHECKING
+from typing import Callable, Type, cast, TYPE_CHECKING
 
 from src.classes.eventmanager import EventTyp
 from src.classes.lernuhr import Lernuhr
@@ -66,9 +66,9 @@ class VokabeltrainerController:
 
         commands = {'update_uhr': self.update_uhr}
         print(f"execute_kommando: {kommando_string = }")  # TODO Debug entfernen
-        result = self.aktueller_zustand.verarbeite_userinput(kommando_string)
+        result: ZustandReturnValue = self.aktueller_zustand.verarbeite_userinput(kommando_string)
         print(f"execute_kommando: {result = }")  # TODO Debug entfernen
-        if cmd := commands.get(result.cmd, False):
+        if cmd := commands.get(cast(str, result.cmd), False):
             cmd(*result.args)
         return replace(result.zustand,      # Aktualisiere alle Zustaende in child des result-Zustands
                        child=[self.update_zustand(child_zustand) for child_zustand in result.zustand.child])
@@ -76,7 +76,7 @@ class VokabeltrainerController:
     def update_zustand(self, alter_zustand: Zustand) -> Zustand:
         """Ruft die builder()-Funktionen auf, die die Zustaende mit den aktuellen Werten neu bauen.
         Die Zuordnung der Zustaende zu den buildern wird in der service_liste festgelegt."""
-        service_liste = {
+        service_liste: dict[Type[Zustand], Callable] = {
             ZustandVeraenderLernuhr: self.buildZustandVeraenderLernuhr,
             ZustandStart: self.buildZustandStart
         }
