@@ -12,7 +12,9 @@ class ConsoleView:
     data: dict = field(default_factory=dict)
 
     def update(self, daten: dict) -> ConsoleView:
-        return replace(self, data=daten)
+        self.data = daten
+        return self
+        # return replace(self, data=daten)
 
     def render(self) -> None:
         print(f"{self.render_aktueller_zustand()}\n" +

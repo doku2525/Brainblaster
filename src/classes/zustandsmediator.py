@@ -1,32 +1,16 @@
 from __future__ import annotations
 from dataclasses import dataclass, field, replace
-from typing import Callable, Protocol, Type, TYPE_CHECKING
+from typing import Type, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.classes.zustand import Zustand
-
-# TODO
-"""Views melden sich mit einer der zustand_zu_...()-Funktionen an
-    - beobachter: list[tuple[Observer, Callable]] = [(FlaskView(), func)] 
-    - beobachter_anmelden(view, func)
-    - beobachter_abmelden(view)
-    - beobachter_updaten(zustand)
-        Hier wird dann [
-Dann koennen sich """
-
-
-# TODO in eigene ObserverManager-Klasse auslagern
-# TODO Beim Loeschen auch Protocol, Type und Callable aus import entfernen
-# class Beobachter(Protocol):
-#     def update(self, data: dict) -> None | Beobachter:
-#         ...
 
 
 @dataclass(frozen=True)
 class ZustandsMediator:
     klassen: dict[str, Type] = field(default_factory=dict)
-    registrierte_view_klassen: dict[Type[Beobachter], Callable] = field(default_factory=dict)
-    beobachter: list[Beobachter] = field(default_factory=dict)
+#    registrierte_view_klassen: dict[Type[Beobachter], Callable] = field(default_factory=dict)
+#    beobachter: list[Beobachter] = field(default_factory=dict)
 
     def __post_init__(self):
         object.__setattr__(self,
@@ -34,22 +18,6 @@ class ZustandsMediator:
                            {mediator.zustand: mediator
                             for mediator
                             in [klasse for klasse in self.__class__.__subclasses__()]})
-
-    # TODO in eigene ObserverManager-Klasse auslagern
-    # def beobachter_anmelden(self, beobachter: Beobachter, funktion: Callable) -> ZustandsMediator:
-    #     result = replace(self,
-    #                      registrierte_view_klassen=self.registrierte_view_klassen |
-    #                                                {beobachter.__class__: funktion})
-    #     return replace(result, beobachter=self.beobachter + [beobachter])
-    #
-    # def beobachter_abmelden(self, beobachter: Beobachter) -> ZustandsMediator:
-    #     return replace(self, beobachter=[observer for observer in self.beobachter if observer != beobachter])
-    #
-    # def beobachter_updaten(self, zustand: Zustand) -> ZustandsMediator:
-    #     def suche_cmd(view_obj: Beobachter) -> Callable:
-    #         return self.registrierte_view_klassen.get(view_obj.__class__, lambda data: {})
-    #     [observer.update(self.suche_cmd(observer)(zustand)) for observer in self.beobachter]
-    #     return self
 
     def zustand_to_flaskview_data(self, zustand: Zustand, zeit_in_ms: int = 0) -> dict:
         """Erstelle das data-Dictionary fuer Flaskview"""

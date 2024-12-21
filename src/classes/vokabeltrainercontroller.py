@@ -10,6 +10,7 @@ from src.classes.filterlistenfactory import FilterlistenFactory
 from src.classes.zustand import Zustand, ZustandStart, ZustandENDE, ZustandVeraenderLernuhr, ZustandReturnValue
 from src.classes.zustandsmediator import ZustandsMediator
 from src.views.consoleview import ConsoleView
+from src.classes.zustandsbeobachter import ObserverManager
 
 if TYPE_CHECKING:
     from src.classes.vokabeltrainermodell import VokabeltrainerModell
@@ -24,6 +25,14 @@ class VokabeltrainerController:
         self.aktueller_zustand = None
         self.view = view
         self.view_console = ConsoleView()
+        self.zustands_observer = ObserverManager()
+
+        # Registriere die Funktionen des Zustandmediators fuer die jeweiligen Views wenn views_updaten() aufgerufen wird
+        # Dabei werden die Objekte gleichzeitig als Beobachter im Observer angemeldet.
+        self.zustands_observer = self.zustands_observer.registriere_mapping(
+            self.view, ZustandsMediator().zustand_to_flaskview_data, self.zustands_observer.views_updaten)
+        self.zustands_observer = self.zustands_observer.registriere_mapping(
+            self.view_console, ZustandsMediator().zustand_to_consoleview_data,  self.zustands_observer.views_updaten)
 
     def buildZustandStart(self, zustand: ZustandStart) -> ZustandStart:
         return replace(zustand, **{'liste': self.modell.vokabelboxen.titel_aller_vokabelboxen(),
@@ -39,21 +48,23 @@ class VokabeltrainerController:
         return replace(zustand, neue_uhr=self.uhr)
 
     def update_uhr(self, neue_uhr: Lernuhr) -> None:
-        print(f"update_uhr vorher: {self.uhr == neue_uhr = }")
+#        print(f"update_uhr vorher: {self.uhr == neue_uhr = }")  # TODO Debug entfernen
         self.uhr = neue_uhr
-        print(f"update_uhr nachher: {self.uhr == neue_uhr = }")
+#        print(f"update_uhr nachher: {self.uhr == neue_uhr = }")  # TODO Debug entfernen
 
     def execute_kommando(self, kommando_string: str) -> Zustand:
         commands = {'update_uhr': self.update_uhr}
-        print(f"execute_kommando: {kommando_string = }")
+#        print(f"execute_kommando: {kommando_string = }")  # TODO Debug entfernen
         result = self.aktueller_zustand.verarbeite_userinput(kommando_string)
-        print(f"execute_kommando: {result = }")
+#        print(f"execute_kommando: {result = }")  # TODO Debug entfernen
         if cmd := commands.get(result.cmd, False):
             cmd(*result.args)
-        return replace(result.zustand,
+        return replace(result.zustand,      # Aktualisiere alle Zustaende in child des result-Zustands
                        child=[self.update_zustand(child_zustand) for child_zustand in result.zustand.child])
 
     def update_zustand(self, alter_zustand: Zustand) -> Zustand:
+        """Ruft die builder()-Funktionen auf, die die Zustaende mit den aktuellen Werten neu bauen.
+        Die Zuordnung der Zustaende zu den buildern wird in der service_liste festgelegt."""
         service_liste = {
             ZustandVeraenderLernuhr: self.buildZustandVeraenderLernuhr,
             ZustandStart: self.buildZustandStart
@@ -65,13 +76,8 @@ class VokabeltrainerController:
         self.modell.vokabelkarten.laden()
         self.modell.vokabelboxen.laden()
         self.aktueller_zustand = self.buildZustandStart(ZustandStart())
-        # TODO Hier den Observer aufrufen und alle registrierten View die Nachricht updaten() schicken
-        self.aktueller_zustand = self.aktueller_zustand.view_anmelden(self.view)
-        self.aktueller_zustand = self.aktueller_zustand.view_anmelden(self.view_console)
-        self.view.data = ZustandsMediator().zustand_to_flaskview_data(self.aktueller_zustand, Lernuhr.echte_zeit())   # In FlaskView durch updaten() zuweisen
-        self.view_console = self.view_console.update(
-            ZustandsMediator().zustand_to_consoleview_data(self.aktueller_zustand, Lernuhr.echte_zeit()))
-        self.view_console.render()
+        self.zustands_observer.views_updaten(self.aktueller_zustand, Lernuhr.echte_zeit())
+        self.zustands_observer.views_rendern()
 
         while not isinstance(self.aktueller_zustand, ZustandENDE):
             if self.view.cmd and self.view.cmd[0] == 'c':
@@ -82,17 +88,12 @@ class VokabeltrainerController:
                 #   Jeder Zustand bekommt create-Klassenvariable. diese wird als cmd uebergeben. ZustandX().creeate.
                 #   self.aktuellerZustand ist dann None. args ist dann die Funktion zum bauen der Argumente.
                 #   f() -> dict. So dass dann cmd(**args()) aufgerufen wird, wenn aktueller_zustand None ist
-
-                self.view.data = ZustandsMediator().zustand_to_flaskview_data(self.aktueller_zustand,
-                                                                              Lernuhr.echte_zeit())
-                self.view_console = self.view_console.update(
-                    ZustandsMediator().zustand_to_consoleview_data(self.aktueller_zustand, Lernuhr.echte_zeit()))
+                self.zustands_observer.views_updaten(self.aktueller_zustand, Lernuhr.echte_zeit())
                 self.view.cmd = None
-                # Bzw. spaeter dann wenn der Observer in Zustand integriert wurde, aktueller_zustand.render() aufrufen.
-                self.view_console.render()
+                self.zustands_observer.views_rendern()
 
             self.aktueller_zustand = self.aktueller_zustand.update_zeit(self.uhr.as_iso_format(Lernuhr.echte_zeit()))
-            self.view.data = ZustandsMediator().zustand_to_flaskview_data(self.aktueller_zustand, Lernuhr.echte_zeit())
+            self.zustands_observer.views_updaten(self.aktueller_zustand, Lernuhr.echte_zeit())
             time.sleep(0.25)
 
-        print(self.aktueller_zustand.info_text_konsole())
+        self.zustands_observer.views_rendern()

@@ -14,14 +14,6 @@ class ZustandReturnValue(NamedTuple):
     args: tuple
 
 
-class Beobachter(Protocol):
-
-    def update(self, data: dict) -> None | Beobachter:
-        ...
-
-
-# TODO Das Observer-Pattern integrieren, wo sich Views hier registrieren koennen und bei Veranderungen mit
-#   neuen Daten versorgt werden.
 @dataclass(frozen=True)
 class Zustand(ABC):
     parent: Zustand | None = field(default=None)
@@ -30,19 +22,6 @@ class Zustand(ABC):
     titel: str = field(default_factory=str)
     kommandos: list[str] = field(default_factory=list)
     aktuelle_zeit: str = field(default_factory=str)
-    beobachter: list[Beobachter] = field(default_factory=list)
-
-    def view_anmelden(self, neuer_beobachter: Beobachter) -> Zustand:
-        return replace(self, beobachter=self.beobachter + [neuer_beobachter])
-
-    def view_abmelden(self, beobachter: Beobachter) -> Zustand:
-        return replace(self, beobachter=[observer for observer in self.beobachter if observer != beobachter])
-
-    def views_updaten(self, data: dict) -> None:
-        [observer.update(data) for observer in self.beobachter]
-
-    def views_rendern(self) -> None:
-        [observer.render() for observer in self.beobachter if hasattr(observer, 'render')]
 
     def position_zustand_in_child_mit_namen(self, klassen_name: str) -> str:
         """Da 0 fuer die Position parrent reserviert ist, ist result = '' oder '1..n'  """

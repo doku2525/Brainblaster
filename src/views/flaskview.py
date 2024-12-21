@@ -83,13 +83,13 @@ class FlaskView:
         @self.app.route('/get_aktuelle_uhrzeit')
         def get_aktuelle_uhrzeit():
             """Route fuer index"""
-            print(f"{self.data = } {self.data['aktuelle_uhrzeit'][:-7] = }")
+#            print(f"{self.data = } {self.data['aktuelle_uhrzeit'][:-7] = }")  # TODO Loesche DEBUG print
             return jsonify(self.data['aktuelle_uhrzeit'][:-7])
 
         @self.app.route('/get_aktuelle_und_neue_uhrzeit')
         def get_aktuelle_und_neue_uhrzeit():
             """Route fuer editor_lernuhr"""
-            print(f" {self.data['aktuelle_uhrzeit']} ")
+#            print(f" {self.data['aktuelle_uhrzeit']} ")  # TODO Loesche DEBUG print
             return jsonify({'aktuelle_uhrzeit': self.data['aktuelle_uhrzeit'][:-7],
                             'neue_uhrzeit': self.data['neue_uhrzeit'][:-7],
                             'neue_uhr': self.data['neue_uhr']})
@@ -103,7 +103,7 @@ class FlaskView:
 
     def update(self, daten: dict) -> None:
         """Funktion fuer die Protokoll-Klasse Beobachter"""
-        self.data = data
+        self.data = daten
 
     def setze_cmd_warte_auf_update(self, cmd: str, wartezeit: float | int = 0.25, versuche: int = 20
                                    ) -> tuple[str, str]:
