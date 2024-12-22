@@ -21,10 +21,18 @@ class InfoManager:
     boxen: list[Lerninfos] = field(default_factory=list)
 
     def erzeuge_alle_infos(self, uhrzeit: int) -> InfoManager:
-        return InfoManager(boxen=[lern_info.erzeuge_info_dict(uhrzeit) for lern_info in self.boxen])
+        """Rufe die erzeuge_info_dict(uhrzeit) fuer jedes Element der Liste BOXEN, also Vokabelboxen, aus."""
+        return InfoManager(boxen=[lern_info.erzeuge_infos(uhrzeit) for lern_info in self.boxen])
 
     def suche_karte(self, karte: Vokabelkarte) -> list[Lerninfos]:
+        """Suche alle Vokabelboxen der Liste, also Lerninfos, in denen die Vokabelkarte KARTE steckt."""
         return [lerninfo for lerninfo in self.boxen if karte in list(lerninfo.karten)]
+
+    def boxen_als_number_dict(self) -> list[dict[str, dict[str: dict[str: int]]]]:
+        """Liefer Liste, in der jede Lerneinheit durch ein Dictionary mit dem Statistikzahlen fuer jede Frageeinheit"""
+        return [{frage_einheit.__name__: lern_info.infos[frage_einheit].as_number_dict()
+                 for frage_einheit
+                 in lern_info.infos.keys()} for lern_info in self.boxen]
 
     @classmethod
     def factory(cls, liste_der_boxen: list[Vokabelbox], liste_der_karten: list[Vokabelkarte]) -> cls:

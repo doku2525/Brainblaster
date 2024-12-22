@@ -52,14 +52,42 @@ class test_InfoManager(TestCase):
         self.assertEqual(3, len(objekt.suche_karte(karte)))
         self.assertEqual([objekt.boxen[40], objekt.boxen[80], objekt.boxen[81]], objekt.suche_karte(karte))
 
-    def test_temp_spaeter_loeschen(self):
+    def test_werte_als_dictionary(self):
         from src.classes.lernuhr import Lernuhr
+        from src.classes.frageeinheit import FrageeinheitChinesischBedeutung, FrageeinheitChinesischPinyin
 
         objekt = InfoManager.factory(liste_der_boxen=self.komplett.vokabelboxen.vokabelboxen,
                                      liste_der_karten=self.komplett.alle_vokabelkarten())
         objekt = objekt.erzeuge_alle_infos(Lernuhr.isostring_to_millis("2024-07-12 13:00:00.000"))
-        print(f" {objekt.boxen[0].infos.keys() =}")
-        print(f" {len((objekt.boxen[0].infos[list(objekt.boxen[0].infos.keys())[0]])) = }")
+        expected_bed = {'pruefen': {'insgesamt': 1763, 'aktuell': 205},
+                    'lernen': {'insgesamt': 26, 'aktuell': 20},
+                    'neu': {'insgesamt': 0, 'aktuell': 0}}
+        expected_pin = {'pruefen': {'aktuell': 205, 'insgesamt': 1423},
+                    'lernen': {'aktuell': 19, 'insgesamt': 29},
+                    'neu': {'aktuell': 290, 'insgesamt': 337}}
+        self.assertEqual(expected_bed, objekt.boxen[80].infos[FrageeinheitChinesischBedeutung].as_number_dict())
+        self.assertEqual(expected_pin, objekt.boxen[80].infos[FrageeinheitChinesischPinyin].as_number_dict())
+
+    def test_boxen_als_number_dict(self):
+        from src.classes.lernuhr import Lernuhr
+        from src.classes.frageeinheit import FrageeinheitChinesischBedeutung, FrageeinheitChinesischPinyin
+
+        objekt = InfoManager.factory(liste_der_boxen=self.komplett.vokabelboxen.vokabelboxen,
+                                     liste_der_karten=self.komplett.alle_vokabelkarten())
+        objekt = objekt.erzeuge_alle_infos(Lernuhr.isostring_to_millis("2024-07-12 13:00:00.000"))
+        expected_bed = {'pruefen': {'insgesamt': 1763, 'aktuell': 205},
+                        'lernen': {'insgesamt': 26, 'aktuell': 20},
+                        'neu': {'insgesamt': 0, 'aktuell': 0}}
+        expected_pin = {'pruefen': {'aktuell': 205, 'insgesamt': 1423},
+                        'lernen': {'aktuell': 19, 'insgesamt': 29},
+                        'neu': {'aktuell': 290, 'insgesamt': 337}}
+        result = objekt.boxen_als_number_dict()
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(objekt.boxen), len(result))
+        self.assertEqual(4, len(list(result[0].keys())))
+        self.assertEqual(expected_bed, result[80]['FrageeinheitChinesischBedeutung'])
+        self.assertEqual(expected_pin, result[80]['FrageeinheitChinesischPinyin'])
+
     # def test_factory_timings(self):
     #     import timeit
     #

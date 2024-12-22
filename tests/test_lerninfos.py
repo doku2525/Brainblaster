@@ -1,7 +1,7 @@
 from unittest import TestCase
 from dataclasses import replace
 
-from src.classes.lerninfos import Lerninfos
+from src.classes.lerninfos import Lerninfos, InfotypStatistik, InfotypStatModus
 from src.classes.kartenfilter import FilterVokabelbox
 
 
@@ -37,11 +37,16 @@ class test_Lerninfos(TestCase):
         objekt = (Lerninfos(
             box=self.komplett.aktuelle_box(),
             karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten())).
-                  erzeuge_info_dict(Lernuhr.isostring_to_millis("2024-06-22 13:00:00.000")))
+                  erzeuge_infos(Lernuhr.isostring_to_millis("2024-06-22 13:00:00.000")))
         self.assertIsInstance(objekt, Lerninfos)
         self.assertIsInstance(objekt.infos, dict)
         self.assertTrue(issubclass(list(objekt.infos.keys())[0], Frageeinheit))
         self.assertIn(FrageeinheitChinesischBedeutung, objekt.infos.keys())
+        self.assertIsInstance(objekt.infos[FrageeinheitChinesischBedeutung], InfotypStatistik)
+        self.assertTrue(hasattr(objekt.infos[FrageeinheitChinesischBedeutung], 'pruefen'))
+        self.assertTrue(hasattr(objekt.infos[FrageeinheitChinesischBedeutung], 'lernen'))
+        self.assertTrue(hasattr(objekt.infos[FrageeinheitChinesischBedeutung], 'neu'))
+        self.assertIsInstance(objekt.infos[FrageeinheitChinesischBedeutung].pruefen, InfotypStatModus)
 
     def test_sammle_infos_lektion_1(self):
         from src.classes.lernuhr import Lernuhr
@@ -61,6 +66,13 @@ class test_Lerninfos(TestCase):
         self.assertEqual(0, len(result[1].aktuell))
         self.assertEqual(0, len(result[2].insgesamt))
         self.assertEqual(0, len(result[2].aktuell))
+        self.assertEqual(40, len(result.pruefen.insgesamt))
+        self.assertEqual(0, len(result.pruefen.aktuell))
+        self.assertEqual(0, len(result.lernen.insgesamt))
+        self.assertEqual(0, len(result.lernen.aktuell))
+        self.assertEqual(0, len(result.neu.insgesamt))
+        self.assertEqual(0, len(result.neu.aktuell))
+
         objekt = Lerninfos(
             box=self.komplett.aktuelle_box(),
             karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
@@ -191,3 +203,21 @@ class test_Lerninfos(TestCase):
             self.komplett.aktuelle_box().vorherige_frageeinheit().aktuelle_frage)
         self.assertEqual((907, 20, 15), (len(result[0]), len(result[1]), len(result[2])))
         self.assertEqual(942, sum((len(result[0]), len(result[1]), len(result[2]))))
+
+    def test_as_number_dict_infotyp_statistik(self):
+        from typing import cast
+        from src.classes.vokabelkarte import Vokabelkarte
+        objekt = InfotypStatistik(InfotypStatModus([], []), InfotypStatModus([], []), InfotypStatModus([], []))
+        expected = {'pruefen': {'aktuell': 0, 'insgesamt': 0},
+                    'lernen': {'aktuell': 0, 'insgesamt': 0},
+                    'neu': {'aktuell': 0, 'insgesamt': 0}}
+        self.assertEqual(expected, objekt.as_number_dict())
+
+        mock_karte = cast(Vokabelkarte, 1)
+        objekt = InfotypStatistik(InfotypStatModus([mock_karte] * 11, [mock_karte] * 7),
+                                  InfotypStatModus([mock_karte] * 12, [mock_karte] * 6),
+                                  InfotypStatModus([mock_karte] * 13, [mock_karte] * 5))
+        expected = {'pruefen': {'insgesamt': 11, 'aktuell': 7},
+                    'lernen': {'insgesamt': 12, 'aktuell': 6},
+                    'neu': {'insgesamt': 13, 'aktuell': 5}}
+        self.assertEqual(expected, objekt.as_number_dict())

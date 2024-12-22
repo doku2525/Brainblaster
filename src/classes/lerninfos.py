@@ -14,11 +14,33 @@ if TYPE_CHECKING:
     from src.classes.vokabelkarte import Vokabelkarte
 
 
-InfotypStatModus = namedtuple('InfotypStatModus', ['insgesamt', 'aktuell'])
+#InfotypStatModus = namedtuple('InfotypStatModus', ['insgesamt', 'aktuell'])
 """Insgesamt ist die Anzahl aller Statistiken, die den entsprechenden Modus haben.
    Aktuell ist die Anzahl aller Statisitken, die im entsprechenden Test ausgewaehlt werden wuerden.
         Z.B. Insgaesamt 40 Karten mit dem Status PRUEFEN, aber nur 10 Karten davon sind pruefen() == True"""
+class InfotypStatModus(NamedTuple):
+    insgesamt: list[Vokabelkarte]
+    aktuell: list[Vokabelkarte]
 
+    def as_number_dict(self) -> dict:
+        """Wandelt sich selbst und die InfotypStatModus-Objekte in den Values in ein Dictionary um"""
+        return {str(key): len(value) for key, value in self._asdict().items()}
+
+
+class InfotypStatistik(NamedTuple):
+    pruefen: InfotypStatModus
+    lernen: InfotypStatModus
+    neu: InfotypStatModus
+
+    def asdict(self) -> dict:
+        """Wandelt sich selbst und die InfotypStatModus-Objekte in den Values in ein Dictionary um"""
+        return {str(key): value._asdict() if hasattr(value, '_asdict') else value
+                for key, value
+                in self._asdict().items()}
+
+    def as_number_dict(self) -> dict:
+        """Wandelt sich selbst und die InfotypStatModus-Objekte in den Values in ein Dictionary um"""
+        return {str(key): value.as_number_dict() for key, value in self._asdict().items()}
 
 @dataclass(frozen=True)
 class Lerninfos:
@@ -26,45 +48,48 @@ class Lerninfos:
     infos beinhaltet die Statistik.infos zu jeder Frageeinheit mit den drei Modi PRUEFEN, LERNEN und NEU. Jeder
     Modus ist dann nochmal in INSGESAMT und AKTUELL (siehe InfotypStatModus) unterteilt.
     infos.keys() => die Frageeinheiten()
-    info[Frageinheit] => list[InfotypStatModus, InfotypStatModus, InfotypStatModus]"""
+    info[Frageinheit] => InfotypStatistik"""
     box: Vokabelbox
     karten: list[Vokabelkarte] = field(default_factory=Iterable)
-    infos: dict = field(default_factory=dict)
+    infos: dict[Type[Frageeinheit], InfotypStatistik] = field(default_factory=dict)
 
     @property
     def gesamtzahl(self) -> int:
         return len(self.karten)
 
-    def erzeuge_info_dict(self, uhrzeit: int) -> Lerninfos:
+    def erzeuge_infos(self, uhrzeit: int) -> Lerninfos:
         info_dict = {f_einheit: self.sammle_infos_zu_frageeinheit(uhrzeit, f_einheit)
                      for f_einheit
                      in self.box.verfuegbare_frageeinheiten()}
         return replace(self, infos=info_dict)
 
-    def sammle_infos_zu_frageeinheit(self, uhrzeit: int, frageeinheit: Type[Frageeinheit]) -> list[InfotypStatModus]:
-        """Liefert eine Liste"""
+    def sammle_infos_zu_frageeinheit(self, uhrzeit: int, frageeinheit: Type[Frageeinheit]) -> InfotypStatistik:
+        """Liefert ein Objekt vom Typ InfotypStatistik mit den Werten zu jedem StatusTyp (PRUEFEN, LERNEN, NEU)
+        einer Statistik."""
         def build_entry(stat_filter: Type[SatistikfilterStrategie],
                         result: list[Vokabelkarte]) -> InfotypStatModus:
+            # TODO die Funktion build_entry() auslagern, damit man auch Zwischenergebnisse erzeugen kann
             return InfotypStatModus(insgesamt=result,
                                     aktuell=[karte for karte
                                              in result if stat_filter().filter(karte.lernstats,
                                                                                frageeinheit, uhrzeit)])
 
         tmp = Lerninfos.split_vokabelliste_by_status(list(self.karten), frageeinheit)
-        return [
-            build_entry(StatistikfilterPruefen, tmp[0]),
-            build_entry(StatistikfilterLernen, tmp[1]),
-            build_entry(StatistikfilterNeue, tmp[2]),
-        ]
+        return InfotypStatistik(pruefen=build_entry(StatistikfilterPruefen, tmp[0]),
+                                lernen=build_entry(StatistikfilterLernen, tmp[1]),
+                                neu=build_entry(StatistikfilterNeue, tmp[2]))
 
-    def sammle_infos(self, uhrzeit: int) -> list[InfotypStatModus]:
+    def sammle_infos(self, uhrzeit: int) -> InfotypStatistik:
+        """Sammelt die Infos zur aktuellen Frageeinheit.
+        Ist einfach nur ein Aufruf von sammle_infos_zu_frageeinheit mit der aktuellen Frageeinheit als Parameter"""
         return self.sammle_infos_zu_frageeinheit(uhrzeit, self.box.aktuelle_frage)
 
     @staticmethod
     def split_vokabelliste_by_status(vokabelliste: list[Vokabelkarte],
                                      aktuelle_frage: Type[Frageeinheit]
                                      ) -> tuple[list[Vokabelkarte], list[Vokabelkarte], list[Vokabelkarte]]:
-
+        """Gruppiert die VOKABELLISTE nach dem Modus der aktuellen Statistik mit dem dem Befehl itertools.groupby()
+        und sammelt das Ergbnis in einem defaultdict mit dem Status als Schluessel und der Liste[Karten] als Wert"""
         def get_karten_modus(karte: Vokabelkarte) -> StatModus:
             return karte.lernstats.statistiken[aktuelle_frage].modus
 
