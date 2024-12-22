@@ -290,17 +290,13 @@ td button {
                     document.getElementById('aktuelle_uhrzeit').textContent = data.aktuelle_uhrzeit;
                     document.getElementById('neue_uhrzeit').textContent = data.neue_uhrzeit;
                     if (startUndKalkzeitVeraendert) {   // Flag wird in den Funktionen fuer die Buttons verwendet
-                        console.log('data.neue_uhr.start_zeit =', data.neue_uhr.start_zeit);
-                        console.log('startUndKalkzeitVeraendert =', startUndKalkzeitVeraendert);
                         const start_zeit = data.neue_uhr.start_zeit
                         const kalk_zeit = data.neue_uhr.kalkulations_zeit
-                        console.log('kalk_zeit =', kalk_zeit);
                         document.getElementById('date_start_zeit_datum').value = alsDatum(start_zeit)
                         document.getElementById('time_start_zeit_uhrzeit').value = alsUhrzeit(start_zeit)
                         document.getElementById('date_kalkulations_zeit_datum').value = alsDatum(kalk_zeit)
                         document.getElementById('time_kalkulations_zeit_uhrzeit').value = alsUhrzeit(kalk_zeit)
                         startUndKalkzeitVeraendert = false;
-                        console.log('startUndKalkzeitVeraendert =', startUndKalkzeitVeraendert);
                     }
                     document.getElementById('neue_uhr').textContent = JSON.stringify(data.neue_uhr);
                     document.getElementById('testausgabe').textContent = data.neue_uhr.kalkulations_zeit;
