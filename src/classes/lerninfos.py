@@ -15,10 +15,18 @@ if TYPE_CHECKING:
 
 
 InfotypStatModus = namedtuple('InfotypStatModus', ['insgesamt', 'aktuell'])
+"""Insgesamt ist die Anzahl aller Statistiken, die den entsprechenden Modus haben.
+   Aktuell ist die Anzahl aller Statisitken, die im entsprechenden Test ausgewaehlt werden wuerden.
+        Z.B. Insgaesamt 40 Karten mit dem Status PRUEFEN, aber nur 10 Karten davon sind pruefen() == True"""
 
 
 @dataclass(frozen=True)
 class Lerninfos:
+    """Speichert die Karten der Box in karten, so dass dann z.B. karte is in lern_info.karten ausgefuehrt werden kann.
+    infos beinhaltet die Statistik.infos zu jeder Frageeinheit mit den drei Modi PRUEFEN, LERNEN und NEU. Jeder
+    Modus ist dann nochmal in INSGESAMT und AKTUELL (siehe InfotypStatModus) unterteilt.
+    infos.keys() => die Frageeinheiten()
+    info[Frageinheit] => list[InfotypStatModus, InfotypStatModus, InfotypStatModus]"""
     box: Vokabelbox
     karten: list[Vokabelkarte] = field(default_factory=Iterable)
     infos: dict = field(default_factory=dict)
@@ -34,7 +42,7 @@ class Lerninfos:
         return replace(self, infos=info_dict)
 
     def sammle_infos_zu_frageeinheit(self, uhrzeit: int, frageeinheit: Type[Frageeinheit]) -> list[InfotypStatModus]:
-
+        """Liefert eine Liste"""
         def build_entry(stat_filter: Type[SatistikfilterStrategie],
                         result: list[Vokabelkarte]) -> InfotypStatModus:
             return InfotypStatModus(insgesamt=result,

@@ -52,6 +52,14 @@ class test_InfoManager(TestCase):
         self.assertEqual(3, len(objekt.suche_karte(karte)))
         self.assertEqual([objekt.boxen[40], objekt.boxen[80], objekt.boxen[81]], objekt.suche_karte(karte))
 
+    def test_temp_spaeter_loeschen(self):
+        from src.classes.lernuhr import Lernuhr
+
+        objekt = InfoManager.factory(liste_der_boxen=self.komplett.vokabelboxen.vokabelboxen,
+                                     liste_der_karten=self.komplett.alle_vokabelkarten())
+        objekt = objekt.erzeuge_alle_infos(Lernuhr.isostring_to_millis("2024-07-12 13:00:00.000"))
+        print(f" {objekt.boxen[0].infos.keys() =}")
+        print(f" {len((objekt.boxen[0].infos[list(objekt.boxen[0].infos.keys())[0]])) = }")
     # def test_factory_timings(self):
     #     import timeit
     #

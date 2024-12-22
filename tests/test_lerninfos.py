@@ -74,6 +74,7 @@ class test_Lerninfos(TestCase):
         self.assertEqual(0, len(result[1].aktuell))
         self.assertEqual(0, len(result[2].insgesamt))
         self.assertEqual(0, len(result[2].aktuell))
+        print(f" {type(result[0]) = } {len(result[0][0]) = }")
 
     def test_sammle_infos_alle_vokabeln_letzte_frageeinheit(self):
         from src.classes.lernuhr import Lernuhr
