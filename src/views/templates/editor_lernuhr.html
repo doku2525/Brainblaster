@@ -158,6 +158,18 @@ td button {
         </tr>
     </table>
     <script>
+        let startUndKalkzeitVeraendert = false;
+
+        function alsDatum(datetimeString) {
+            const dateRegex = /^\d{4}-\d{2}-\d{2}/;
+            return datetimeString.match(dateRegex)[0];
+        }
+
+        function alsUhrzeit(datetimeString) {
+            const timeRegex = /\d{2}:\d{2}:\d{2}/;
+            return datetimeString.match(timeRegex)[0];
+        }
+
         // Funktion zum Senden der Kommandos. Wird vom command_builder-Funktionen aufgerufen.
         function sende_kommando(cmd) {
             fetch(cmd)
@@ -270,30 +282,45 @@ td button {
 
 
         // JavaScript-Code zur dynamischen Anpassung der Benutzeroberfläche
-        function fetchUhrzeit() {
+        function fetchData() {
             fetch('/get_aktuelle_und_neue_uhrzeit')
                 .then(response => response.json())
                 .then(data => {
                 // TODO Wenn reset() oder calibrate() dann setze Flag und Update hier die Kalender und Zeit objekte.
                     document.getElementById('aktuelle_uhrzeit').textContent = data.aktuelle_uhrzeit;
                     document.getElementById('neue_uhrzeit').textContent = data.neue_uhrzeit;
+                    if (startUndKalkzeitVeraendert) {   // Flag wird in den Funktionen fuer die Buttons verwendet
+                        console.log('data.neue_uhr.start_zeit =', data.neue_uhr.start_zeit);
+                        console.log('startUndKalkzeitVeraendert =', startUndKalkzeitVeraendert);
+                        const start_zeit = data.neue_uhr.start_zeit
+                        const kalk_zeit = data.neue_uhr.kalkulations_zeit
+                        console.log('kalk_zeit =', kalk_zeit);
+                        document.getElementById('date_start_zeit_datum').value = alsDatum(start_zeit)
+                        document.getElementById('time_start_zeit_uhrzeit').value = alsUhrzeit(start_zeit)
+                        document.getElementById('date_kalkulations_zeit_datum').value = alsDatum(kalk_zeit)
+                        document.getElementById('time_kalkulations_zeit_uhrzeit').value = alsUhrzeit(kalk_zeit)
+                        startUndKalkzeitVeraendert = false;
+                        console.log('startUndKalkzeitVeraendert =', startUndKalkzeitVeraendert);
+                    }
                     document.getElementById('neue_uhr').textContent = JSON.stringify(data.neue_uhr);
-                    console.log('data =', data);
-                    console.log('data.neue_uhr =', data.neue_uhr);
                     document.getElementById('testausgabe').textContent = data.neue_uhr.kalkulations_zeit;
-                    console.log('data =', data);
-                    console.log('data.neue_uhr =', data.neue_uhr);
                 })
                 .catch(error => {
                     console.error('Fehler beim Abrufen der Uhrzeit:', error);
                 });
         }
 
-        // Funktionen fuer die beiden Buttons
+        // Funktionen fuer die Buttons
         function speicherLernuhr() { window.location.href = '/index?lernuhr=mit_speichern';}
         function verwerfeLernuhr() { window.location.href = '/index?lernuhr=ohne_speichern';}
-        function calibriereLernuhr() { sende_kommando('/kommando/cc');}
-        function resetLernuhr() { sende_kommando('/kommando/cr');}
+        function calibriereLernuhr() {
+            sende_kommando('/kommando/cc');
+            startUndKalkzeitVeraendert = true;   // Flag, die in fetchData() abgefragt wird
+        }
+        function resetLernuhr() {
+            sende_kommando('/kommando/cr');
+            startUndKalkzeitVeraendert = true;   // Flag, die in fetchData() abgefragt wird
+        }
 
         // Markiere aktuellen Radiobutton beim Laden der Seite
         function setRadioByData(data) {
@@ -325,7 +352,7 @@ td button {
         document.getElementById('date_start_zeit_datum').value = '{{ start_zeit_datum }}';
         document.getElementById('time_start_zeit_uhrzeit').value = '{{ start_zeit_uhrzeit }}';
         // Daten alle 0.5 Sekunden abrufen
-        setInterval(fetchUhrzeit, 1000);
+        setInterval(fetchData, 1000);
 
     </script>
 </body>
