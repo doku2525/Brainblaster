@@ -8,6 +8,7 @@ from typing import Callable, Type, cast, TYPE_CHECKING
 from src.classes.eventmanager import EventTyp
 from src.classes.lernuhr import Lernuhr
 from src.classes.zustand import Zustand, ZustandStart, ZustandENDE, ZustandVeraenderLernuhr, ZustandReturnValue
+from src.classes.infomanager import InfoManager
 
 if TYPE_CHECKING:
     from src.classes.eventmanager import EventManager
@@ -20,6 +21,7 @@ class VokabeltrainerController:
     def __init__(self, modell: VokabeltrainerModell, uhr: Lernuhr, view_observer: ObserverManager,
                  event_manager: EventManager):
         self.modell: VokabeltrainerModell = modell
+        self.info_manager: InfoManager = InfoManager()
         self.uhr: Lernuhr = uhr
         self.aktueller_zustand: Zustand | None = None
         self.view_observer: ObserverManager = view_observer
@@ -90,8 +92,17 @@ class VokabeltrainerController:
         self.cmd = ''
 
     def programm_loop(self):
-        self.modell.vokabelkarten.laden()
         self.modell.vokabelboxen.laden()
+        self.aktueller_zustand = ZustandStart(liste=self.modell.vokabelboxen.titel_aller_vokabelboxen(),
+                                              aktueller_index=self.modell.index_aktuelle_box,
+                                              aktuelle_zeit=self.uhr.as_iso_format(Lernuhr.echte_zeit()))
+        self.modell.vokabelkarten.laden()
+        # TODO Erstellen des InfoManagers blockiert das System, so dass der aktuelle zustand nicht gesetzt ist
+        #   und Flaskview Fehlermeldungen (KeyError) beim Abrufen der Zeit ausgibt (siehe get_Routen in flaskview.py).
+        self.info_manager = InfoManager.factory(liste_der_boxen=self.modell.vokabelboxen.vokabelboxen,
+                                                liste_der_karten=self.modell.vokabelkarten.vokabelkarten)
+        print(f"Beginne mit der Arbeit. { len(self.info_manager.boxen) = }")
+
         self.aktueller_zustand = self.buildZustandStart(ZustandStart())
         self.view_observer.views_updaten(self.aktueller_zustand, Lernuhr.echte_zeit())
         self.view_observer.views_rendern()

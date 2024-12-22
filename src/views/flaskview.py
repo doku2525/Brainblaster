@@ -88,6 +88,7 @@ class FlaskView:
         def get_aktuelle_uhrzeit():
             """Route fuer index"""
 #            print(f"{self.data = } {self.data['aktuelle_uhrzeit'][:-7] = }")  # TODO Loesche DEBUG print
+            # TODO Hier tritt manchmal der Fehler mit KeyError: 'aktuelle_uhrzeit' auf.
             return jsonify(self.data['aktuelle_uhrzeit'][:-7])
 
         @self.app.route('/get_aktuelle_und_neue_uhrzeit')
