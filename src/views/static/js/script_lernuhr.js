@@ -1,15 +1,6 @@
+import { ISOalsDatum, ISOalsUhrzeit } from "./modules/datumUndZeit.js";
 
 let startUndKalkzeitVeraendert = false;
-
-function ISOalsDatum(datetimeString) {
-    const dateRegex = /^\d{4}-\d{2}-\d{2}/;
-    return datetimeString.match(dateRegex)[0];
-}
-
-function ISOalsUhrzeit(datetimeString) {
-    const timeRegex = /\d{2}:\d{2}:\d{2}/;
-    return datetimeString.match(timeRegex)[0];
-}
 
 // Funktion zum Senden der Kommandos. Wird vom command_builder-Funktionen aufgerufen.
 function sende_kommando(cmd) {
@@ -116,15 +107,19 @@ function fetchData() {
 
 // Funktionen fuer die Buttons
 function speicherLernuhr() { window.location.href = '/index?lernuhr=mit_speichern';}
+window.speicherLernuhr = speicherLernuhr;
 function verwerfeLernuhr() { window.location.href = '/index?lernuhr=ohne_speichern';}
+window.verwerfeLernuhr = verwerfeLernuhr;
 function calibriereLernuhr() {
     sende_kommando('/kommando/cc');
     startUndKalkzeitVeraendert = true;   // Flag, die in fetchData() abgefragt wird
 }
+window.calibriereLernuhr = calibriereLernuhr;
 function resetLernuhr() {
     sende_kommando('/kommando/cr');
     startUndKalkzeitVeraendert = true;   // Flag, die in fetchData() abgefragt wird
 }
+window.resetLernuhr = resetLernuhr;
 
 // Markiere aktuellen Radiobutton beim Laden der Seite
 function setRadioByData(data) {
@@ -199,3 +194,5 @@ function initializeElemente() {
 initializeElemente()
 registerListener()
 setInterval(fetchData, 1000);
+
+window.main = main;
