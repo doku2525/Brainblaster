@@ -155,7 +155,7 @@ class test_ZustandsMediator(TestCase):
 
         zustand_mit_zwei_children = replace(zustand_mit_parrent, child=zustand_mit_parrent.child * 2)
         # Da an die Flaskview keine Zustaende, sondern nur Daten uebergeben werden, sollte die Test erfolgreich sein.
-        result = obj.zustand_to_flaskview_data(zustand_mit_zwei_children,0)
+        result = obj.zustand_to_flaskview_data(zustand_mit_zwei_children, 0)
         self.assertIsInstance(result, dict)
         self.assertEqual('ZustandStart', result['zustand'])
         self.assertEqual('test', result['aktuelle_uhrzeit'])
@@ -181,3 +181,43 @@ class test_ZustandsMediator(TestCase):
         expected_neue_uhr = {'kalkulations_zeit': '1970-01-01 01:00:00.000000',
                              'start_zeit': '1970-01-01 01:00:00.000000', 'tempo': 1.0, 'pause': 0, 'modus': 'ECHT'}
         self.assertEqual(expected_neue_uhr, result['neue_uhr'])
+
+    def test_zustand_flask_view_boxinfo(self):
+        from src.classes.zustand import ZustandBoxinfo
+
+        obj = ZustandsMediator()
+        zustand_ohne_parrent = ZustandBoxinfo(info={'a': {'b': {'c': '0'}}},
+                                              aktuelle_frageeinheit='A-B',
+                                              box_titel='Lektion 1')
+        result = obj.zustand_to_flaskview_data(zustand_ohne_parrent, 0)
+        self.assertIsInstance(result, dict)
+        self.assertEqual({'a': {'b': {'c': '0'}}}, result['info'])
+        self.assertEqual('A-B', result['aktuelle_frageeinheit'])
+        self.assertEqual('Lektion 1', result['box_titel'])
+
+    def test_zustand_console_view_boxinfo(self):
+        from src.classes.zustand import ZustandBoxinfo, ZustandStart
+
+        obj = ZustandsMediator()
+        zustand_ohne_parrent = ZustandBoxinfo(info={'a': {'b': {'c': '0'}}},
+                                              aktuelle_frageeinheit='A-B',
+                                              box_titel='Lektion 1',
+                                              aktuelle_zeit='test')
+        result = obj.zustand_to_consoleview_data(zustand_ohne_parrent, 0)
+        expected_data_str = "Aktuelle Box: Lektion 1\na : {'b': {'c': '0'}}\nAktuelle Frageeinheit: A-B"
+        expected_optionen_str = "'+' + Zahl\n'-' + Zahl\n'=' + Zahl\n"
+        self.assertIsInstance(result, dict)
+        self.assertEqual('ZustandBoxinfo', result['zustand'])
+        self.assertEqual('test', result['aktuelle_zeit'])
+        self.assertEqual(expected_data_str, result['daten'])
+        self.assertEqual(expected_optionen_str, result['optionen'])
+
+        zustand_mit_parrent = replace(zustand_ohne_parrent, parent=ZustandStart())
+        result = obj.zustand_to_consoleview_data(zustand_mit_parrent, 0)
+        expected_optionen_str = (
+            ' 0 Zustand 1 : Zustand 1, der die aktuelle Box und den Namen der aktuellen ' +
+            'Box anzeigt.\n' +
+            "'+' + Zahl\n" +
+            "'-' + Zahl\n" +
+            "'=' + Zahl\n")
+        self.assertEqual(expected_optionen_str, result['optionen'])

@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from dataclasses import dataclass, field, replace, asdict
 import datetime
-from typing import Any, Callable, NamedTuple, Protocol, TYPE_CHECKING
+from typing import Any, Callable, NamedTuple, Protocol, TYPE_CHECKING, cast
 
 from src.classes.lernuhr import Lernuhr, UhrStatus
 
@@ -75,18 +75,22 @@ class ZustandStart(Zustand):
         """Verarbeite den userinput"""
         if index_child == '':
             return ZustandReturnValue(self, lambda: None, tuple())
+        # Bei Veranderungen rufe die Funktion update_modell_aktueller_index() mit dem neuen Index im Controller auf.
         if "+" == index_child[0]:
-            return ZustandReturnValue(replace(self,
-                                              aktueller_index=min(len(self.liste)-1,
-                                                                  self.aktueller_index + int(index_child[1:]))),
-                                      lambda: None, tuple())
+            neuer_index = min(len(self.liste)-1, self.aktueller_index + int(index_child[1:]))
+            return ZustandReturnValue(replace(self, aktueller_index=neuer_index),
+                                      cast(Callable, 'update_modell_aktueller_index'),
+                                      (neuer_index,))
         if "-" == index_child[0]:
-            return ZustandReturnValue(replace(self,
-                                              aktueller_index=max(0, self.aktueller_index - int(index_child[1:]))),
-                                      lambda: None, tuple())
+            neuer_index = max(0, self.aktueller_index - int(index_child[1:]))
+            return ZustandReturnValue(replace(self, aktueller_index=neuer_index),
+                                      cast(Callable, 'update_modell_aktueller_index'),
+                                      (neuer_index,))
         if "=" == index_child[0]:
-            kontrollierter_wert = min(len(self.liste)-1, max(0, int(index_child[1:])))
-            return ZustandReturnValue(replace(self, aktueller_index=kontrollierter_wert), lambda: None, tuple())
+            neuer_index = min(len(self.liste)-1, max(0, int(index_child[1:])))
+            return ZustandReturnValue(replace(self, aktueller_index=neuer_index),
+                                      cast(Callable, 'update_modell_aktueller_index'),
+                                      (neuer_index,))
         return super().verarbeite_userinput(index_child)
 
 
@@ -228,3 +232,14 @@ class ZustandVeraenderLernuhr(Zustand):
             return super().verarbeite_userinput(index_child)
         # Fuege dem ZustandReturnValue den Befehl zum Updaten der Uhr hinzu
         return super().verarbeite_userinput(index_child)._replace(**{'cmd': 'update_uhr', 'args': (self.neue_uhr,)})
+
+
+@dataclass(frozen=True)
+class ZustandBoxinfo(Zustand):
+    info: dict[str, dict[str, dict[str, str]]] = field(default_factory=dict)
+    aktuelle_frageeinheit: str = ''
+    box_titel: str = ''
+    titel: str = 'Zustand 2'
+    beschreibung: str = 'Zustand 2, Zeigt die Boxinfos der aktuellen Box an.'
+    child: list[Zustand] = field(default_factory=list)
+    kommandos: list[str] = field(default=("+", "-", "="))

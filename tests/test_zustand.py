@@ -3,7 +3,7 @@ from unittest.mock import patch, call, ANY
 from dataclasses import replace
 from typing import Callable, cast
 
-from src.classes.zustand import Zustand, ZustandENDE, ZustandStart, ZustandVeraenderLernuhr
+from src.classes.zustand import Zustand, ZustandENDE, ZustandStart, ZustandVeraenderLernuhr, ZustandBoxinfo
 
 
 class test_Zustand(TestCase):
@@ -51,6 +51,17 @@ class test_Zustand(TestCase):
         self.assertEqual(None, objekt.parent)
         self.assertEqual([], objekt.child)
 
+    def test_init_zustand_boxinfo(self):
+        objekt = ZustandBoxinfo()
+        self.assertIsInstance(objekt, ZustandBoxinfo)
+        self.assertIsInstance(objekt, Zustand)
+        self.assertNotIsInstance(objekt, ZustandStart)
+        self.assertEqual('Zustand 2', objekt.titel)
+        self.assertEqual('Zustand 2, Zeigt die Boxinfos der aktuellen Box an.', objekt.beschreibung)
+        self.assertEqual({}, objekt.info)
+        self.assertEqual('', objekt.box_titel)
+        self.assertEqual('', objekt.aktuelle_frageeinheit)
+
     def test_verarbeite_userinput(self):
         objekt = Zustand()
         result, fun, args = objekt.verarbeite_userinput('')
@@ -86,8 +97,9 @@ class test_Zustand(TestCase):
         result, fun, args = objekt.verarbeite_userinput('+1')
         self.assertNotEqual(result, objekt)
         self.assertEqual(result.aktueller_index, 1)
-        self.assertIsNone(fun())
-        self.assertEqual(tuple(), args)
+        self.assertIsInstance(fun, str)
+#        self.assertIsNone(fun())
+        self.assertEqual((1,), args)
         result, fun, args = objekt.verarbeite_userinput('+5')
         self.assertEqual(result.aktueller_index, 1)
         result, fun, args = objekt.verarbeite_userinput('-5')
@@ -353,7 +365,7 @@ class test_Zustand(TestCase):
         self.assertNotEqual(result, objekt)
         self.assertIsNone(fun())
         self.assertEqual(tuple(), args)
-        self.assertAlmostEqual(gestoppte_zeit, result.neue_uhr.kalkulations_zeit,delta=1_000)
+        self.assertAlmostEqual(gestoppte_zeit, result.neue_uhr.kalkulations_zeit, delta=1_000)
         self.assertNotAlmostEquals(uhr.kalkulations_zeit, result.neue_uhr.kalkulations_zeit, delta=1_000)
 
     def test_verarbeite_userinput_zustand_veraender_lernuhr_option_c(self):

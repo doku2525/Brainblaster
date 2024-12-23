@@ -110,3 +110,20 @@ class ZustandsMediatorZustandVeraenderLernuhr(ZustandsMediator):
             f"Kalkulationszeit : {zustand.neue_uhr.kalkulations_zeit if zustand.neue_uhr is not None else ''}\n",
             f"Tempo : {zustand.neue_uhr.tempo if zustand.neue_uhr is not None else ''}\n",
             f"Modus : {zustand.neue_uhr.modus if zustand.neue_uhr is not None else ''}\n"])
+
+
+@dataclass(frozen=True)
+class ZustandsMediatorZustandBoxinfo(ZustandsMediator):
+    zustand: str = 'ZustandBoxinfo'
+
+    def zustand_to_flaskview_data(self, zustand: Zustand, zeit_in_ms: int = 0) -> dict:
+        """Liefer die speziellen Daten fuer Flaskview"""
+        return {'info': zustand.info,
+                'aktuelle_frageeinheit': zustand.aktuelle_frageeinheit,
+                'box_titel': zustand.box_titel} if zustand.info else {}
+
+    def prepare_consoleview_daten_string(self, zustand: Zustand, zeit_in_ms: int = 0) -> str:
+        """Wird in der Elternklasse zum bauen des data-Dicitonarys verwendet"""
+        return (f"Aktuelle Box: {zustand.box_titel}\n" +
+                ''.join([f"{frage_einheit} : {infos}\n" for frage_einheit, infos in zustand.info.items()]) +
+                f"Aktuelle Frageeinheit: {zustand.aktuelle_frageeinheit}")
