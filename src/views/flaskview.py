@@ -79,6 +79,16 @@ class FlaskView:
                                    modus=self.data['neue_uhr']['modus'],
                                    neue_uhr=jsonify(self.data['neue_uhr']))
 
+        @self.app.route('/boxinfo')
+        def boxinfo():
+            self.setze_cmd_warte_auf_update('c@ZustandBoxinfo', self.warte_zeit)
+            return render_template('boxinfo.html',
+                                   aktuelle_uhrzeit=self.data['aktuelle_uhrzeit'][:-7],
+                                   info=self.data['info'],
+                                   aktuelle_frageeinheit=self.data['aktuelle_frageeinheit'],
+                                   box_titel=self.data['box_titel']
+                                   )
+
         @self.app.route('/kommando/<cmd>')
         def antwort(cmd):
             self.setze_cmd_warte_auf_update(cmd, self.warte_zeit)

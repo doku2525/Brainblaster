@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <title>{{ title }}</title>
+        <style>
+            th {
+                padding: 0.25em;
+            }
+            a {
+                color: black;
+                text-decoration: none;
+            }
+            .drucklinks {
+                text-align: left;
+                padding: 0.2em;
+            }
+            .abfragelinks {
+                padding: 0.2em;
+                font-size: 24px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1> Daten fuer {{ box_titel }}</h1>
+        {{ aktuelle_uhrzeit }}
+        <table>
+            <tr>
+                {% set karten_gesamt = info[aktuelle_frageeinheit]['pruefen']['insgesamt'] %}
+                {% set karten_gesamt = info[aktuelle_frageeinheit]['lernen']['insgesamt'] + karten_gesamt %}
+                {% set karten_gesamt = info[aktuelle_frageeinheit]['neu']['insgesamt'] + karten_gesamt %}
+                <th><h2>Karten:</h2></th>
+                <th><h2>{{ karten_gesamt }}</h2></th>
+                <th><ul>
+                    <li class="drucklinks"><a href="vokabeln"> Zeige Liste </a></li>
+                    <li class="drucklinks"><a href="vokabeln?pdf=true"> Drucke Liste in PDF</a></li>
+                </ul></th>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                {% for frage_einheit in info: %}
+                    {% set urlboxindex = "vokabelbox?frageeinheit=" + box_titel %}
+                    {% if frage_einheit == aktuelle_frageeinheit %}
+                        <th><h3> {{ frage_einheit }} </h3></th>
+                    {% else %}
+                        <th><a href={{urlboxindex}}> {{ frage_einheit }} </a></th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            <tr>
+                {% for frage_einheit in info: %}
+                <td>
+                    <dl>
+                        {% set abfrageurl = "testfrage?command=PRUEFEN&frage_einheit=" + "name" %}
+                        {% set data_pruefen = info[frage_einheit]['pruefen'] %}
+                        {% set data_lernen = info[frage_einheit]['lernen'] %}
+                        {% set data_neu = info[frage_einheit]['neu'] %}
+                        {% if data_pruefen['insgesamt'] > 0 %}
+                        <dt><b class="abfragelinks"><a style="background-color: red;" href={{abfrageurl}}>Pruefen:</a></b></dt>
+                        {% else %}
+                        <dt><b class="abfragelinks"><a href={{abfrageurl}}>Pruefen:</a></b></dt>
+                        {% endif %}
+                        <dd>{{ data_pruefen['aktuell'] }} von {{ data_pruefen['insgesamt'] }} </dd>
+                        {% set abfrageurl = "testfrage?command=LERNEN&frage_einheit=" + "name" %}
+                        {% if data_lernen['aktuell'] > 0 %}
+                        <dt><b class="abfragelinks"><a style="background-color: red;" href={{abfrageurl}}>Lernen:</a></b> </dt>
+                        {% else %}
+                        <dt><b class="abfragelinks"><a href={{abfrageurl}}>Lernen:</a></b> </dt>
+                        {% endif %}
+                        {% if data_pruefen['insgesamt'] != 0 %}
+                        {% set prozente = data_lernen['insgesamt'] * 100 / data_pruefen['insgesamt'] %}
+                        {% else %}
+                        {% set prozente = '--' %}
+                        {% endif %}
+                        <dd>{{ data_lernen['aktuell'] }} von {{ data_lernen['insgesamt'] }} [{{'%0.2f' %  prozente|float }}%]</dd>
+                        {% set abfrageurlhtml = "vokabeln?zeige=LERNENLISTE&frageeinheit=" + "name" %}
+                        {% set abfrageurlpdf = "vokabeln?zeige=LERNENLISTE&pdf=true&frageeinheit=" + "name" %}
+                        <dd><a href={{abfrageurlhtml}}>- HTML -</a> oder <a href={{abfrageurlpdf}}>- PDF -</a></dd>
+                        {% set abfrageurl = "testfrage?command=NEU&frageeinheit=" + "name" %}
+                        {% if data_neu['aktuell'] > 0 %}
+                        <dt><b class="abfragelinks"><a style="background-color: lightgreen;" href={{abfrageurl}}>Neu:</a></b></dt>
+                        {% else %}
+                        <dt><b class="abfragelinks"><a href={{abfrageurl}}>Neu:</a></b></dt>
+                        {% endif %}
+                        <dd>{{ data_neu['aktuell'] }} von {{ data_neu['insgesamt'] }}</dd>
+                        {% set abfrageurlhtml = "vokabeln?zeige=NEULISTE&frageeinheit=" + "name" %}
+                        {% set abfrageurlpdf = "vokabeln?zeige=NEULISTE&pdf=true&frageeinheit=" + "name" %}
+                        <dd><a href={{abfrageurlhtml}}>- HTML -</a> oder <a href={{abfrageurlpdf}}>- PDF -</a></dd>
+
+                    </dl>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td colspan="100%" style="text-align:left; padding:10px"><h3><a href="index?lernuhr=ohne_speichern">Zurueck</a></h3></td>
+            </tr>
+        </table>
+
+    </body>
+</html>
