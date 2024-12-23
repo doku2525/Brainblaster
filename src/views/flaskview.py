@@ -21,9 +21,10 @@ route_zu_zustand = {value: key for key, value in zustand_zu_route.items()}
 
 # TODO Wird noch nicht benutzt
 argumente_zu_kommando = {
-    'lernuhr' : {'ohne_speichern': lambda route: f"c0",
-                 'mit_speichern': lambda route: f"@{route}"}
+    'lernuhr': {'ohne_speichern': lambda route: f"c0",
+                'mit_speichern': lambda route: f"@{route}"}
 }
+
 
 def request_to_route(adresse: str, default: str = 'index') -> str:
     """Ermittelt den String fuer """
@@ -70,10 +71,8 @@ class FlaskView:
             return render_template('editor_lernuhr.html',
                                    aktuelle_uhrzeit=self.data['aktuelle_uhrzeit'][:-7],
                                    neue_uhrzeit=self.data['neue_uhrzeit'][:-7],
-                                   kalkulations_zeit_datum=self.data['neue_uhr']['kalkulations_zeit'][:10],
-                                   kalkulations_zeit_uhrzeit=self.data['neue_uhr']['kalkulations_zeit'][11:-7],
-                                   start_zeit_datum=self.data['neue_uhr']['start_zeit'][:10],
-                                   start_zeit_uhrzeit=self.data['neue_uhr']['start_zeit'][11:-7],
+                                   start_zeit=self.data['neue_uhr']['start_zeit'],
+                                   kalkulations_zeit=self.data['neue_uhr']['kalkulations_zeit'],
                                    tempo_wert=int(self.data['neue_uhr']['tempo'] // 1),
                                    tempo_kommastellen=round(self.data['neue_uhr']['tempo'] % 1, 3),
                                    modus=self.data['neue_uhr']['modus'],
