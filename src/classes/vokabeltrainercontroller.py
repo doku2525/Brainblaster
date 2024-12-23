@@ -7,7 +7,8 @@ from typing import Callable, Type, cast, TYPE_CHECKING
 
 from src.classes.eventmanager import EventTyp
 from src.classes.lernuhr import Lernuhr
-from src.classes.zustand import Zustand, ZustandStart, ZustandENDE, ZustandVeraenderLernuhr, ZustandReturnValue
+from src.classes.zustand import (Zustand, ZustandStart, ZustandENDE,
+                                 ZustandBoxinfo, ZustandVeraenderLernuhr, ZustandReturnValue)
 from src.classes.infomanager import InfoManager
 
 if TYPE_CHECKING:
@@ -48,8 +49,16 @@ class VokabeltrainerController:
         return replace(zustand, **{'liste': self.modell.vokabelboxen.titel_aller_vokabelboxen(),
                                    'aktueller_index': self.modell.index_aktuelle_box,
                                    'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit()),
-                                   'child': (self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),
+                                   'child': (self.buildZustandBoxinfo(ZustandBoxinfo()),
+                                             self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),
                                              ZustandENDE())})
+
+    def buildZustandBoxinfo(self, zustand: ZustandBoxinfo) -> ZustandBoxinfo:
+        return replace(zustand, **{'info': self.info_manager.boxen_als_number_dict()[self.modell.index_aktuelle_box],
+                                   'aktuelle_frageeinheit': self.modell.aktuelle_box().aktuelle_frage.__name__,
+                                   'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit()),
+                                   'box_titel': self.modell.aktuelle_box().titel,
+                                   'child': (self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),)})
 
     def buildZustandVeraenderLernuhr(self, zustand: ZustandVeraenderLernuhr) -> ZustandVeraenderLernuhr:
         if zustand.aktuelle_zeit == '':
@@ -62,11 +71,16 @@ class VokabeltrainerController:
         self.uhr = neue_uhr
         print(f"update_uhr nachher: {self.uhr == neue_uhr = }")  # TODO Debug entfernen
 
+    def update_modell_aktueller_index(self, neuer_index: int):
+        self.modell = replace(self.modell, index_aktuelle_box=neuer_index)
+
     def execute_kommando(self, kommando_string: str) -> Zustand:
         # TODO Scheibe funktion self.execute_kommando_interpreter(zustand, interpreter, cmd
         #   das systemcommands des vokabeltrainers mit uebergibt.
 
-        commands = {'update_uhr': self.update_uhr}
+        commands = {'update_uhr': self.update_uhr,
+                    'update_modell_aktueller_index': self.update_modell_aktueller_index}
+
         print(f"execute_kommando: {kommando_string = }")  # TODO Debug entfernen
         result: ZustandReturnValue = self.aktueller_zustand.verarbeite_userinput(kommando_string)
         print(f"execute_kommando: {result = }")  # TODO Debug entfernen
@@ -80,7 +94,8 @@ class VokabeltrainerController:
         Die Zuordnung der Zustaende zu den buildern wird in der service_liste festgelegt."""
         service_liste: dict[Type[Zustand], Callable] = {
             ZustandVeraenderLernuhr: self.buildZustandVeraenderLernuhr,
-            ZustandStart: self.buildZustandStart
+            ZustandStart: self.buildZustandStart,
+            ZustandBoxinfo: self.buildZustandBoxinfo
         }
         func = service_liste.get(alter_zustand.__class__, lambda x: x)
         return func(alter_zustand)
@@ -100,8 +115,9 @@ class VokabeltrainerController:
         # TODO Erstellen des InfoManagers blockiert das System, so dass der aktuelle zustand nicht gesetzt ist
         #   und Flaskview Fehlermeldungen (KeyError) beim Abrufen der Zeit ausgibt (siehe get_Routen in flaskview.py).
         self.info_manager = InfoManager.factory(liste_der_boxen=self.modell.vokabelboxen.vokabelboxen,
-                                                liste_der_karten=self.modell.vokabelkarten.vokabelkarten)
-        print(f"Beginne mit der Arbeit. { len(self.info_manager.boxen) = }")
+                                                liste_der_karten=self.modell.vokabelkarten.vokabelkarten
+                                                ).erzeuge_alle_infos(self.uhr.now(Lernuhr.echte_zeit()))
+        print(f"Beginne mit der Arbeit. { self.info_manager.boxen_als_number_dict()[40] = }")
 
         self.aktueller_zustand = self.buildZustandStart(ZustandStart())
         self.view_observer.views_updaten(self.aktueller_zustand, Lernuhr.echte_zeit())
