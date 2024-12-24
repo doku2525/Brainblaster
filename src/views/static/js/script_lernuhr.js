@@ -23,7 +23,6 @@ function sende_kommando(cmd) {
 function getCheckedRadioButtonValue() {
     // Hole alle Radiobuttons mit dem Namen "modus"
     const radioButtons = document.getElementsByName("modus");
-
     // Iteriere über alle Radiobuttons
     for (let i = 0; i < radioButtons.length; i++) {
         if (radioButtons[i].checked) {
@@ -42,7 +41,6 @@ function getCheckedRadioButtonValue() {
             return radioButtons[i].value;
         }
     }
-
     // Wenn kein Button ausgewählt ist, gib einen Standardwert oder null zurück
     return null; // Oder einen anderen Standardwert
 }
@@ -107,18 +105,21 @@ function fetchData() {
 
 // Funktionen fuer die Buttons
 function speicherLernuhr() { window.location.href = '/index?lernuhr=mit_speichern';}
-window.speicherLernuhr = speicherLernuhr;
+
 function verwerfeLernuhr() { window.location.href = '/index?lernuhr=ohne_speichern';}
-window.verwerfeLernuhr = verwerfeLernuhr;
 function calibriereLernuhr() {
     sende_kommando('/kommando/cc');
     startUndKalkzeitVeraendert = true;   // Flag, die in fetchData() abgefragt wird
 }
-window.calibriereLernuhr = calibriereLernuhr;
 function resetLernuhr() {
     sende_kommando('/kommando/cr');
     startUndKalkzeitVeraendert = true;   // Flag, die in fetchData() abgefragt wird
 }
+
+// Buttonfunktionen im Global-Space registrieren
+window.speicherLernuhr = speicherLernuhr;
+window.verwerfeLernuhr = verwerfeLernuhr;
+window.calibriereLernuhr = calibriereLernuhr;
 window.resetLernuhr = resetLernuhr;
 
 // Markiere aktuellen Radiobutton beim Laden der Seite
@@ -194,5 +195,3 @@ function initializeElemente() {
 initializeElemente()
 registerListener()
 setInterval(fetchData, 1000);
-
-window.main = main;
