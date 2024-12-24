@@ -192,6 +192,9 @@ function initializeElemente() {
     document.getElementById('time_start_zeit_uhrzeit').value = ISOalsUhrzeit(startwerte.start_zeit);
 }
 
-initializeElemente()
-registerListener()
-setInterval(fetchData, 1000);
+// Hauptfunktion, die beim Laden der Seite ausgeführt wird
+window.onload = () => {
+    initializeElemente();
+    registerListener();
+    setInterval(fetchData, 1000);
+};
