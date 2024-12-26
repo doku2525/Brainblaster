@@ -20,6 +20,18 @@ class test_vokabelkarte(TestCase):
             karten_liste = Vokabelkarte.lieferBeispielKarten(1, sprache)
             self.assertEquals(karten_liste[0], Vokabelkarte.fromdict(mein_asdict(karten_liste[0])))
 
+    def test_neue_antwort(self):
+        from src.classes.frageeinheit import FrageeinheitJapanischBedeutung
+        from src.classes.antwort import Antwort
+
+        karte = Vokabelkarte.lieferBeispielKarten(10, "Japanisch")[0]
+        result = karte.neue_antwort(FrageeinheitJapanischBedeutung, Antwort(6, 0))
+        self.assertIsInstance(result, Vokabelkarte)
+        self.assertNotEqual(karte, result)
+        self.assertEqual(0, len(karte.lernstats.statistiken[FrageeinheitJapanischBedeutung].antworten))
+        self.assertEqual(1, len(result.lernstats.statistiken[FrageeinheitJapanischBedeutung].antworten))
+        self.assertEqual(6, result.lernstats.statistiken[FrageeinheitJapanischBedeutung].antworten[0].antwort)
+
     def test_erzeugeStatistik(self):
         from src.classes.statistikmanager import StatistikManager
 

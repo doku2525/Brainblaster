@@ -1,10 +1,15 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum
+from typing import Type, TYPE_CHECKING
 
 from src.classes.statistikmanager import StatistikManager
 from src.classes.lerneinheit import Lerneinheit, LerneinheitFactory
 import src.utils.utils_enum as utils_enum
+
+if TYPE_CHECKING:
+    from src.classes.frageeinheit import Frageeinheit
+    from src.classes.antwort import Antwort
 
 
 class KartenStatus(Enum):
@@ -37,6 +42,11 @@ class Vokabelkarte:
                             StatistikManager.erzeuge(self.lerneinheit.__class__),
                             self.erzeugt,
                             self.status)
+
+    def neue_antwort(self, frage_einheit: Type[Frageeinheit], antwort: Antwort) -> Vokabelkarte:
+        return replace(self,
+                       lernstats=self.lernstats.update_statistik_mit_antwort(frageeinheit=frage_einheit,
+                                                                             antwort=antwort))
 
     @staticmethod
     def erzeugeBeispiele(liste: list[Lerneinheit]) -> list[Vokabelkarte]:
