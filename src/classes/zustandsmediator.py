@@ -127,3 +127,27 @@ class ZustandsMediatorZustandBoxinfo(ZustandsMediator):
         return (f"Aktuelle Box: {zustand.box_titel}\n" +
                 ''.join([f"{frage_einheit} : {infos}\n" for frage_einheit, infos in zustand.info.items()]) +
                 f"Aktuelle Frageeinheit: {zustand.aktuelle_frageeinheit}")
+
+
+@dataclass(frozen=True)
+class ZustandsMediatorZustandVokabelTesten(ZustandsMediator):
+    zustand: str = 'ZustandVokabelTesten'
+
+    def zustand_to_flaskview_data(self, zustand: Zustand, zeit_in_ms: int = 0) -> dict:
+        """Liefer die speziellen Daten fuer Flaskview"""
+        if zustand.input_liste:
+            return {'frage': zustand.aktuelle_frageeinheit().frage(zustand.input_liste[0].lerneinheit),
+                    'antwort': zustand.aktuelle_frageeinheit().antwort(zustand.input_liste[0].lerneinheit)}
+        if zustand.output_liste:
+            return {'frage': zustand.aktuelle_frageeinheit().frage(zustand.output_liste[0].lerneinheit),
+                    'antwort': zustand.aktuelle_frageeinheit().antwort(zustand.output_liste[0].lerneinheit)}
+        return {}
+
+    def prepare_consoleview_daten_string(self, zustand: Zustand, zeit_in_ms: int = 0) -> str:
+        """Wird in der Elternklasse zum bauen des data-Dicitonarys verwendet"""
+        if zustand.input_liste:
+            return (f"Frage: {zustand.aktuelle_frageeinheit().frage(zustand.input_liste[0].lerneinheit)}\n" +
+                    f"Antwort: {zustand.aktuelle_frageeinheit().antwort(zustand.input_liste[0].lerneinheit)}")
+        if zustand.output_liste:
+            return (f"Frage: {zustand.aktuelle_frageeinheit().frage(zustand.output_liste[0].lerneinheit)}\n" +
+                    f"Antwort: {zustand.aktuelle_frageeinheit().antwort(zustand.output_liste[0].lerneinheit)}")

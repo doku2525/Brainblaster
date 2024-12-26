@@ -3,7 +3,8 @@ from unittest.mock import patch, call, ANY
 from dataclasses import replace
 from typing import Callable, cast
 
-from src.classes.zustand import Zustand, ZustandENDE, ZustandStart, ZustandVeraenderLernuhr, ZustandBoxinfo
+from src.classes.zustand import (Zustand, ZustandENDE, ZustandStart, ZustandVeraenderLernuhr, ZustandBoxinfo,
+                                 ZustandVokabelTesten)
 
 
 class test_Zustand(TestCase):
@@ -61,6 +62,19 @@ class test_Zustand(TestCase):
         self.assertEqual({}, objekt.info)
         self.assertEqual('', objekt.box_titel)
         self.assertEqual('', objekt.aktuelle_frageeinheit)
+
+    def test_init_zustand_vokabel_testen(self):
+        objekt = ZustandVokabelTesten()
+        self.assertIsInstance(objekt, ZustandVokabelTesten)
+        self.assertIsInstance(objekt, Zustand)
+        self.assertNotIsInstance(objekt, ZustandStart)
+        self.assertEqual('Zustand Testen', objekt.titel)
+        self.assertEqual('Zustand Testen, fuehrt die Tests aus und verarbeitet Antworten', objekt.beschreibung)
+        self.assertEqual([], objekt.input_liste)
+        self.assertEqual([], objekt.output_liste)
+        self.assertIsNone(objekt.aktuelle_frageeinheit)
+        self.assertTrue(objekt.wiederholen)
+        self.assertEqual('', objekt.aktuelle_zeit)
 
     def test_verarbeite_userinput(self):
         objekt = Zustand()
@@ -424,3 +438,124 @@ class test_Zustand(TestCase):
 # TODO Schreibe noch Tests, die die richtige Funktionalitaet der Uhr prueft. Hatte grosse Probleme,
 #  weil in der '='-Hilfsfunktion nicht die Funktion iso_to_millis() aus Lerhnuhr, sondern die Funktion aus datetime
 #  benutzt wurde und deshalb Sekunden-Werte in mein Millisekunden-Lernuhrsystem kamen.
+
+    def test_verarbeite_userinput_zustand_vokabeln_testen_option_a_richtige_antwort(self):
+        from src.classes.vokabelkarte import Vokabelkarte
+
+        class MockObjekt(Vokabelkarte):
+            def neue_antwort(self, frage_einheit, antwort):
+                return antwort
+
+        karte = MockObjekt()
+        objekt = ZustandVokabelTesten(input_liste=[karte])
+
+        result, fun, args = objekt.verarbeite_userinput('a6')
+        self.assertNotEqual(result, objekt)
+        self.assertIsInstance(result, ZustandVokabelTesten)
+        self.assertEqual('update_vokabelkarte_statistik', fun)
+        self.assertEqual([], result.input_liste)
+        self.assertEqual([], result.output_liste)
+        self.assertEqual(2, len(args))
+        self.assertEqual(karte, args[0])
+        self.assertEqual('Antwort', args[1](0).__class__.__name__)
+        self.assertEqual(6, args[1](0).antwort)
+        self.assertEqual(0, args[1](0).erzeugt)
+
+    def test_verarbeite_userinput_zustand_vokabeln_testen_option_a_falsche_antwort(self):
+        from src.classes.vokabelkarte import Vokabelkarte
+
+        class MockObjekt(Vokabelkarte):
+            def neue_antwort(self, frage_einheit, antwort):
+                return antwort
+
+        karte = MockObjekt()
+        objekt = ZustandVokabelTesten(input_liste=[karte])
+
+        result, fun, args = objekt.verarbeite_userinput('a2')
+        self.assertNotEqual(result, objekt)
+        self.assertIsInstance(result, ZustandVokabelTesten)
+        self.assertEqual('update_vokabelkarte_statistik', fun)
+        self.assertEqual([], result.input_liste)
+        self.assertEqual([karte], result.output_liste)
+        self.assertEqual(2, len(args))
+        self.assertEqual(karte, args[0])
+        self.assertEqual('Antwort', args[1](0).__class__.__name__)
+        self.assertEqual(2, args[1](0).antwort)
+        self.assertEqual(0, args[1](0).erzeugt)
+
+    def test_verarbeite_userinput_zustand_vokabeln_testen_option_a_falsche_antwort_wiederholen_false(self):
+        from src.classes.vokabelkarte import Vokabelkarte
+
+        class MockObjekt(Vokabelkarte):
+            def neue_antwort(self, frage_einheit, antwort):
+                return antwort
+
+        karte = MockObjekt()
+        objekt = ZustandVokabelTesten(input_liste=[karte], wiederholen=False)
+
+        result, fun, args = objekt.verarbeite_userinput('a2')
+        self.assertNotEqual(result, objekt)
+        self.assertIsInstance(result, ZustandVokabelTesten)
+        self.assertEqual('update_vokabelkarte_statistik', fun)
+        self.assertEqual([], result.input_liste)
+        self.assertEqual([], result.output_liste)
+        self.assertEqual(2, len(args))
+        self.assertEqual(karte, args[0])
+        self.assertEqual('Antwort', args[1](0).__class__.__name__)
+        self.assertEqual(2, args[1](0).antwort)
+        self.assertEqual(0, args[1](0).erzeugt)
+
+    def test_verarbeite_userinput_zustand_vokabeln_testen_option_a_mit_leerem_string(self):
+        from src.classes.vokabelkarte import Vokabelkarte
+
+        class MockObjekt(Vokabelkarte):
+            def neue_antwort(self, frage_einheit, antwort):
+                return antwort
+
+        karte = MockObjekt()
+        objekt = ZustandVokabelTesten()
+        objekt = replace(objekt, parent=ZustandBoxinfo())
+
+        result, fun, args = objekt.verarbeite_userinput('')
+        self.assertEqual(result, objekt)
+        self.assertIsInstance(result, ZustandVokabelTesten)
+        self.assertIsNone(fun())
+        self.assertEqual(tuple(), args)
+
+    def test_verarbeite_userinput_zustand_vokabeln_testen_option_a_richtig_mit_leerer_input_liste(self):
+        from src.classes.vokabelkarte import Vokabelkarte
+
+        class MockObjekt(Vokabelkarte):
+            def neue_antwort(self, frage_einheit, antwort):
+                return antwort
+
+        karte = MockObjekt()
+        objekt = ZustandVokabelTesten(output_liste=[karte])
+
+        result, fun, args = objekt.verarbeite_userinput('a6')
+        self.assertNotEqual(result, objekt)
+        self.assertIsInstance(result, ZustandVokabelTesten)
+        self.assertIsNone(fun())
+        self.assertEqual(tuple(), args)
+        self.assertEqual([], result.output_liste)
+        self.assertEqual([], result.input_liste)
+
+    def test_verarbeite_userinput_zustand_vokabeln_testen_option_a_falsch_mit_leerer_input_liste(self):
+        from src.classes.vokabelkarte import Vokabelkarte
+
+        class MockObjekt(Vokabelkarte):
+
+            def neue_antwort(self, frage_einheit, antwort):
+                return antwort
+
+        karte_eins = MockObjekt(erzeugt=1)
+        karte_zwei = MockObjekt(erzeugt=2)
+        objekt = ZustandVokabelTesten(output_liste=[karte_eins, karte_zwei])
+
+        result, fun, args = objekt.verarbeite_userinput('a2')
+        self.assertNotEqual(result, objekt)
+        self.assertIsInstance(result, ZustandVokabelTesten)
+        self.assertIsNone(fun())
+        self.assertEqual(tuple(), args)
+        self.assertEqual([karte_zwei, karte_eins], result.output_liste)
+        self.assertEqual([], result.input_liste)
