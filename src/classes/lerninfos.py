@@ -2,6 +2,7 @@ from __future__ import annotations
 from collections import defaultdict, namedtuple
 from dataclasses import dataclass, field, replace
 from itertools import groupby
+import numpy as np
 from typing import Iterable, NamedTuple, Type, TYPE_CHECKING
 
 from src.classes.statistik import StatModus
@@ -41,6 +42,22 @@ class InfotypStatistik(NamedTuple):
     def as_number_dict(self) -> dict:
         """Wandelt sich selbst und die InfotypStatModus-Objekte in den Values in ein Dictionary um"""
         return {str(key): value.as_number_dict() for key, value in self._asdict().items()}
+
+
+@dataclass(frozen=True)
+class InfotypMatrix:
+    matrix: np.ndarray = field(default_factory=np.ndarray)
+
+    @classmethod
+    def from_infotype_statistik_number_dict(cls, data_dic: dict) -> cls:
+        return cls(np.array([[value['insgesamt'], value['aktuell']] for key, value in data_dic.items()]))
+
+    def as_infotype_statistik_number_dict(self) -> dict:
+        modi = ['pruefen', 'lernen', 'neu']
+        return {modus: {'insgesamt': element[0], 'aktuell': element[1]}
+                for modus, element
+                in zip(modi, self.matrix)}
+
 
 @dataclass(frozen=True)
 class Lerninfos:

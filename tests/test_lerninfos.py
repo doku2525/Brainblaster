@@ -1,7 +1,7 @@
 from unittest import TestCase
 from dataclasses import replace
 
-from src.classes.lerninfos import Lerninfos, InfotypStatistik, InfotypStatModus
+from src.classes.lerninfos import Lerninfos, InfotypStatistik, InfotypStatModus, InfotypMatrix
 from src.classes.kartenfilter import FilterVokabelbox
 
 
@@ -67,6 +67,46 @@ class test_Lerninfos(TestCase):
         self.assertEqual(0, len(result[2].insgesamt))
         self.assertEqual(0, len(result[2].aktuell))
         self.assertEqual(40, len(result.pruefen.insgesamt))
+        self.assertEqual(0, len(result.pruefen.aktuell))
+        self.assertEqual(0, len(result.lernen.insgesamt))
+        self.assertEqual(0, len(result.lernen.aktuell))
+        self.assertEqual(0, len(result.neu.insgesamt))
+        self.assertEqual(0, len(result.neu.aktuell))
+
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
+        result = objekt.sammle_infos(Lernuhr.isostring_to_millis("2025-06-22 13:00:00.000"))
+        self.assertEqual(3, len(result))
+        for index in range(3):
+            self.assertIsInstance(result[index], InfotypStatModus)
+        self.assertEqual(40, len(result[0].insgesamt))
+        self.assertEqual(40, len(result[0].aktuell))
+        self.assertEqual(0, len(result[1].insgesamt))
+        self.assertEqual(0, len(result[1].aktuell))
+        self.assertEqual(0, len(result[2].insgesamt))
+        self.assertEqual(0, len(result[2].aktuell))
+        print(f" {type(result[0]) = } {len(result[0][0]) = }")
+
+    def test_sammle_infos_lektion_1_nur_erste_vokabel_als_liste(self):
+        from src.classes.lernuhr import Lernuhr
+        from src.classes.lerninfos import InfotypStatModus
+
+        self.komplett = replace(self.komplett, index_aktuelle_box=40)
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten())[:1])
+        result = objekt.sammle_infos(Lernuhr.isostring_to_millis("2024-06-22 13:00:00.000"))
+        self.assertEqual(3, len(result))
+        for index in range(3):
+            self.assertIsInstance(result[index], InfotypStatModus)
+        self.assertEqual(1, len(result[0].insgesamt))
+        self.assertEqual(0, len(result[0].aktuell))
+        self.assertEqual(0, len(result[1].insgesamt))
+        self.assertEqual(0, len(result[1].aktuell))
+        self.assertEqual(0, len(result[2].insgesamt))
+        self.assertEqual(0, len(result[2].aktuell))
+        self.assertEqual(1, len(result.pruefen.insgesamt))
         self.assertEqual(0, len(result.pruefen.aktuell))
         self.assertEqual(0, len(result.lernen.insgesamt))
         self.assertEqual(0, len(result.lernen.aktuell))
@@ -221,3 +261,35 @@ class test_Lerninfos(TestCase):
                     'lernen': {'insgesamt': 12, 'aktuell': 6},
                     'neu': {'insgesamt': 13, 'aktuell': 5}}
         self.assertEqual(expected, objekt.as_number_dict())
+
+    def test_infotype_matrix_from_from_infotype_statistik(self):
+        from typing import cast
+        from src.classes.vokabelkarte import Vokabelkarte
+
+        mock_karte = cast(Vokabelkarte, 1)
+        objekt = InfotypStatistik(InfotypStatModus([mock_karte] * 11, [mock_karte] * 7),
+                                  InfotypStatModus([mock_karte] * 12, [mock_karte] * 6),
+                                  InfotypStatModus([mock_karte] * 13, [mock_karte] * 5))
+        result = InfotypMatrix.from_infotype_statistik_number_dict(objekt.as_number_dict())
+        self.assertIsInstance(result, InfotypMatrix)
+        self.assertEqual(11, result.matrix[0][0])
+        self.assertEqual(12, result.matrix[1][0])
+        self.assertEqual(13, result.matrix[2][0])
+        self.assertEqual(7, result.matrix[0][1])
+        self.assertEqual(6, result.matrix[1][1])
+        self.assertEqual(5, result.matrix[2][1])
+
+    def test_infotype_matrix_as_infotype_statistik_number_dict(self):
+        from typing import cast
+        from src.classes.vokabelkarte import Vokabelkarte
+
+        mock_karte = cast(Vokabelkarte, 1)
+        objekt = InfotypStatistik(InfotypStatModus([mock_karte] * 11, [mock_karte] * 7),
+                                  InfotypStatModus([mock_karte] * 12, [mock_karte] * 6),
+                                  InfotypStatModus([mock_karte] * 13, [mock_karte] * 5))
+        matrix = InfotypMatrix.from_infotype_statistik_number_dict(objekt.as_number_dict())
+        result = matrix.as_infotype_statistik_number_dict()
+        expected = {'pruefen': {'insgesamt': 11, 'aktuell': 7},
+                    'lernen': {'insgesamt': 12, 'aktuell': 6},
+                    'neu': {'insgesamt': 13, 'aktuell': 5}}
+        self.assertEqual(expected, result)
