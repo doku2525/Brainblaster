@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from src.classes.eventmanager import EventManager
     from src.classes.vokabeltrainermodell import VokabeltrainerModell
     from src.classes.zustandsbeobachter import ObserverManager
+    from src.classes.vokabelkarte import Vokabelkarte
 
 
 class VokabeltrainerController:
@@ -71,15 +72,23 @@ class VokabeltrainerController:
         self.uhr = neue_uhr
         print(f"update_uhr nachher: {self.uhr == neue_uhr = }")  # TODO Debug entfernen
 
-    def update_modell_aktueller_index(self, neuer_index: int):
+    def update_modell_aktueller_index(self, neuer_index: int) -> None:
         self.modell = replace(self.modell, index_aktuelle_box=neuer_index)
+
+    def update_vokabelkarte_statisitk(self, karte: tuple[Vokabelkarte, Callable[[int], Vokabelkarte]]) -> None:
+        """Ruft die Funktion zum Erstellen und Hinzufuegen der Antwort mit der aktuellen Zeit auf und ersetzt dann
+        die alte Karte durch die neue Karte im repository."""
+        alte_karte, funktion = karte
+        neue_karte = funktion(self.uhr.now(Lernuhr.echte_zeit()))
+        self.modell.vokabelkarten.replace_karte(alte_karte, neue_karte)
 
     def execute_kommando(self, kommando_string: str) -> Zustand:
         # TODO Scheibe funktion self.execute_kommando_interpreter(zustand, interpreter, cmd
         #   das systemcommands des vokabeltrainers mit uebergibt.
 
         commands = {'update_uhr': self.update_uhr,
-                    'update_modell_aktueller_index': self.update_modell_aktueller_index}
+                    'update_modell_aktueller_index': self.update_modell_aktueller_index,
+                    'update_vokabelkarte_statisitk': self.update_vokabelkarte_statisitk}
 
         print(f"execute_kommando: {kommando_string = }")  # TODO Debug entfernen
         result: ZustandReturnValue = self.aktueller_zustand.verarbeite_userinput(kommando_string)
