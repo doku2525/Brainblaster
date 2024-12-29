@@ -48,6 +48,69 @@ class test_Lerninfos(TestCase):
         self.assertTrue(hasattr(objekt.infos[FrageeinheitChinesischBedeutung], 'neu'))
         self.assertIsInstance(objekt.infos[FrageeinheitChinesischBedeutung].pruefen, InfotypStatModus)
 
+    def test_ersetze_karte_mit_richtiger_antwort(self):
+        from src.classes.antwort import Antwort
+        from src.classes.lernuhr import Lernuhr
+        from src.classes.lerninfos import InfotypStatModus
+
+        self.komplett = replace(self.komplett, index_aktuelle_box=40)
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
+        result = objekt.sammle_infos(Lernuhr.isostring_to_millis("2025-06-22 13:00:00.000"))
+        self.assertEqual(40, len(result[0].insgesamt))
+        self.assertEqual(40, len(result[0].aktuell))
+        karte_alt = objekt.karten[0]
+        karte_neu = karte_alt.neue_antwort(self.komplett.aktuelle_box().aktuelle_frage,
+                                           Antwort(6, Lernuhr.isostring_to_millis("2025-05-20 13:00:00.000")))
+        result = objekt.ersetze_karte(karte_alt,
+                                      karte_neu,
+                                      Lernuhr.isostring_to_millis("2025-06-22 13:00:00.000")
+                                      )
+        self.assertEqual(40, len(result.karten))
+        print(f"\n{result.infos[self.komplett.aktuelle_box().aktuelle_frage].as_number_dict() = }")
+        self.assertEqual(40, len(result.infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(39, len(result.infos[self.komplett.aktuelle_box().aktuelle_frage][0].aktuell))
+
+    def test_ersetze_karte_mit_falscher_antwort(self):
+        from src.classes.antwort import Antwort
+        from src.classes.lernuhr import Lernuhr
+        from src.classes.lerninfos import InfotypStatModus
+
+        self.komplett = replace(self.komplett, index_aktuelle_box=40)
+        objekt = Lerninfos(
+            box=self.komplett.aktuelle_box(),
+            karten=FilterVokabelbox(self.komplett.aktuelle_box()).filter(self.komplett.alle_vokabelkarten()))
+        result = objekt.sammle_infos(Lernuhr.isostring_to_millis("2025-06-22 13:00:00.000"))
+        self.assertEqual(40, len(result[0].insgesamt))
+        self.assertEqual(40, len(result[0].aktuell))
+        # Vor einem Monat falsch beantwortet, also muesste Karte bei lernen und auch in lernen.aktuell sein
+        karte_alt = objekt.karten[0]
+        karte_neu = karte_alt.neue_antwort(self.komplett.aktuelle_box().aktuelle_frage,
+                                           Antwort(1, Lernuhr.isostring_to_millis("2025-05-20 13:00:00.000")))
+        result = objekt.ersetze_karte(karte_alt,
+                                      karte_neu,
+                                      Lernuhr.isostring_to_millis("2025-06-22 13:00:00.000")
+                                      )
+        self.assertEqual(40, len(result.karten))
+        self.assertEqual(39, len(result.infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(39, len(result.infos[self.komplett.aktuelle_box().aktuelle_frage][0].aktuell))
+        self.assertEqual(1, len(result.infos[self.komplett.aktuelle_box().aktuelle_frage][1].insgesamt))
+        self.assertEqual(1, len(result.infos[self.komplett.aktuelle_box().aktuelle_frage][1].aktuell))
+        # Vor einer Strunde falsch beantwortet, also muesste Karte in lernen aber nicht in lernen.aktuell sein
+        karte_alt = objekt.karten[0]
+        karte_neu = karte_alt.neue_antwort(self.komplett.aktuelle_box().aktuelle_frage,
+                                           Antwort(1, Lernuhr.isostring_to_millis("2025-06-22 12:00:00.000")))
+        result = objekt.ersetze_karte(karte_alt,
+                                      karte_neu,
+                                      Lernuhr.isostring_to_millis("2025-06-22 13:00:00.000")
+                                      )
+        self.assertEqual(40, len(result.karten))
+        self.assertEqual(39, len(result.infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(39, len(result.infos[self.komplett.aktuelle_box().aktuelle_frage][0].aktuell))
+        self.assertEqual(1, len(result.infos[self.komplett.aktuelle_box().aktuelle_frage][1].insgesamt))
+        self.assertEqual(0, len(result.infos[self.komplett.aktuelle_box().aktuelle_frage][1].aktuell))
+
     def test_sammle_infos_lektion_1(self):
         from src.classes.lernuhr import Lernuhr
         from src.classes.lerninfos import InfotypStatModus

@@ -80,6 +80,11 @@ class Lerninfos:
                      in self.box.verfuegbare_frageeinheiten()}
         return replace(self, infos=info_dict)
 
+    def ersetze_karte(self, alte_karte: Vokabelkarte, neue_karte: Vokabelkarte, uhrzeit: int):
+        neue_lerninfo = replace(self, karten = [karte if karte != alte_karte else neue_karte
+                                                for karte in self.karten])
+        return neue_lerninfo.erzeuge_infos(uhrzeit)
+
     def sammle_infos_zu_frageeinheit(self, uhrzeit: int, frageeinheit: Type[Frageeinheit]) -> InfotypStatistik:
         """Liefert ein Objekt vom Typ InfotypStatistik mit den Werten zu jedem StatusTyp (PRUEFEN, LERNEN, NEU)
         einer Statistik."""
