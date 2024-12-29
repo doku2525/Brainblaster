@@ -33,7 +33,7 @@ class test_VokabeltrainerController(TestCase):
         zustand = ZustandVokabelTesten(input_liste=self.controller.modell.vokabelkarten.vokabelkarten,
                                        aktuelle_frageeinheit=self.controller.modell.aktuelle_box().aktuelle_frage)
         result, fun, args = zustand.verarbeite_userinput('a5')
-        self.controller.update_vokabelkarte_statisitk(args)
+        self.controller.update_vokabelkarte_statistik(*args)
         self.assertEqual(
             5,
             self.controller.modell.vokabelkarten.vokabelkarten[0].

@@ -455,11 +455,11 @@ class test_Zustand(TestCase):
         self.assertEqual('update_vokabelkarte_statistik', fun)
         self.assertEqual([], result.input_liste)
         self.assertEqual([], result.output_liste)
-        self.assertEqual(2, len(args))
-        self.assertEqual(karte, args[0])
-        self.assertEqual('Antwort', args[1](0).__class__.__name__)
-        self.assertEqual(6, args[1](0).antwort)
-        self.assertEqual(0, args[1](0).erzeugt)
+        self.assertEqual(1, len(args))
+        self.assertEqual(karte, args[0][0])
+        self.assertEqual('Antwort', args[0][1](0).__class__.__name__)
+        self.assertEqual(6, args[0][1](0).antwort)
+        self.assertEqual(0, args[0][1](0).erzeugt)
 
     def test_verarbeite_userinput_zustand_vokabeln_testen_option_a_falsche_antwort(self):
         from src.classes.vokabelkarte import Vokabelkarte
@@ -477,11 +477,11 @@ class test_Zustand(TestCase):
         self.assertEqual('update_vokabelkarte_statistik', fun)
         self.assertEqual([], result.input_liste)
         self.assertEqual([karte], result.output_liste)
-        self.assertEqual(2, len(args))
-        self.assertEqual(karte, args[0])
-        self.assertEqual('Antwort', args[1](0).__class__.__name__)
-        self.assertEqual(2, args[1](0).antwort)
-        self.assertEqual(0, args[1](0).erzeugt)
+        self.assertEqual(1, len(args))
+        self.assertEqual(karte, args[0][0])
+        self.assertEqual('Antwort', args[0][1](0).__class__.__name__)
+        self.assertEqual(2, args[0][1](0).antwort)
+        self.assertEqual(0, args[0][1](0).erzeugt)
 
     def test_verarbeite_userinput_zustand_vokabeln_testen_option_a_falsche_antwort_wiederholen_false(self):
         from src.classes.vokabelkarte import Vokabelkarte
@@ -499,11 +499,11 @@ class test_Zustand(TestCase):
         self.assertEqual('update_vokabelkarte_statistik', fun)
         self.assertEqual([], result.input_liste)
         self.assertEqual([], result.output_liste)
-        self.assertEqual(2, len(args))
-        self.assertEqual(karte, args[0])
-        self.assertEqual('Antwort', args[1](0).__class__.__name__)
-        self.assertEqual(2, args[1](0).antwort)
-        self.assertEqual(0, args[1](0).erzeugt)
+        self.assertEqual(1, len(args))
+        self.assertEqual(karte, args[0][0])
+        self.assertEqual('Antwort', args[0][1](0).__class__.__name__)
+        self.assertEqual(2, args[0][1](0).antwort)
+        self.assertEqual(0, args[0][1](0).erzeugt)
 
     def test_verarbeite_userinput_zustand_vokabeln_testen_option_a_mit_leerem_string(self):
         from src.classes.vokabelkarte import Vokabelkarte

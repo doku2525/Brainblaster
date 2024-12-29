@@ -235,6 +235,7 @@ class test_ZustandsMediator(TestCase):
         self.assertIsInstance(result, dict)
         self.assertEqual('日本語Eint1', result['frage'])
         self.assertEqual('日本語Besch1', result['antwort'])
+        self.assertEqual('JapanischBedeutung', result['formatierung'])
 
     def test_zustand_flask_view_vokabel_testen_leere_input_liste(self):
         from src.classes.zustand import ZustandVokabelTesten

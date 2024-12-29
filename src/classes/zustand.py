@@ -288,7 +288,7 @@ class ZustandVokabelTesten(Zustand):
             if int(cmd_str) > 3:
                 return ZustandReturnValue(replace(self, input_liste=self.input_liste[1:]),
                                           cast(Callable, "update_vokabelkarte_statistik"),
-                                          (aktuelle_karte, neue_karte))
+                                          ((aktuelle_karte, neue_karte),))
             if int(cmd_str) < 4:
                 """Wenn eine Karte falsch beantwortet wird, die aktuelle Karte wieder ans Ende der output_liste gesetzt.
                 Es wird nicht neue_karte benutzt, da neue_karte erst im Controller berechnet wird und zum Wiederholen
@@ -297,7 +297,7 @@ class ZustandVokabelTesten(Zustand):
                     replace(self, input_liste=self.input_liste[1:],
                             output_liste=self.output_liste + ([aktuelle_karte] if self.wiederholen else [])),
                     cast(Callable, "update_vokabelkarte_statistik"),
-                    (aktuelle_karte, neue_karte))
+                    ((aktuelle_karte, neue_karte),))
 
         def handle_edit(cmd_str: str) -> ZustandReturnValue:
             # TODO Noch nicht implementiert
