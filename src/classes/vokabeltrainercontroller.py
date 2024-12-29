@@ -6,9 +6,10 @@ import time
 from typing import Callable, Type, cast, TYPE_CHECKING
 
 from src.classes.eventmanager import EventTyp
+from src.classes.filterlistenfactory import FilterlistenFactory
 from src.classes.lernuhr import Lernuhr
 from src.classes.zustand import (Zustand, ZustandStart, ZustandENDE,
-                                 ZustandBoxinfo, ZustandVeraenderLernuhr, ZustandReturnValue)
+                                 ZustandBoxinfo, ZustandVeraenderLernuhr, ZustandReturnValue, ZustandVokabelTesten)
 from src.classes.infomanager import InfoManager
 
 if TYPE_CHECKING:
@@ -55,11 +56,26 @@ class VokabeltrainerController:
                                              ZustandENDE())})
 
     def buildZustandBoxinfo(self, zustand: ZustandBoxinfo) -> ZustandBoxinfo:
+        print(f"{ self.modell.index_aktuelle_box = }")
+        print(f" { self.info_manager.boxen_als_number_dict() = }")
         return replace(zustand, **{'info': self.info_manager.boxen_als_number_dict()[self.modell.index_aktuelle_box],
                                    'aktuelle_frageeinheit': self.modell.aktuelle_box().aktuelle_frage.__name__,
                                    'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit()),
                                    'box_titel': self.modell.aktuelle_box().titel,
-                                   'child': (self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),)})
+                                   'child': (self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),
+                                             self.buildZustandVokabelTesten(ZustandVokabelTesten()))})
+
+    def buildZustandVokabelTesten(self, zustand: ZustandVokabelTesten) -> ZustandVokabelTesten:
+        filter_liste = FilterlistenFactory.filterliste_vokabeln_pruefen(self.modell.aktuelle_box(),
+                                                                        self.uhr.now(Lernuhr.echte_zeit()),
+                                                                        20)
+        return replace(zustand,
+                       **{'input_liste': FilterlistenFactory.filter_und_execute(
+                                           funktion=None,
+                                           filter_liste=filter_liste,
+                                           liste_der_vokabeln=self.modell.alle_vokabelkarten()),
+                          'aktuelle_frageeinheit': self.modell.aktuelle_box().aktuelle_frage,
+                          'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit())})
 
     def buildZustandVeraenderLernuhr(self, zustand: ZustandVeraenderLernuhr) -> ZustandVeraenderLernuhr:
         if zustand.aktuelle_zeit == '':
@@ -67,35 +83,46 @@ class VokabeltrainerController:
                                        'neue_uhr': self.uhr})
         return replace(zustand, neue_uhr=self.uhr)
 
+    # Definiere Systemkommandos, die von den Zustaenden aufgerufen werden koennen.
+    #  Jede Funktion muss im command-Dictionary der Funktion execute_kommando() registriert werden
     def update_uhr(self, neue_uhr: Lernuhr) -> None:
         print(f"update_uhr vorher: {self.uhr == neue_uhr = }")  # TODO Debug entfernen
         self.uhr = neue_uhr
         print(f"update_uhr nachher: {self.uhr == neue_uhr = }")  # TODO Debug entfernen
 
     def update_modell_aktueller_index(self, neuer_index: int) -> None:
+        print(f" { neuer_index = }")
         self.modell = replace(self.modell, index_aktuelle_box=neuer_index)
 
-    def update_vokabelkarte_statisitk(self, karte: tuple[Vokabelkarte, Callable[[int], Vokabelkarte]]) -> None:
+    def update_vokabelkarte_statistik(self, karte: tuple[Vokabelkarte, Callable[[int], Vokabelkarte]]) -> None:
         """Ruft die Funktion zum Erstellen und Hinzufuegen der Antwort mit der aktuellen Zeit auf und ersetzt dann
         die alte Karte durch die neue Karte im repository."""
         alte_karte, funktion = karte
         neue_karte = funktion(self.uhr.now(Lernuhr.echte_zeit()))
         self.modell.vokabelkarten.replace_karte(alte_karte, neue_karte)
+        self.info_manager = self.info_manager.update_infos_fuer_karte(alte_karte,
+                                                                      neue_karte,
+                                                                      self.uhr.now(Lernuhr.echte_zeit()))
 
+    # Funktionen zum Ausfuehren und aktuallisieren des Systems
     def execute_kommando(self, kommando_string: str) -> Zustand:
         # TODO Scheibe funktion self.execute_kommando_interpreter(zustand, interpreter, cmd
         #   das systemcommands des vokabeltrainers mit uebergibt.
-
         commands = {'update_uhr': self.update_uhr,
                     'update_modell_aktueller_index': self.update_modell_aktueller_index,
-                    'update_vokabelkarte_statisitk': self.update_vokabelkarte_statisitk}
+                    'update_vokabelkarte_statistik': self.update_vokabelkarte_statistik}
+        zustaende_ohne_update = [ZustandVeraenderLernuhr]
 
         print(f"execute_kommando: {kommando_string = }")  # TODO Debug entfernen
         result: ZustandReturnValue = self.aktueller_zustand.verarbeite_userinput(kommando_string)
-        print(f"execute_kommando: {result = }")  # TODO Debug entfernen
+        print(f"execute_kommando: {result.cmd = }")  # TODO Debug entfernen
         if cmd := commands.get(cast(str, result.cmd), False):
             cmd(*result.args)
-        return replace(result.zustand,      # Aktualisiere alle Zustaende in child des result-Zustands
+        # Aktuallisiere den aktuellen Zustand, wenn er nicht in der ohne_update-Liste steht,
+        #  und alle Zustaende in child des result-Zustands. Parents werden nicht aktuallisiert, da sonst der zurueck
+        #  in den Ausgangszustand nicht mehr moeglich ist.
+        return replace(result.zustand if result.zustand.__class__ in zustaende_ohne_update
+                       else self.update_zustand(result.zustand),
                        child=[self.update_zustand(child_zustand) for child_zustand in result.zustand.child])
 
     def update_zustand(self, alter_zustand: Zustand) -> Zustand:
@@ -109,6 +136,8 @@ class VokabeltrainerController:
         func = service_liste.get(alter_zustand.__class__, lambda x: x)
         return func(alter_zustand)
 
+    # Funktion fuer den EventManager. Wird vom view usw. aufgerufen, wenn ein Kommando auf irgendeinen Weg an das
+    #   System geschickt wird.
     def setze_cmd_str(self, cmd_str) -> None:
         self.cmd = cmd_str
         self.aktueller_zustand = self.execute_kommando(self.cmd[1:])
