@@ -42,6 +42,67 @@ class test_InfoManager(TestCase):
                   erzeuge_alle_infos(Lernuhr.isostring_to_millis("2024-07-12 13:00:00.000")))
         self.assertNotEqual({}, objekt.boxen[80].infos)
 
+    def test_update_infos_fuer_karte_richtig_beantwortet(self):
+        from src.classes.lernuhr import Lernuhr
+        from src.classes.antwort import Antwort
+
+        objekt = (InfoManager.factory(liste_der_boxen=self.komplett.vokabelboxen.vokabelboxen,
+                                      liste_der_karten=self.komplett.alle_vokabelkarten()).
+                  erzeuge_alle_infos(Lernuhr.isostring_to_millis("2025-06-12 13:00:00.000")))
+        karte_alt = objekt.boxen[40].karten[0]
+        karte_neu = karte_alt.neue_antwort(self.komplett.aktuelle_box().aktuelle_frage,
+                                           Antwort(6, Lernuhr.isostring_to_millis("2025-06-12 12:00:00.000")))
+        result = objekt.update_infos_fuer_karte(karte_alt, karte_neu,
+                                                Lernuhr.isostring_to_millis("2025-06-12 13:00:00.000"))
+        self.assertEqual(3, len(result.suche_karte(karte_neu)))
+        self.assertEqual(0, len(result.suche_karte(karte_alt)))
+        # In den 3 betroffenen Boxen ist die aktuelle Zahl jetzt um 1 niedriger als insgesamt
+        self.assertEqual(40, len(result.boxen[40].infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(39, len(result.boxen[40].infos[self.komplett.aktuelle_box().aktuelle_frage][0].aktuell))
+        self.assertEqual(1763, len(result.boxen[80].infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(1762, len(result.boxen[80].infos[self.komplett.aktuelle_box().aktuelle_frage][0].aktuell))
+        self.assertEqual(942, len(result.boxen[81].infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(941, len(result.boxen[81].infos[self.komplett.aktuelle_box().aktuelle_frage][0].aktuell))
+        # Andere Boxen sind unveraendert
+        self.assertEqual(821, len(result.boxen[82].infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(821, len(result.boxen[82].infos[self.komplett.aktuelle_box().aktuelle_frage][0].aktuell))
+
+    def test_update_infos_fuer_karte_falsch_beantwortet(self):
+        from src.classes.lernuhr import Lernuhr
+        from src.classes.antwort import Antwort
+
+        objekt = (InfoManager.factory(liste_der_boxen=self.komplett.vokabelboxen.vokabelboxen,
+                                      liste_der_karten=self.komplett.alle_vokabelkarten()).
+                  erzeuge_alle_infos(Lernuhr.isostring_to_millis("2025-06-12 13:00:00.000")))
+        karte_alt = objekt.boxen[40].karten[0]
+        karte_neu = karte_alt.neue_antwort(self.komplett.aktuelle_box().aktuelle_frage,
+                                           Antwort(2, Lernuhr.isostring_to_millis("2025-06-12 12:00:00.000")))
+        result = objekt.update_infos_fuer_karte(karte_alt, karte_neu,
+                                                Lernuhr.isostring_to_millis("2025-06-12 13:00:00.000"))
+        self.assertEqual(3, len(result.suche_karte(karte_neu)))
+        self.assertEqual(0, len(result.suche_karte(karte_alt)))
+        # In den 3 betroffenen Boxen ist die aktuelle Zahl in pruefen.insgesamt jetzt um 1 niedriger als vorher
+        self.assertEqual(40, len(objekt.boxen[40].infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(39, len(result.boxen[40].infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(1763, len(objekt.boxen[80].infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(1762, len(result.boxen[80].infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(942, len(objekt.boxen[81].infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(941, len(result.boxen[81].infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+
+        # In den 3 betroffenen Boxen ist die aktuelle Zahl in lernen.insgesamt jetzt um 1 hoeher als vorher
+        self.assertEqual(0, len(objekt.boxen[40].infos[self.komplett.aktuelle_box().aktuelle_frage][1].insgesamt))
+        self.assertEqual(1, len(result.boxen[40].infos[self.komplett.aktuelle_box().aktuelle_frage][1].insgesamt))
+        self.assertEqual(26, len(objekt.boxen[80].infos[self.komplett.aktuelle_box().aktuelle_frage][1].insgesamt))
+        self.assertEqual(27, len(result.boxen[80].infos[self.komplett.aktuelle_box().aktuelle_frage][1].insgesamt))
+        self.assertEqual(0, len(objekt.boxen[81].infos[self.komplett.aktuelle_box().aktuelle_frage][1].insgesamt))
+        self.assertEqual(1, len(result.boxen[81].infos[self.komplett.aktuelle_box().aktuelle_frage][1].insgesamt))
+        # In den 3 betroffenen Boxen ist die aktuelle Zahl in lernen.aktuell immer noch gleich (Teste aber nur 40)
+        self.assertEqual(0, len(objekt.boxen[40].infos[self.komplett.aktuelle_box().aktuelle_frage][1].aktuell))
+        self.assertEqual(0, len(result.boxen[40].infos[self.komplett.aktuelle_box().aktuelle_frage][1].aktuell))
+        # Andere Boxen sind unveraendert
+        self.assertEqual(821, len(result.boxen[82].infos[self.komplett.aktuelle_box().aktuelle_frage][0].insgesamt))
+        self.assertEqual(821, len(result.boxen[82].infos[self.komplett.aktuelle_box().aktuelle_frage][0].aktuell))
+
     def test_suche_karte(self):
         objekt = InfoManager.factory(liste_der_boxen=self.komplett.vokabelboxen.vokabelboxen,
                                      liste_der_karten=self.komplett.alle_vokabelkarten())
@@ -60,11 +121,11 @@ class test_InfoManager(TestCase):
                                      liste_der_karten=self.komplett.alle_vokabelkarten())
         objekt = objekt.erzeuge_alle_infos(Lernuhr.isostring_to_millis("2024-07-12 13:00:00.000"))
         expected_bed = {'pruefen': {'insgesamt': 1763, 'aktuell': 205},
-                    'lernen': {'insgesamt': 26, 'aktuell': 20},
-                    'neu': {'insgesamt': 0, 'aktuell': 0}}
+                        'lernen': {'insgesamt': 26, 'aktuell': 20},
+                        'neu': {'insgesamt': 0, 'aktuell': 0}}
         expected_pin = {'pruefen': {'aktuell': 205, 'insgesamt': 1423},
-                    'lernen': {'aktuell': 19, 'insgesamt': 29},
-                    'neu': {'aktuell': 290, 'insgesamt': 337}}
+                        'lernen': {'aktuell': 19, 'insgesamt': 29},
+                        'neu': {'aktuell': 290, 'insgesamt': 337}}
         self.assertEqual(expected_bed, objekt.boxen[80].infos[FrageeinheitChinesischBedeutung].as_number_dict())
         self.assertEqual(expected_pin, objekt.boxen[80].infos[FrageeinheitChinesischPinyin].as_number_dict())
 

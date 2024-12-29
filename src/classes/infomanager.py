@@ -24,6 +24,13 @@ class InfoManager:
         """Rufe die erzeuge_info_dict(uhrzeit) fuer jedes Element der Liste BOXEN, also Vokabelboxen, aus."""
         return InfoManager(boxen=[lern_info.erzeuge_infos(uhrzeit) for lern_info in self.boxen])
 
+    def update_infos_fuer_karte(self, alte_karte: Vokabelkarte, neue_karte: Vokabelkarte, uhrzeit: int) -> InfoManager:
+        veraenderte_boxen = self.suche_karte(alte_karte)
+        return InfoManager(
+            boxen=[box if box not in veraenderte_boxen else box.ersetze_karte(alte_karte, neue_karte, uhrzeit)
+                   for box
+                   in self.boxen])
+
     def suche_karte(self, karte: Vokabelkarte) -> list[Lerninfos]:
         """Suche alle Vokabelboxen der Liste, also Lerninfos, in denen die Vokabelkarte KARTE steckt."""
         return [lerninfo for lerninfo in self.boxen if karte in list(lerninfo.karten)]
