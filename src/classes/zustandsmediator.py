@@ -15,7 +15,11 @@ class ZustandsMediator:
                            'klassen',
                            {mediator.zustand: mediator
                             for mediator
-                            in [klasse for klasse in self.__class__.__subclasses__()]})
+                            in [subklassen
+                                for klasse
+                                in self.__class__.__subclasses__()
+                                for subklassen
+                                in [klasse] + klasse.__subclasses__()]})
 
     def zustand_to_flaskview_data(self, zustand: Zustand, zeit_in_ms: int = 0) -> dict:
         """Erstelle das data-Dictionary fuer Flaskview"""
@@ -157,3 +161,21 @@ class ZustandsMediatorZustandVokabelTesten(ZustandsMediator):
                     f"Antwort: {zustand.aktuelle_frageeinheit().antwort(zustand.output_liste[0].lerneinheit)}")
         return (f"Frage: Fertig\n" +
                 f"Antwort: Fertig")
+
+
+@dataclass(frozen=True)
+class ZustandsMediatorZustandVokabelPruefen(ZustandsMediatorZustandVokabelTesten):
+    # TODO Testen
+    zustand: str = 'ZustandVokabelPruefen'
+
+
+@dataclass(frozen=True)
+class ZustandsMediatorZustandVokabelLernen(ZustandsMediatorZustandVokabelTesten):
+    # TODO Testen
+    zustand: str = 'ZustandVokabelLernen'
+
+
+@dataclass(frozen=True)
+class ZustandsMediatorZustandVokabelNeue(ZustandsMediatorZustandVokabelTesten):
+    # TODO Testen
+    zustand: str = 'ZustandVokabelNeue'

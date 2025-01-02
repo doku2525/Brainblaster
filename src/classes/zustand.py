@@ -250,6 +250,27 @@ class ZustandBoxinfo(Zustand):
     child: list[Zustand] = field(default_factory=list)
     kommandos: list[str] = field(default=("+", "-", "="))
 
+    def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:
+        """Veraendert die aktuelle Frageeinheit.
+        + -> Naechste Frageeinheit.
+        - -> Vorherige Frageeinheit.
+        = + String -> Frageeinheit mit Namen"""
+        if index_child == '':
+            return ZustandReturnValue(self, lambda: None, tuple())
+        # Bei Veranderungen rufe die Funktion update_modell_aktueller_index() mit dem neuen Index im Controller auf.
+        if index_child[0] in ['+', '-']:
+            index_aktuelle_frage = list(self.info.keys()).index(self.aktuelle_frageeinheit)
+            neuer_index = (index_aktuelle_frage + int(index_child)) % len(self.info)
+            neue_frageeinheit = list(self.info.keys())[neuer_index]
+            return ZustandReturnValue(replace(self, aktuelle_frageeinheit=neue_frageeinheit),
+                                      cast(Callable, 'update_modell_aktuelle_frageeinheit'),
+                                      (neue_frageeinheit,))
+        if "=" == index_child[0]:
+            return ZustandReturnValue(replace(self, aktuelle_frageeinheit=index_child[1:]),
+                                      cast(Callable, 'update_modell_aktuelle_frageeinheit'),
+                                      (index_child[1:],))
+        return super().verarbeite_userinput(index_child)
+
 
 @dataclass(frozen=True)
 class ZustandVokabelTesten(Zustand):
@@ -319,3 +340,24 @@ class ZustandVokabelTesten(Zustand):
             return neuer_zustand()
 
         return super().verarbeite_userinput(index_child)
+
+
+@dataclass(frozen=True)
+class ZustandVokabelPruefen(ZustandVokabelTesten):
+    # TODO Tests
+    titel: str = field(default='Zustand Pruefen')
+    beschreibung: str = field(default='Zustand Pruefen, fuehrt die Pruefen-Tests aus und verarbeitet Antworten')
+
+
+@dataclass(frozen=True)
+class ZustandVokabelLernen(ZustandVokabelTesten):
+    # TODO Tests
+    titel: str = field(default='Zustand Lernen')
+    beschreibung: str = field(default='Zustand Lernen, fuehrt die Lernen-Tests aus und verarbeitet Antworten')
+
+
+@dataclass(frozen=True)
+class ZustandVokabelNeue(ZustandVokabelTesten):
+    # TODO Tests
+    titel: str = field(default='Zustand Neue')
+    beschreibung: str = field(default='Zustand Neue, fuehrt die Neue-Tests aus und verarbeitet Antworten')

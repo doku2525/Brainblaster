@@ -12,7 +12,12 @@ class test_ZustandsMediator(TestCase):
     def test_init(self):
         obj = ZustandsMediator()
         [self.assertEqual('Zustand', key[:7]) for key, _ in obj.klassen.items()]
-        [self.assertIn(value, ZustandsMediator.__subclasses__()) for _, value in obj.klassen.items()]
+        [self.assertIn(value, [subklasse
+                               for klasse
+                               in ZustandsMediator.__subclasses__()
+                               for subklasse in [klasse] + klasse.__subclasses__()])
+         for _, value
+         in obj.klassen.items()]
 
     def test_zustand_console_view_zustandende(self):
         from src.classes.zustand import ZustandENDE

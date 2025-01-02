@@ -80,7 +80,8 @@ class FlaskView:
 
         @self.app.route('/boxinfo')
         def boxinfo():
-            self.setze_cmd_warte_auf_update('c@ZustandBoxinfo', self.warte_zeit)
+            self.setze_cmd_warte_auf_update('c@ZustandBoxinfo', self.warte_zeit+1)
+            print(f" { self.data = }")
             return render_template('boxinfo.html',
                                    aktuelle_uhrzeit=self.data['aktuelle_uhrzeit'][:-7],
                                    info=self.data['info'],
@@ -88,8 +89,55 @@ class FlaskView:
                                    box_titel=self.data['box_titel']
                                    )
 
+        @self.app.route('/karten_testen')
+        def karten_testen():
+            """Fuer die Zustaende pruefen, lernen und neue wird das gleiche Template benutzt.
+            Die Routen fuer pruefen, lernen und neue setzen nur den Zustand und leiten dann zu dieser Route weiter."""
+            command = request.args.get('zurueck', False)
+            if command:
+                self.setze_cmd_warte_auf_update('c0', self.warte_zeit)
+                return redirect(url_for('boxinfo'))
+
+            self.setze_cmd_warte_auf_update(f"c@{self.data['zustand']}", self.warte_zeit)
+            return render_template('karten_testen.html',
+                                   frage=self.data['frage'],
+                                   antwort=self.data['antwort'],
+                                   formatierung=self.data['formatierung'],
+                                   zustand=self.data['zustand'])
+
+        @self.app.route('/karten_pruefen')
+        def karten_pruefen():
+            """Fange das Kommando zum Aendern der Frageeinheit ab, setze dann den Zustand auf Pruefen und leite weiter
+            zur Route /karten_testen"""
+            command = request.args.get('fe', False)
+            if command:
+                self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"c@ZustandVokabelPruefen", self.warte_zeit)
+            return redirect(url_for('karten_testen'))
+
+        @self.app.route('/karten_lernen')
+        def karten_lernen():
+            """Fange das Kommando zum Aendern der Frageeinheit ab, setze dann den Zustand auf Lernen und leite weiter
+            zur Route /karten_testen"""
+            command = request.args.get('fe', False)
+            if command:
+                self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"c@ZustandVokabelLernen", self.warte_zeit)
+            return redirect(url_for('karten_testen'))
+
+        @self.app.route('/karten_neue')
+        def karten_neue():
+            """Fange das Kommando zum Aendern der Frageeinheit ab, setze dann den Zustand auf Neue und leite weiter
+            zur Route /karten_testen"""
+            command = request.args.get('fe', False)
+            if command:
+                self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"c@ZustandVokabelNeue", self.warte_zeit)
+            return redirect(url_for('karten_testen'))
+
         @self.app.route('/kommando/<cmd>')
         def antwort(cmd):
+            """Fuehrt ein Kommando aus und leitet dann wieder weiter zu der aufrufenden Route"""
             self.setze_cmd_warte_auf_update(cmd, self.warte_zeit)
             return redirect(url_for(request_to_route(request.referrer)))
 
