@@ -38,7 +38,7 @@
         <table>
             <tr>
                 {% for frage_einheit in info: %}
-                    {% set urlboxindex = "vokabelbox?frageeinheit=" + box_titel %}
+                    {% set urlboxindex = "/kommando/c=" + frage_einheit %}
                     {% if frage_einheit == aktuelle_frageeinheit %}
                         <th><h3> {{ frage_einheit }} </h3></th>
                     {% else %}
@@ -50,7 +50,11 @@
                 {% for frage_einheit in info: %}
                 <td>
                     <dl>
-                        {% set abfrageurl = "testfrage?command=PRUEFEN&frage_einheit=" + "name" %}
+                        {% if frage_einheit == aktuelle_frageeinheit %}
+                            {% set abfrageurl = "/karten_pruefen"%}
+                        {% else %}
+                            {% set abfrageurl = "/karten_pruefen?fe=" + frage_einheit %}
+                        {% endif %}
                         {% set data_pruefen = info[frage_einheit]['pruefen'] %}
                         {% set data_lernen = info[frage_einheit]['lernen'] %}
                         {% set data_neu = info[frage_einheit]['neu'] %}
@@ -60,7 +64,11 @@
                         <dt><b class="abfragelinks"><a href={{abfrageurl}}>Pruefen:</a></b></dt>
                         {% endif %}
                         <dd>{{ data_pruefen['aktuell'] }} von {{ data_pruefen['insgesamt'] }} </dd>
-                        {% set abfrageurl = "testfrage?command=LERNEN&frage_einheit=" + "name" %}
+                        {% if frage_einheit == aktuelle_frageeinheit %}
+                            {% set abfrageurl = "/karten_lernen"%}
+                        {% else %}
+                            {% set abfrageurl = "/karten_lernen?fe=" + frage_einheit %}
+                        {% endif %}
                         {% if data_lernen['aktuell'] > 0 %}
                         <dt><b class="abfragelinks"><a style="background-color: red;" href={{abfrageurl}}>Lernen:</a></b> </dt>
                         {% else %}
@@ -75,7 +83,11 @@
                         {% set abfrageurlhtml = "vokabeln?zeige=LERNENLISTE&frageeinheit=" + "name" %}
                         {% set abfrageurlpdf = "vokabeln?zeige=LERNENLISTE&pdf=true&frageeinheit=" + "name" %}
                         <dd><a href={{abfrageurlhtml}}>- HTML -</a> oder <a href={{abfrageurlpdf}}>- PDF -</a></dd>
-                        {% set abfrageurl = "testfrage?command=NEU&frageeinheit=" + "name" %}
+                        {% if frage_einheit == aktuelle_frageeinheit %}
+                            {% set abfrageurl = "/karten_neue"%}
+                        {% else %}
+                            {% set abfrageurl = "/karten_neue?fe=" + frage_einheit %}
+                        {% endif %}
                         {% if data_neu['aktuell'] > 0 %}
                         <dt><b class="abfragelinks"><a style="background-color: lightgreen;" href={{abfrageurl}}>Neu:</a></b></dt>
                         {% else %}
