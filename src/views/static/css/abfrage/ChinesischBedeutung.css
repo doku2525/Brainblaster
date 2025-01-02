@@ -1,0 +1,19 @@
+.fragefeld {
+    display: table;
+    padding: 10px;
+    font-size: 240px;
+    font-family: "chinesebook";
+}
+.handschrift {
+    display: table;
+    padding: 10px;
+    font-size: 60px;
+    font-family: "chinesepen";
+}
+.antwort{
+    color: orange;
+    background-color: blue;
+    font-size: 32px;
+    width: 80%;
+    padding:0.25em;
+}

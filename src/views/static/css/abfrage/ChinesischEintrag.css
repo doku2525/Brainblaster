@@ -1,0 +1,18 @@
+.fragefeld {
+    display: table;
+    padding: 10px;
+    font-size: 44px;
+}
+.handschrift {
+    visibility: hidden;
+    display: table;
+    padding: 10px;
+    font-size: 60px;
+}
+.antwort{
+    color: orange;
+    background-color: blue;
+    font-size: 32px;
+    width: 80%;
+    padding:0.25em;
+}

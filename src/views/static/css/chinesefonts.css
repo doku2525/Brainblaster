@@ -1,0 +1,8 @@
+@font-face {
+    font-family: "chinesebook";
+    src: url(/static/fonts/KaiTi.ttf);
+}
+@font-face {
+    font-family: "chinesepen";
+    src: url(/static/fonts/chinesepen.ttf);
+}

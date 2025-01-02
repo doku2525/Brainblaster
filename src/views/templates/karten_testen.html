@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Abfragemodus {{ zustand[14:] }}</title>
+        <link rel="stylesheet" href="/static/css/chinesefonts.css">
+        <link rel="stylesheet" href="/static/css/abfrage/{{formatierung}}.css">
+        <style>
+            .bildschirm{
+                display: inline-block;
+                height: 100%;
+                width: 100%;
+                padding: 0.5vw 1vw;
+            }
+            .bewertungsfeld{
+            }
+            .buttonfeld{
+                            padding: 5px;
+            }
+            .knopf{
+                width: 100px;
+                height: 70px;
+                text-align: center;
+                background-color: yellow;
+                font-size: 48px;
+            }
+            a {
+                text-decoration: none;
+                color: black;
+            }
+           .zurueck{
+                text-align: right;
+                background-color: green;
+                width: 20%;
+                padding:0.25em;
+                font-size: 24px;
+            }
+        </style>
+    </head>
+    <body>
+        <table class="bildschirm">
+            {% if formatierung != "Fertig" %}
+            <tr><td colspan="100%" style="text-align:right">{{ formatierung }}  ({{ zustand[14:] }})</td></tr>
+            {% endif %}
+            <tr>
+                <td class="fragefeld"  colspan="100%" style="width:100%">{{ frage }}</td>
+            </tr>
+            <tr>
+                <td class="bewertungsfeld">
+                    <table>
+                        {% if zustand == 'ZustandVokabelLernen' %}
+                        <tr>
+                            <td class="buttonfeld"><a href="/kommando/ca1"><div class="knopf" style="background-color:darkred">  </div></a></td>
+                            <td class="buttonfeld"><a href="/kommando/ca2"><div class="knopf" style="background-color:darkred"> 0 </div></a></td>
+                            <td class="buttonfeld"><a href="/kommando/ca3"><div class="knopf" style="background-color:darkred">  </div></a></td>
+                        </tr>
+                        <tr>
+                            <td class="buttonfeld"><a href="/kommando/ca4"><div class="knopf" style="background-color:green">  </div></a></td>
+                            <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:green"> 7 </div></a></td>
+                            <td class="buttonfeld"><a href="/kommando/ca6"><div class="knopf" style="background-color:green">  </div></a></td>
+
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td class="buttonfeld"><a href="/kommando/ca1"><div class="knopf" style="background-color:darkred"> 1 </div></a></td>
+                            <td class="buttonfeld"><a href="/kommando/ca2"><div class="knopf" style="background-color:orangered"> 2 </div></a></td>
+                            <td class="buttonfeld"><a href="/kommando/ca3"><div class="knopf" style="background-color:orange"> 3 </div></a></td>
+                        </tr>
+                        <tr>
+                            <td class="buttonfeld"><a href="/kommando/ca4"><div class="knopf" style="background-color:greenyellow"> 4 </div></a></td>
+                            <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:lime"> 5 </div></a></td>
+                            <td class="buttonfeld"><a href="/kommando/ca6"><div class="knopf" style="background-color:green"> 6 </div></a></td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </td>
+                {% if formatierung == "ChinesischSchreiben"%}
+                <td class="handschrift"  colspan="100%" style="width:100%">{{ antwort }}</td>
+                {% elif formatierung != "ChinesischEintrag"%}
+                <td class="handschrift"  colspan="100%" style="width:100%">{{ frage }}</td>
+                {% endif %}
+            </tr>
+            <tr style="width:100%">
+                <td class="antwort"><div id="antwort"> {{ antwort }} </div></td>
+                <td class="zurueck"><a href=/karten_testen?zurueck=1>Zurueck</a></td>
+            </tr>
+        </table>
+    </body>
+    <script>
+        const antwortElement = document.getElementById('antwort');
+        antwortElement.style.opacity = 0; // Initial unsichtbar machen
+
+        // Nach 3 Sekunden sichtbar machen
+        setTimeout(() => {
+            antwortElement.style.opacity = 1;
+            antwortElement.style.transition = 'opacity 2s ease-out';
+        }, 3000);
+    </script>
+
+</html>
