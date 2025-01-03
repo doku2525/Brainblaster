@@ -30,8 +30,8 @@
                 <th><h2>Karten:</h2></th>
                 <th><h2>{{ karten_gesamt }}</h2></th>
                 <th><ul>
-                    <li class="drucklinks"><a href="zeige_vokabelliste_komplett"> Zeige Liste </a></li>
-                    <li class="drucklinks"><a href="vokabeln?pdf=true"> Drucke Liste in PDF</a></li>
+                    <li class="drucklinks"><a href="/zeige_vokabelliste_komplett"> Zeige Liste </a></li>
+                    <li class="drucklinks"><a href="/zeige_vokabelliste_komplett?pdf=true"> Drucke Liste in PDF</a></li>
                 </ul></th>
             </tr>
         </table>
@@ -82,10 +82,10 @@
                         <dd>{{ data_lernen['aktuell'] }} von {{ data_lernen['insgesamt'] }} [{{'%0.2f' %  prozente|float }}%]</dd>
                         {% if frage_einheit == aktuelle_frageeinheit %}
                             {% set abfrageurlhtml = "/zeige_vokabelliste_lernen" %}
-                            {% set abfrageurlpdf = "vokabeln?zeige=LERNENLISTE&pdf=true&frageeinheit=" + "name" %}
+                            {% set abfrageurlpdf = "/zeige_vokabelliste_lernen&pdf=true" %}
                         {% else %}
                             {% set abfrageurlhtml = "/zeige_vokabelliste_lernen?fe=" + frage_einheit %}
-                            {% set abfrageurlpdf = "vokabeln?zeige=LERNENLISTE&pdf=true&frageeinheit=" + "name" %}
+                            {% set abfrageurlpdf = "/zeige_vokabelliste_lernen&pdf=true&fe=" + frage_einheit %}
                         {% endif %}
                         <dd><a href={{abfrageurlhtml}}>- HTML -</a> oder <a href={{abfrageurlpdf}}>- PDF -</a></dd>
                         {% if frage_einheit == aktuelle_frageeinheit %}
@@ -101,10 +101,10 @@
                         <dd>{{ data_neu['aktuell'] }} von {{ data_neu['insgesamt'] }}</dd>
                         {% if frage_einheit == aktuelle_frageeinheit %}
                             {% set abfrageurlhtml = "/zeige_vokabelliste_neue" %}
-                            {% set abfrageurlpdf = "vokabeln?zeige=NEULISTE&pdf=true&frageeinheit=" + "name" %}
+                            {% set abfrageurlpdf = "/zeige_vokabelliste_neue&pdf=true" %}
                         {% else %}
                             {% set abfrageurlhtml = "/zeige_vokabelliste_neue?fe=" + frage_einheit %}
-                            {% set abfrageurlpdf = "vokabeln?zeige=NEULISTE&pdf=true&frageeinheit=" + "name" %}
+                            {% set abfrageurlpdf = "/zeige_vokabelliste_neue&pdf=true&fe=" + frage_einheit %}
                         {% endif %}
                         <dd><a href={{abfrageurlhtml}}>- HTML -</a> oder <a href={{abfrageurlpdf}}>- PDF -</a></dd>
 
