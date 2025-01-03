@@ -51,6 +51,11 @@ state "Vokabeln Testen => ZustandTesteVokabeln" as ZustandTesteVokabeln {
 
 ZustandZeigeVokabelliste : TODO
 state "Zeige Vokabelliste" as ZustandZeigeVokabelliste {
+    ZustandZeigeVokabelliste : Zeige die ausgweaehlte Vokabelliste mit verschiedenen Daten
+    ZustandZeigeVokabelliste : Stats fuer jede Frageeinheit: ef, letzten 5, letzte Abfrage, naechste Abfrage
+    ZeigeGesamteListe: Alle Karten der Box
+    ZeigeLernListe: Alle Karten, die gelernt werden musssen
+    ZeigeNeueListe: Liste der neuen Karten
 }
 ZustandZeigeVokabelliste --> ZustandEditorLerneinheit
 
@@ -69,4 +74,5 @@ state "Veraender Lernuhr" as ZustandVeraenderLernuhr {
 }
 ZustandVeraenderLernuhr --> ZustandSTART: zurueck ohne Speichern
 ZustandVeraenderLernuhr --> AktualisiereInfoManager: Veraenderungen speichern
+
 @enduml

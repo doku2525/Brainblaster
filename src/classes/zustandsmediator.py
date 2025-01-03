@@ -179,3 +179,37 @@ class ZustandsMediatorZustandVokabelLernen(ZustandsMediatorZustandVokabelTesten)
 class ZustandsMediatorZustandVokabelNeue(ZustandsMediatorZustandVokabelTesten):
     # TODO Testen
     zustand: str = 'ZustandVokabelNeue'
+
+
+@dataclass(frozen=True)
+class ZustandsMediatorZustandZeigeVokabelliste(ZustandsMediator):
+    zustand: str = 'ZustandZeigeVokabelliste'
+
+    def zustand_to_flaskview_data(self, zustand: Zustand, zeit_in_ms: int = 0) -> dict:
+        """Liefer die speziellen Daten fuer Flaskview"""
+        return {'liste': [(element.lerneinheit, element.statistiken) for element in zustand.liste],
+                'frageeinheit_titel': zustand.frageeinheit_titel,
+                'modus': zustand.modus,
+                'box_titel': zustand.vokabelbox_titel} if zustand.liste else {}
+
+    def prepare_consoleview_daten_string(self, zustand: Zustand, zeit_in_ms: int = 0) -> str:
+        """Wird in der Elternklasse zum bauen des data-Dicitonarys verwendet"""
+        return f"Aktuelle Box: {zustand.vokabelbox_titel}\n"
+#        return (f"Aktuelle Box: {zustand.vokabelbox_titel}\n" +
+#                ''.join([f"{'--'*10}\n{element.lerneinheit}\n {element.statistiken}\n" for element in zustand.liste]) +
+#                f"Aktuelle Frageeinheit: {zustand.aktuelle_frageeinheit}")
+
+
+@dataclass(frozen=True)
+class ZustandsMediatorZustandZeigeVokabellisteKomplett(ZustandsMediatorZustandZeigeVokabelliste):
+    zustand: str = 'ZustandZeigeVokabellisteKomplett'
+
+
+@dataclass(frozen=True)
+class ZustandsMediatorZustandZeigeVokabellisteLernen(ZustandsMediatorZustandZeigeVokabelliste):
+    zustand: str = 'ZustandZeigeVokabellisteLernen'
+
+
+@dataclass(frozen=True)
+class ZustandsMediatorZustandZeigeVokabellisteNeue(ZustandsMediatorZustandZeigeVokabelliste):
+    zustand: str = 'ZustandZeigeVokabellisteNeue'

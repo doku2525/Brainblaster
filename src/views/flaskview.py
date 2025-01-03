@@ -81,7 +81,6 @@ class FlaskView:
         @self.app.route('/boxinfo')
         def boxinfo():
             self.setze_cmd_warte_auf_update('c@ZustandBoxinfo', self.warte_zeit+1)
-            print(f" { self.data = }")
             return render_template('boxinfo.html',
                                    aktuelle_uhrzeit=self.data['aktuelle_uhrzeit'][:-7],
                                    info=self.data['info'],
@@ -125,6 +124,45 @@ class FlaskView:
             self.setze_cmd_warte_auf_update(f"c@ZustandVokabelLernen", self.warte_zeit)
             return redirect(url_for('karten_testen'))
 
+        @self.app.route('/zeige_vokabelliste')
+        def zeige_vokabelliste():
+            """Bei pdf-Option wird return render_pdf(HTML(string=html)) aufgerufen."""
+            command = request.args.get('zurueck', False)
+            if command:
+                self.setze_cmd_warte_auf_update('c0', self.warte_zeit)
+                return redirect(url_for('boxinfo'))
+
+            self.setze_cmd_warte_auf_update(f"c@ZustandZeigeVokabelliste", self.warte_zeit)
+            html = render_template('zeigevokabelliste.html',
+                                   titel=self.data['box_titel'],
+                                   untertitel=f"{self.data.get('modus','')}:{self.data.get('frageeinheit_titel','')}",
+                                   karten=self.data['liste'])  # karten=[karte.lerneinheit for karte in kartenListe])
+            return html
+
+        @self.app.route('/zeige_vokabelliste_komplett')
+        def zeige_vokabelliste_komplett():
+            command = request.args.get('fe', False)
+            if command:
+                self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"c@ZustandZeigeVokabellisteKomplett", self.warte_zeit)
+            return redirect(url_for('zeige_vokabelliste'))
+
+        @self.app.route('/zeige_vokabelliste_lernen')
+        def zeige_vokabelliste_lernen():
+            command = request.args.get('fe', False)
+            if command:
+                self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"c@ZustandZeigeVokabellisteLernen", self.warte_zeit)
+            return redirect(url_for('zeige_vokabelliste'))
+
+        @self.app.route('/zeige_vokabelliste_neue')
+        def zeige_vokabelliste_neue():
+            command = request.args.get('fe', False)
+            if command:
+                self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"c@ZustandZeigeVokabellisteNeue", self.warte_zeit)
+            return redirect(url_for('zeige_vokabelliste'))
+
         @self.app.route('/karten_neue')
         def karten_neue():
             """Fange das Kommando zum Aendern der Frageeinheit ab, setze dann den Zustand auf Neue und leite weiter
@@ -144,14 +182,11 @@ class FlaskView:
         @self.app.route('/get_aktuelle_uhrzeit')
         def get_aktuelle_uhrzeit():
             """Route fuer index"""
-#            print(f"{self.data = } {self.data['aktuelle_uhrzeit'][:-7] = }")  # TODO Loesche DEBUG print
-            # TODO Hier tritt manchmal der Fehler mit KeyError: 'aktuelle_uhrzeit' auf.
             return jsonify(self.data['aktuelle_uhrzeit'][:-7])
 
         @self.app.route('/get_aktuelle_und_neue_uhrzeit')
         def get_aktuelle_und_neue_uhrzeit():
             """Route fuer editor_lernuhr"""
-#            print(f" {self.data['aktuelle_uhrzeit']} ")  # TODO Loesche DEBUG print
             return jsonify({'aktuelle_uhrzeit': self.data['aktuelle_uhrzeit'][:-7],
                             'neue_uhrzeit': self.data['neue_uhrzeit'][:-7],
                             'neue_uhr': self.data['neue_uhr']})

@@ -1,0 +1,93 @@
+<html>
+    <head>
+        <title>{{ lektion }}</title>
+        <link rel="stylesheet" href="/static/css/chinesefonts.css">
+        <style>
+            @page {
+                 size: A3;
+            }
+            a {
+                color: black;
+                text-decoration: none;
+            }
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            th {
+                text-align: center;
+                padding: 10px;
+            }
+            .sc, .tc{
+                font-size: 48px;
+                font-family: "chinesebook";
+                padding: 0.3em;
+                width: 4em;
+            }
+            .tc{
+                font-family: "chinesebook";
+            }
+            .pinyin{
+                font-size: 24px;
+                color: orange;
+                padding: 0.5em;
+                width: 10em;
+            }
+            .beschreibung{
+                font-size: 14px;
+                width: 15em;
+                padding:0.5em;
+            }
+            .stats{
+                border: 0px solid black;
+                font-size: 12px;
+                padding: 5px;
+            }
+        </style>
+    </head>
+    <body>
+    <a href="zeige_vokabelliste?zurueck=1"><h1>{{ titel }}</h1></a>
+        <h2>{{ untertitel }}</h2>
+
+        <table>
+            <tr>
+                <th> <h2> SC </h2> </th>
+                <th> <h2> TC </h2> </th>
+                <th> <h2> Pinyin </h2> </th>
+                <th> <h2> Bedeutung </h2> </th>
+            </tr>
+                {% for karte in karten: %}
+                <tr>
+                    {% set kanjiurl = "draw/0?kanji=" + karte[0][0] %}
+                    <td class="sc"> <a href="{{kanjiurl}}"> {{ karte[0][0] }} </a> </td>
+                    <td class="tc"> {{ karte[0][1] }} </td>
+                    <td class="pinyin"> {{ karte[0][2] }} </td>
+                    <td class="beschreibung"> {{ karte[0][3] }} </td>
+
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <table class="stats">
+                            <tr>
+                                <th class="stats"></th>
+                                <th class="stats">ef</th>
+                                <th class="stats">Serie</th>
+                                <th class="stats">Letzte</th>
+                                <th class="stats">naechste</th>
+                            </tr>
+                            {% for name, stats in karte[1].items() %}
+                            <tr>
+                                <td class="stats"> {{ name }} </td>
+                                <td class="stats">{{stats['ef']}}</td>
+                                <td class="stats">{{stats['folge']}}</td>
+                                <td class="stats">{{stats['last']}}</td>
+                                <td class="stats">{{stats['next']}}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </td>
+                </tr>
+	            {% endfor %}
+	    </table>
+    </body>
+</html>

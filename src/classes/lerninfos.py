@@ -81,7 +81,7 @@ class Lerninfos:
         return replace(self, infos=info_dict)
 
     def ersetze_karte(self, alte_karte: Vokabelkarte, neue_karte: Vokabelkarte, uhrzeit: int):
-        neue_lerninfo = replace(self, karten = [karte if karte != alte_karte else neue_karte
+        neue_lerninfo = replace(self, karten=[karte if karte != alte_karte else neue_karte
                                                 for karte in self.karten])
         return neue_lerninfo.erzeuge_infos(uhrzeit)
 

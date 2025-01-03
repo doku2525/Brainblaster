@@ -10,7 +10,9 @@ from src.classes.filterlistenfactory import FilterlistenFactory
 from src.classes.lernuhr import Lernuhr
 from src.classes.zustand import (Zustand, ZustandStart, ZustandENDE,
                                  ZustandBoxinfo, ZustandVeraenderLernuhr, ZustandReturnValue, ZustandVokabelTesten,
-                                 ZustandVokabelPruefen, ZustandVokabelLernen, ZustandVokabelNeue)
+                                 ZustandVokabelPruefen, ZustandVokabelLernen, ZustandVokabelNeue,
+                                 ZustandZeigeVokabelliste, ZustandZeigeVokabellisteKomplett,
+                                 ZustandZeigeVokabellisteLernen, ZustandZeigeVokabellisteNeue)
 from src.classes.infomanager import InfoManager
 
 if TYPE_CHECKING:
@@ -49,6 +51,7 @@ class VokabeltrainerController:
     #   f() -> dict. So dass dann cmd(**args()) aufgerufen wird, wenn aktueller_zustand None ist
 
     """Fuer jeden neuen Zustand muess:
+        0. eine neue ZustandsKlasse in zustand.py definiert werden
         1. eine buildZutandXXX-Funktion definiert werden.
         2. die buildZustandXXX-Funktion in update_zustand registriert werden.
         3. ein Zustandsmediator-Klasse definiert werden.
@@ -64,8 +67,6 @@ class VokabeltrainerController:
                                              ZustandENDE())})
 
     def buildZustandBoxinfo(self, zustand: ZustandBoxinfo) -> ZustandBoxinfo:
-        print(f"{ self.modell.index_aktuelle_box = }")
-        print(f" { self.info_manager.boxen_als_number_dict() = }")
         return replace(zustand, **{'info': self.info_manager.boxen_als_number_dict()[self.modell.index_aktuelle_box],
                                    'aktuelle_frageeinheit': self.modell.aktuelle_box().aktuelle_frage.__name__,
                                    'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit()),
@@ -73,7 +74,13 @@ class VokabeltrainerController:
                                    'child': (self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),
                                              self.buildZustandVokabelPruefen(ZustandVokabelPruefen()),
                                              self.buildZustandVokabelLernen(ZustandVokabelLernen()),
-                                             self.buildZustandVokabelNeue(ZustandVokabelNeue()))})
+                                             self.buildZustandVokabelNeue(ZustandVokabelNeue()),
+                                             self.buildZustandZeigeVokabellisteKomplett(
+                                                 ZustandZeigeVokabellisteKomplett()),
+                                             self.buildZustandZeigeVokabellisteLernen(
+                                                 ZustandZeigeVokabellisteLernen()),
+                                             self.buildZustandZeigeVokabellisteNeue(
+                                                 ZustandZeigeVokabellisteNeue()))})
 
     def buildZustandVokabelTesten(self, zustand: ZustandVokabelTesten, filter_liste: list) -> ZustandVokabelTesten:
         """Basefunktion, die den Zustand zurueckgeliefert.
@@ -110,6 +117,40 @@ class VokabeltrainerController:
                                        'neue_uhr': self.uhr})
         return replace(zustand, neue_uhr=self.uhr)
 
+    def buildZustandZeigeVokabelliste(self, zustand: ZustandZeigeVokabelliste,
+                                      modus: str, liste: list) -> ZustandZeigeVokabelliste:
+        return replace(zustand,
+                       **{
+                           'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit()),
+                           'frageeinheit_titel': self.modell.aktuelle_box().aktuelle_frage().titel(),
+                           'vokabelbox_titel': self.modell.aktuelle_box().titel,
+                           'modus': modus,
+                           'liste': liste
+                       })
+
+    def buildZustandZeigeVokabellisteKomplett(
+            self, zustand: ZustandZeigeVokabellisteKomplett) -> ZustandZeigeVokabellisteKomplett:
+        liste = ZustandZeigeVokabelliste.erzeuge_aus_vokabelliste(
+            self.info_manager.boxen[self.modell.index_aktuelle_box].karten).liste
+        return cast(ZustandZeigeVokabellisteKomplett,
+                    self.buildZustandZeigeVokabelliste(zustand, zustand.modus, liste))
+
+    def buildZustandZeigeVokabellisteLernen(
+            self, zustand: ZustandZeigeVokabellisteLernen) -> ZustandZeigeVokabellisteLernen:
+        karten = (self.info_manager.boxen[self.modell.index_aktuelle_box].
+                  infos[self.modell.aktuelle_box().aktuelle_frage].lernen.insgesamt)
+        liste = ZustandZeigeVokabelliste.erzeuge_aus_vokabelliste(karten).liste
+        return cast(ZustandZeigeVokabellisteLernen,
+                    self.buildZustandZeigeVokabelliste(zustand, zustand.modus, liste))
+
+    def buildZustandZeigeVokabellisteNeue(
+            self, zustand: ZustandZeigeVokabellisteNeue) -> ZustandZeigeVokabellisteNeue:
+        karten = (self.info_manager.boxen[self.modell.index_aktuelle_box].
+                  infos[self.modell.aktuelle_box().aktuelle_frage].neu.aktuell)
+        liste = ZustandZeigeVokabelliste.erzeuge_aus_vokabelliste(karten).liste
+        return cast(ZustandZeigeVokabellisteNeue,
+                    self.buildZustandZeigeVokabelliste(zustand, zustand.modus, liste))
+
     # Definiere Systemkommandos, die von den Zustaenden aufgerufen werden koennen.
     #  Jede Funktion muss im command-Dictionary der Funktion execute_kommando() registriert werden
     def update_uhr(self, neue_uhr: Lernuhr) -> None:
@@ -133,8 +174,6 @@ class VokabeltrainerController:
                    if isinstance(alter_zustand, ZustandVokabelTesten) else alter_zustand
                    for alter_zustand
                    in self.aktueller_zustand.child])
-        for c in self.aktueller_zustand.child:
-            print(f"Childs: { type(c) = } { c = }")
 
     def update_vokabelkarte_statistik(self, karte: tuple[Vokabelkarte, Callable[[int], Vokabelkarte]]) -> None:
         """Ruft die Funktion zum Erstellen und Hinzufuegen der Antwort mit der aktuellen Zeit auf und ersetzt dann
@@ -177,7 +216,10 @@ class VokabeltrainerController:
             ZustandBoxinfo: self.buildZustandBoxinfo,
             ZustandVokabelPruefen: self.buildZustandVokabelPruefen,
             ZustandVokabelLernen: self.buildZustandVokabelLernen,
-            ZustandVokabelNeue: self.buildZustandVokabelNeue
+            ZustandVokabelNeue: self.buildZustandVokabelNeue,
+            ZustandZeigeVokabellisteKomplett: self.buildZustandZeigeVokabellisteKomplett,
+            ZustandZeigeVokabellisteLernen: self.buildZustandZeigeVokabellisteLernen,
+            ZustandZeigeVokabellisteNeue: self.buildZustandZeigeVokabellisteNeue
         }
         func = service_liste.get(alter_zustand.__class__, lambda x: x)
         return func(alter_zustand)
