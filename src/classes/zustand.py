@@ -9,6 +9,7 @@ from typing import Any, Callable, NamedTuple, Protocol, Type, TYPE_CHECKING, cas
 from src.classes.lernuhr import Lernuhr, UhrStatus
 from src.classes.vokabelkarte import Vokabelkarte
 from src.classes.antwort import Antwort
+from src.classes.displaypattern import DisplayPatternVokabelkarte
 
 if TYPE_CHECKING:
     from src.classes.frageeinheit import Frageeinheit
@@ -361,3 +362,24 @@ class ZustandVokabelNeue(ZustandVokabelTesten):
     # TODO Tests
     titel: str = field(default='Zustand Neue')
     beschreibung: str = field(default='Zustand Neue, fuehrt die Neue-Tests aus und verarbeitet Antworten')
+
+
+@dataclass(frozen=True)
+class ZustandZeigeVokabellisten(Zustand):
+    """Zustand zum Anzeigen einer Uebersichtsliste mit den wichtigsten Daten aus Lerneinheit und
+        einer Zusammenfassung der Statistiken.
+        Sollte mit erzeuge_aus_vokabelliste erzeugt werden, zum Beispiel mit den Listen aus Lerninfo"""
+    titel: str = field(default='Zustand Zeige Vokablliste')
+    beschreibung: str = field(default='Zustand Zeige Vokabelliste, die wesentlichen Daten der Karten als Liste')
+    kommandos: list[str] = field(default=('e',))
+    liste: list[DisplayPatternVokabelkarte] = field(default_factory=list)  # Liste von InformationsTypen
+    modus: str = field(default_factory=str)
+    frageeinheit_titel: str = field(default_factory=str)
+    vokabelbox_titel: str = field(default_factory=str)
+
+    @classmethod
+    def erzeuge_aus_vokabelliste(cls, vokabelliste: list[Vokabelkarte]) -> cls:
+        return cls(liste=[DisplayPatternVokabelkarte.in_vokabel_liste(element) for element in vokabelliste])
+
+    def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:
+        return super().verarbeite_userinput(index_child)
