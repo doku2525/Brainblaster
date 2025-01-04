@@ -62,7 +62,7 @@ class FlaskView:
                     self.setze_cmd_warte_auf_update('c@ZustandStart', self.warte_zeit)
                 return redirect(url_for('index'))           # sorgt dafuer, dass args nicht in url angezeigt werden
             return render_template('index.html',
-                                   data=enumerate(self.data['liste']),
+                                   data=list(enumerate(self.data['liste'])),
                                    aktueller_index=self.data['aktueller_index'],
                                    aktuelle_uhrzeit=self.data['aktuelle_uhrzeit'][:-7])
 
@@ -81,6 +81,10 @@ class FlaskView:
 
         @self.app.route('/boxinfo')
         def boxinfo():
+            command = request.args.get('c', False)
+            if command:
+                self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
+                return redirect(url_for('boxinfo'))           # sorgt dafuer, dass args nicht in url angezeigt werden
             self.setze_cmd_warte_auf_update('c@ZustandBoxinfo', self.warte_zeit+1)
             return render_template('boxinfo.html',
                                    aktuelle_uhrzeit=self.data['aktuelle_uhrzeit'][:-7],

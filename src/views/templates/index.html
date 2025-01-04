@@ -10,43 +10,50 @@
                 padding: 5px;
             }
             .speichern {
-                padding: -10px;
-                margin-top: -10px;
+                padding: 10px;
+                margin-top: 10px;
+                color: black;
+                text-decoration: none;
+                font-size: 24px;
+                text-align: right;
+            }
+            .uhrzeit {
+                padding: 10px;
+                margin-top: 10px;
+                color: black;
+                text-decoration: none;
+                font-size: 28px;
+                text-align: left;
+            }
+            .aktuelle_box_zeile {
+                padding: 10px;
+                margin-top: 10px;
+                text-align: left;
+                color: black;
+                text-decoration: none;
+                font-size: 28px;
             }
         </style>
-        <script>
-            function fetchUhrzeit() {
-                fetch('/get_aktuelle_uhrzeit')
-                .then(response => response.json())
-                .then(data => {
-                    const uhrzeitElement = document.getElementById('aktuelle_uhrzeit');
-                    uhrzeitElement.textContent = data;
-                })
-                .catch(error => {
-                    console.error('Fehler beim Abrufen der Uhrzeit:', error);
-                });
-            }
-
-            // Daten alle 0.5 Sekunden abrufen
-            setInterval(fetchUhrzeit, 1000);
-        </script>
+        <script type="module" src="{{ url_for('static', filename='js/script_aktuelle_uhrzeit.js') }}"></script>
     </head>
     <body>
         <table>
             <tr>
-                <th><div class="menue" id="aktuelle_uhrzeit">{{aktuelle_uhrzeit}}</a></div></th>
-                <th><div class="menue" ><a href="/editor_lernuhr">bearbeite Lernuhr</a></div></th>
-                <th><div class="menue" ><a href="/boxinfo">zeige Boxinfo</a></div></th>
+                <th colspan="2" class="uhrzeit">
+                    <div>
+                        <a href="/editor_lernuhr" class="uhrzeit" id="aktuelle_uhrzeit">{{ aktuelle_uhrzeit }}</a>
+                    </div>
+                </th>
+                <th class="speichern"><a class="speichern" href="/kommando/cs"> Speicher</a></th>
             </tr>
             <tr >
-                <th class="menue"> <h2> <a href="testfrage?command=PRUEFEN"> Pruefe Vokabeln </a> </h2> </th>
-                <th class="menue"> <h2> <a href="testfrage?command=LERNEN"> Lerne Vokabeln </a> </h2> </th>
-                <th class="menue"> <h2> <a href="testfrage?command=NEU"> Teste neue Vokabeln</a> </h2></th>
-            </tr>
-            <tr class="speichern">
-                <th></th>
-                <th></th>
-                <th> <h2> <a href="index?command=speichern"> Speicher</a> </h2></th>
+                {% for index, box in data: %}
+                {% if index == aktueller_index %}
+                <th class="aktuelle_box_zeile"><a href="/kommando/c-1" class="aktuelle_box_zeile"> ← </a></th>
+                <th class="aktuelle_box_zeile"><a href="/boxinfo" class="aktuelle_box_zeile"> {{index}} : {{ box }} </a></th>
+                <th class="aktuelle_box_zeile"><a href="/kommando/c+1" class="aktuelle_box_zeile"> → </a></th>
+                {% endif %}
+	            {% endfor %}
             </tr>
         </table>
         <table>
@@ -59,16 +66,20 @@
                 {% for index, box in data: %}
                 {% set count = counter | string() %}
                 {% set urlboxindex = "/kommando/c=" + index | string() %}
-                {% set urlvokabelbox = "vokabelbox?l=" + index | string() %}
+                {% set urlvokabelbox = "/boxinfo?c=" + index | string() %}
                 {% if index == aktueller_index %}
                 <tr>
                     <td>●</td>
                     <td><b> {{ box }} </b></td>
+                    <td></td>
+                    <td><a href="/boxinfo">zeige Boxinfo</a></td>
                 </tr>
                 {% else %}
                 <tr>
                     <td></td>
                     <td><a href={{urlboxindex}}> {{ box }} </a></td>
+                    <td></td>
+                    <td><a href={{urlvokabelbox}}> wechsel und zeige Boxinfo</a></td>
                 </tr>
                 {% endif %}
 	            {% endfor %}
