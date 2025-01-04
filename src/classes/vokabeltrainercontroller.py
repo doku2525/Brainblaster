@@ -8,12 +8,14 @@ from typing import Callable, Type, cast, TYPE_CHECKING
 from src.classes.eventmanager import EventTyp
 from src.classes.filterlistenfactory import FilterlistenFactory
 from src.classes.lernuhr import Lernuhr
-from src.classes.zustand import (Zustand, ZustandStart, ZustandENDE,
-                                 ZustandBoxinfo, ZustandVeraenderLernuhr, ZustandReturnValue, ZustandVokabelTesten,
-                                 ZustandVokabelPruefen, ZustandVokabelLernen, ZustandVokabelNeue,
-                                 ZustandZeigeVokabelliste, ZustandZeigeVokabellisteKomplett,
-                                 ZustandZeigeVokabellisteLernen, ZustandZeigeVokabellisteNeue)
 from src.classes.infomanager import InfoManager
+from src.zustaende.zustand import ZustandReturnValue, Zustand, ZustandENDE, ZustandBoxinfo
+from src.zustaende.zustandstart import ZustandStart
+from src.zustaende.zustandveraenderlernuhr import ZustandVeraenderLernuhr
+from src.zustaende.zustandvokabeltesten import (ZustandVokabelTesten, ZustandVokabelPruefen, ZustandVokabelLernen,
+                                                ZustandVokabelNeue)
+from src.zustaende.zustandzeigevokabelliste import (ZustandZeigeVokabelliste, ZustandZeigeVokabellisteKomplett,
+                                                    ZustandZeigeVokabellisteLernen, ZustandZeigeVokabellisteNeue)
 
 if TYPE_CHECKING:
     from src.classes.eventmanager import EventManager

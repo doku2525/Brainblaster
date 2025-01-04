@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
 from src.classes.zustandsbeobachter import ObserverManager, Beobachter
-from src.classes.zustand import ZustandStart
+from src.zustaende.zustandstart import ZustandStart
 
 
 class MockView(Beobachter):
@@ -87,7 +87,7 @@ class TestObserverManager(TestCase):
 
     def test_views_updaten_zwei(self):
         from typing import cast
-        from src.classes.zustand import Zustand
+        from src.zustaende.zustand import Zustand
 
         objekt = self.observer_manager.registriere_mapping(self.mock_view,
                                                            MockView.konverter,

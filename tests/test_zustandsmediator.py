@@ -1,7 +1,7 @@
 from unittest import TestCase
 from dataclasses import replace
 
-from src.classes.zustandsmediator import ZustandsMediator
+from src.zustaende.zustandsmediator import ZustandsMediator
 
 
 class test_ZustandsMediator(TestCase):
@@ -20,7 +20,7 @@ class test_ZustandsMediator(TestCase):
          in obj.klassen.items()]
 
     def test_zustand_console_view_zustandende(self):
-        from src.classes.zustand import ZustandENDE
+        from src.zustaende.zustand import ZustandENDE
 
         obj = ZustandsMediator()
         result = obj.zustand_to_consoleview_data(ZustandENDE(aktuelle_zeit='test'), 0)
@@ -31,7 +31,7 @@ class test_ZustandsMediator(TestCase):
         self.assertEqual('Ciao! None', result['optionen'])
 
     def test_zustand_console_view_zustandstart(self):
-        from src.classes.zustand import ZustandStart
+        from src.zustaende.zustandstart import ZustandStart
 
         obj = ZustandsMediator()
         zustand_ohne_parrent = ZustandStart(liste=["1", "2", "3"], aktueller_index=0, aktuelle_zeit='test')
@@ -62,7 +62,8 @@ class test_ZustandsMediator(TestCase):
         self.assertEqual(expected_optionen_str, result['optionen'])
 
     def test_zustand_console_view_zustandveraenderlernuhr(self):
-        from src.classes.zustand import ZustandVeraenderLernuhr, ZustandStart
+        from src.zustaende.zustandstart import ZustandStart
+        from src.zustaende.zustandveraenderlernuhr import ZustandVeraenderLernuhr
         from src.classes.lernuhr import Lernuhr
 
         obj = ZustandsMediator()
@@ -126,7 +127,7 @@ class test_ZustandsMediator(TestCase):
         self.assertEqual(expected_optionen_str, result['optionen'])
 
     def test_zustand_flask_view_zustandende(self):
-        from src.classes.zustand import ZustandENDE
+        from src.zustaende.zustand import ZustandENDE
 
         obj = ZustandsMediator()
         result = obj.zustand_to_flaskview_data(ZustandENDE(aktuelle_zeit='test'), 0)
@@ -136,7 +137,7 @@ class test_ZustandsMediator(TestCase):
         self.assertEqual(2, len(result.keys()))
 
     def test_zustand_flask_view_zustandstart(self):
-        from src.classes.zustand import ZustandStart
+        from src.zustaende.zustandstart import ZustandStart
 
         obj = ZustandsMediator()
         ausgangs_liste = ["1", "2", "3"]
@@ -168,8 +169,8 @@ class test_ZustandsMediator(TestCase):
         self.assertEqual(ausgangs_index, result['aktueller_index'])
 
     def test_zustand_flask_view_zustandveraenderlernuhr(self):
-        from src.classes.zustand import ZustandVeraenderLernuhr
-        from src.classes.zustand import Lernuhr
+        from src.zustaende.zustandveraenderlernuhr import ZustandVeraenderLernuhr
+        from src.classes.lernuhr import Lernuhr
 
         obj = ZustandsMediator()
         zeit = '1970-01-01 01:01:01'
@@ -188,7 +189,7 @@ class test_ZustandsMediator(TestCase):
         self.assertEqual(expected_neue_uhr, result['neue_uhr'])
 
     def test_zustand_flask_view_boxinfo(self):
-        from src.classes.zustand import ZustandBoxinfo
+        from src.zustaende.zustand import ZustandBoxinfo
 
         obj = ZustandsMediator()
         zustand_ohne_parrent = ZustandBoxinfo(info={'a': {'b': {'c': '0'}}},
@@ -201,7 +202,8 @@ class test_ZustandsMediator(TestCase):
         self.assertEqual('Lektion 1', result['box_titel'])
 
     def test_zustand_console_view_boxinfo(self):
-        from src.classes.zustand import ZustandBoxinfo, ZustandStart
+        from src.zustaende.zustandstart import ZustandStart
+        from src.zustaende.zustand import ZustandBoxinfo
 
         obj = ZustandsMediator()
         zustand_ohne_parrent = ZustandBoxinfo(info={'a': {'b': {'c': '0'}}},
@@ -228,11 +230,11 @@ class test_ZustandsMediator(TestCase):
         self.assertEqual(expected_optionen_str, result['optionen'])
 
     def test_zustand_flask_view_vokabel_testen(self):
-        from src.classes.zustand import ZustandVokabelTesten
+        from src.zustaende.zustandvokabeltesten import ZustandVokabelTesten
         from src.classes.vokabelkarte import Vokabelkarte
         from src.classes.frageeinheit import FrageeinheitJapanischBedeutung
 
-        karten = Vokabelkarte.lieferBeispielKarten(10,"Japanisch")
+        karten = Vokabelkarte.lieferBeispielKarten(10, "Japanisch")
         obj = ZustandsMediator()
         zustand_ohne_parrent = ZustandVokabelTesten(input_liste=karten,
                                                     aktuelle_frageeinheit=FrageeinheitJapanischBedeutung)
@@ -243,11 +245,11 @@ class test_ZustandsMediator(TestCase):
         self.assertEqual('JapanischBedeutung', result['formatierung'])
 
     def test_zustand_flask_view_vokabel_testen_leere_input_liste(self):
-        from src.classes.zustand import ZustandVokabelTesten
+        from src.zustaende.zustandvokabeltesten import ZustandVokabelTesten
         from src.classes.vokabelkarte import Vokabelkarte
         from src.classes.frageeinheit import FrageeinheitJapanischBedeutung
 
-        karten = Vokabelkarte.lieferBeispielKarten(10,"Japanisch")
+        karten = Vokabelkarte.lieferBeispielKarten(10, "Japanisch")
         obj = ZustandsMediator()
         zustand_ohne_parrent = ZustandVokabelTesten(output_liste=karten,
                                                     aktuelle_frageeinheit=FrageeinheitJapanischBedeutung)
@@ -257,11 +259,11 @@ class test_ZustandsMediator(TestCase):
         self.assertEqual('日本語Besch1', result['antwort'])
 
     def test_zustand_console_vokabel_testen(self):
-        from src.classes.zustand import ZustandVokabelTesten
+        from src.zustaende.zustandvokabeltesten import ZustandVokabelTesten
         from src.classes.vokabelkarte import Vokabelkarte
         from src.classes.frageeinheit import FrageeinheitJapanischBedeutung
 
-        karten = Vokabelkarte.lieferBeispielKarten(10,"Japanisch")
+        karten = Vokabelkarte.lieferBeispielKarten(10, "Japanisch")
         obj = ZustandsMediator()
         zustand_ohne_parrent = ZustandVokabelTesten(input_liste=karten,
                                                     aktuelle_frageeinheit=FrageeinheitJapanischBedeutung)
@@ -274,11 +276,11 @@ class test_ZustandsMediator(TestCase):
         self.assertEqual(expected_optionen_str, result['optionen'])
 
     def test_zustand_console_vokabel_testen_leere_input_lise(self):
-        from src.classes.zustand import ZustandVokabelTesten
+        from src.zustaende.zustandvokabeltesten import ZustandVokabelTesten
         from src.classes.vokabelkarte import Vokabelkarte
         from src.classes.frageeinheit import FrageeinheitJapanischBedeutung
 
-        karten = Vokabelkarte.lieferBeispielKarten(10,"Japanisch")
+        karten = Vokabelkarte.lieferBeispielKarten(10, "Japanisch")
         obj = ZustandsMediator()
         zustand_ohne_parrent = ZustandVokabelTesten(output_liste=karten,
                                                     aktuelle_frageeinheit=FrageeinheitJapanischBedeutung)

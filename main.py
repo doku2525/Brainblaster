@@ -6,11 +6,11 @@ from src.classes.lernuhr import Lernuhr
 from src.classes.vokabeltrainercontroller import VokabeltrainerController
 from src.classes.vokabeltrainermodell import VokabeltrainerModell
 from src.classes.zustandsbeobachter import Beobachter, ObserverManager
-from src.classes.zustandsmediator import ZustandsMediator
 from src.repositories.vokabelkarten_repository import InMemoryVokabelkartenRepository, JSONDateiformatVokabelkarte
 from src.repositories.vokabelbox_repository import InMemeoryVokabelboxRepository, JSONDateiformatVokabelbox
 from src.views.consoleview import ConsoleView
 from src.views.flaskview import FlaskView
+from src.zustaende.zustandsmediator import ZustandsMediator
 import src.utils.utils_io as u_io
 
 

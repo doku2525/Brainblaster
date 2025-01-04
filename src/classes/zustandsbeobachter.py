@@ -3,7 +3,7 @@ from dataclasses import dataclass, field, replace
 from typing import Callable, Protocol, Type, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.classes.zustand import Zustand
+    from src.zustaende.zustand import Zustand
 
 
 class Beobachter(Protocol):

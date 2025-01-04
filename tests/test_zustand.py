@@ -3,8 +3,10 @@ from unittest.mock import patch, call, ANY
 from dataclasses import replace
 from typing import Callable, cast
 
-from src.classes.zustand import (Zustand, ZustandENDE, ZustandStart, ZustandVeraenderLernuhr, ZustandBoxinfo,
-                                 ZustandVokabelTesten)
+from src.zustaende.zustand import Zustand, ZustandENDE, ZustandBoxinfo
+from src.zustaende.zustandstart import ZustandStart
+from src.zustaende.zustandveraenderlernuhr import ZustandVeraenderLernuhr
+from src.zustaende.zustandvokabeltesten import ZustandVokabelTesten
 
 
 class test_Zustand(TestCase):

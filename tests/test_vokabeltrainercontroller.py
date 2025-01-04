@@ -27,7 +27,7 @@ class test_VokabeltrainerController(TestCase):
                                                    uhr=uhr, event_manager=EventManager())
 
     def test_update_vokabelkarte_statisitk(self):
-        from src.classes.zustand import ZustandVokabelTesten
+        from src.zustaende.zustandvokabeltesten import ZustandVokabelTesten
         from src.classes.frageeinheit import FrageeinheitChinesischBedeutung
 
         zustand = ZustandVokabelTesten(input_liste=self.controller.modell.vokabelkarten.vokabelkarten,

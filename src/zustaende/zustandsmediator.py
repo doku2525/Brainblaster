@@ -1,9 +1,9 @@
 from __future__ import annotations
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, field
 from typing import Type, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.classes.zustand import Zustand
+    from src.zustaende.zustand import Zustand
 
 
 @dataclass(frozen=True)
