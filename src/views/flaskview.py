@@ -195,7 +195,7 @@ class FlaskView:
         @self.app.route('/get_aktuelle_uhrzeit')
         def get_aktuelle_uhrzeit():
             """Route fuer index"""
-            return jsonify(self.data['aktuelle_uhrzeit'][:-7])
+            return jsonify(self.data['aktuelle_uhrzeit'][:-7] if self.data.get('aktuelle_uhrzeit', False) else '0')
 
         @self.app.route('/get_aktuelle_und_neue_uhrzeit')
         def get_aktuelle_und_neue_uhrzeit():
