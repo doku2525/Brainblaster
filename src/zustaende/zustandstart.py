@@ -12,7 +12,7 @@ class ZustandStart(Zustand):
     titel: str = 'Zustand 1'
     beschreibung: str = 'Zustand 1, der die aktuelle Box und den Namen der aktuellen Box anzeigt.'
     child: list[Zustand] = field(default=(ZustandENDE(),))
-    kommandos: list[str] = field(default=("+", "-", "="))
+    kommandos: list[str] = field(default=("+", "-", "=", "s"))
 
     def __post_init__(self):
         object.__setattr__(self, 'parent', None)    # Der StartZustand hat kein parent!!!
@@ -37,4 +37,6 @@ class ZustandStart(Zustand):
             return ZustandReturnValue(replace(self, aktueller_index=neuer_index),
                                       cast(Callable, 'update_modell_aktueller_index'),
                                       (neuer_index,))
+        if "s" == index_child[0]:
+            return ZustandReturnValue(self, cast(Callable, 'speicher_daten_in_dateien'), tuple())
         return super().verarbeite_userinput(index_child)

@@ -3,11 +3,14 @@ from abc import ABC, abstractmethod
 from dataclasses import replace
 import time
 from typing import Callable, cast, TYPE_CHECKING
+from threading import Thread
 
+from src.classes.configurator import config
 from src.classes.eventmanager import EventTyp
 from src.classes.lernuhr import Lernuhr
 from src.classes.infomanager import InfoManager
 from src.zustaende.zustandsfactory import ZustandsFactory
+import src.utils.utils_io as u_io
 
 if TYPE_CHECKING:
     from src.classes.eventmanager import EventManager
@@ -70,6 +73,24 @@ class VokabeltrainerController:
                                                                       neue_karte,
                                                                       self.uhr.now(Lernuhr.echte_zeit()))
 
+    def speicher_daten_in_dateien(self):
+        def speicher_prozess():
+            uhr_datei = f"{config.daten_pfad}{config.uhr_dateiname}"
+            config_datei = f"{config.daten_pfad}{config.config_dateiname}"
+            dateiliste = [self.modell.vokabelkarten.dateiname,
+                          self.modell.vokabelboxen.dateiname,
+                          uhr_datei,
+                          config_datei]
+            prozess = u_io.schreibe_backup(dateiliste, config.backup_pfad)
+            prozess.join()
+            self.modell.vokabelkarten.speichern()
+            self.modell.vokabelboxen.speichern()
+            config.speicher()
+            u_io.speicher_in_jsondatei(self.uhr.as_iso_dict(), uhr_datei)
+
+        speicher_thread = Thread(target=speicher_prozess)
+        speicher_thread.start()
+
     # Funktionen zum Ausfuehren und aktuallisieren des Systems
     def execute_kommando(self, kommando_string: str) -> Zustand:
         # TODO Scheibe funktion self.execute_kommando_interpreter(zustand, interpreter, cmd
@@ -77,7 +98,8 @@ class VokabeltrainerController:
         commands = {'update_uhr': self.update_uhr,
                     'update_modell_aktueller_index': self.update_modell_aktueller_index,
                     'update_vokabelkarte_statistik': self.update_vokabelkarte_statistik,
-                    'update_modell_aktuelle_frageeinheit': self.update_modell_aktuelle_frageeinheit}
+                    'update_modell_aktuelle_frageeinheit': self.update_modell_aktuelle_frageeinheit,
+                    'speicher_daten_in_dateien': self.speicher_daten_in_dateien}
 
         print(f"execute_kommando: {kommando_string = }")  # TODO Debug entfernen
         result: ZustandReturnValue = self.aktueller_zustand.verarbeite_userinput(kommando_string)

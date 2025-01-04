@@ -1,6 +1,7 @@
 import time
 from typing import Callable, cast
 
+from src.classes.configurator import config
 from src.classes.eventmanager import EventManager
 from src.classes.lernuhr import Lernuhr
 from src.classes.vokabeltrainercontroller import VokabeltrainerController
@@ -29,11 +30,11 @@ def factory_ViewObserver(view_liste: list[Beobachter]) -> ObserverManager:
 
 def main() -> None:
     modell = VokabeltrainerModell(
-        vokabelkarten=InMemoryVokabelkartenRepository(dateiname='daten/data/vokabelkarten.JSON', verzeichnis='',
-                                                      speicher_methode=JSONDateiformatVokabelkarte),
-        vokabelboxen=InMemeoryVokabelboxRepository(dateiname='daten/data/vokabelboxen.JSON',
+        vokabelkarten=InMemoryVokabelkartenRepository(dateiname=f"{config.daten_pfad}{config.vokabelkarten_dateiname}",
+                                                      verzeichnis='', speicher_methode=JSONDateiformatVokabelkarte),
+        vokabelboxen=InMemeoryVokabelboxRepository(dateiname=f"{config.daten_pfad}{config.vokabelboxen_dateiname}",
                                                    speicher_methode=JSONDateiformatVokabelbox))
-    uhr = Lernuhr.from_iso_dict(u_io.lese_aus_jsondatei("daten/data/uhrzeit.json"))
+    uhr = Lernuhr.from_iso_dict(u_io.lese_aus_jsondatei(f"{config.daten_pfad}{config.uhr_dateiname}"))
     event_manager = EventManager()
 
     flask_html_view = FlaskView(event_manager=event_manager)
