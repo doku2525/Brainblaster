@@ -777,7 +777,7 @@
             "a.lerneinheit.daten['IC3'] < 200",
             "('vokabeln',True) in a.lerneinheit.daten.items()"
         ],
-        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+        "aktuelle_frage": "FrageeinheitChinesischSchreiben"
     },
     {
         "titel": "Integrated Chinese alle Vokabeln Teil 2 201-220",

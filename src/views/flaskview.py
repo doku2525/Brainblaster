@@ -104,7 +104,7 @@ class FlaskView:
             command = request.args.get('zurueck', False)
             if command:
                 self.setze_cmd_warte_auf_update('c0', self.warte_zeit)
-                return redirect(url_for('boxinfo'))
+                return redirect(url_for('lade_neuen_zustand'))
 
             self.setze_cmd_warte_auf_update(f"c@{self.data['zustand']}", self.warte_zeit)
             return render_template('karten_testen.html',
@@ -116,8 +116,8 @@ class FlaskView:
         @self.app.route('/get_aktuelle_frage_und_antwort')
         def get_aktuelle_frage_und_antwort():
             """Route fuer index"""
-            return jsonify({'frage': self.data['frage'],
-                            'antwort': self.data['antwort']})
+            return jsonify({'frage': self.data.get('frage', ''),
+                            'antwort': self.data.get('antwort', '')})
 
         @self.app.route('/karten_pruefen')
         def karten_pruefen():
@@ -238,7 +238,7 @@ class FlaskView:
 
         @self.app.route('/lade_neuen_zustand')
         def lade_neuen_zustand():
-            return redirect(f"/{zustand_zu_route[self.data['zustand']]}")
+            return redirect(url_for(f"{zustand_zu_route[self.data['zustand']]}"))
 
     def update(self, daten: dict) -> None:
         """Funktion fuer die Protokoll-Klasse Beobachter"""

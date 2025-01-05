@@ -1,6 +1,4 @@
 // Lese den initialen Zustand aus dem Metaelement
-const startwerte = $('#startwerte').data()
-console.log('startwert zustand = ', startwerte.zustand)
 
 function vergleiche_zustaende(){
     // JavaScript (z.B. in einem setInterval)
@@ -11,9 +9,10 @@ function vergleiche_zustaende(){
             if (startwerte.zustand !== data) {
                 // Rufe die Route auf
                 window.location.href = '/lade_neuen_zustand';
+                clearInterval(intervalZustaendeId);
             }
         });
 }
 
 // Starte den Intervall, z.B. alle 2 Sekunden
-setInterval(vergleiche_zustaende, 500);
+const intervalZustaendeId = setInterval(vergleiche_zustaende, 200);

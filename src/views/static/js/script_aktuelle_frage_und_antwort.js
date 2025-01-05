@@ -7,14 +7,20 @@ function vergleiche_frage(){
         .then(response => response.json())
         .then(data => {
             // Vergleiche den neuen Zustand mit dem aktuellen Zustand
-            console.log('startwerte frage = ', startwerte.frage)
-            console.log('data frage= ', data.frage)
             if (startwerte.frage !== data.frage) {
                 // Rufe die Route auf
                 window.location.href = '/lade_neuen_zustand';
+            }
+            if (startwerte.frage !== '' && data.frage === '') {
+                // Stoppen des Intervalls, wenn die Bedingung erfüllt ist
+                clearInterval(intervalFrageId);
+            }
+            if (data.frage === 'Fertig') {
+                // Stoppen des Intervalls, wenn die Bedingung erfüllt ist
+                clearInterval(intervalFrageId);
             }
         });
 }
 
 // Starte den Intervall, z.B. alle 2 Sekunden
-setInterval(vergleiche_frage, 200);
+const intervalFrageId = setInterval(vergleiche_frage, 200);
