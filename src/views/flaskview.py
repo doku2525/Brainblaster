@@ -10,10 +10,13 @@ from src.classes.eventmanager import EventManager, EventTyp
 
 
 # Dictionary mit den Zustaenden, die eigene Routen haben.
-# TODO Wird noch nicht benutzt
 zustand_zu_route = {
-    'ZustandStart': '/index',
-    'ZustandVeraenderLernuhr': '/editor_lernuhr'
+    'ZustandStart': 'index',
+    'ZustandVeraenderLernuhr': 'editor_lernuhr',
+    'ZustandBoxinfo': 'boxinfo',
+    'ZustandVokabelPruefen': 'karten_pruefen',
+    'ZustandVokabelLernen': 'karten_lernen',
+    'ZustandVokabelNeue': 'karten_neue',
 }
 
 # Dictionary mit den Routen, die eigene Zustaende haben.
@@ -64,7 +67,8 @@ class FlaskView:
             return render_template('index.html',
                                    data=list(enumerate(self.data['liste'])),
                                    aktueller_index=self.data['aktueller_index'],
-                                   aktuelle_uhrzeit=self.data['aktuelle_uhrzeit'][:-7])
+                                   aktuelle_uhrzeit=self.data['aktuelle_uhrzeit'][:-7],
+                                   zustand=self.data['zustand'])
 
         @self.app.route('/editor_lernuhr')
         def editor_lernuhr():
@@ -90,8 +94,8 @@ class FlaskView:
                                    aktuelle_uhrzeit=self.data['aktuelle_uhrzeit'][:-7],
                                    info=self.data['info'],
                                    aktuelle_frageeinheit=self.data['aktuelle_frageeinheit'],
-                                   box_titel=self.data['box_titel']
-                                   )
+                                   box_titel=self.data['box_titel'],
+                                   zustand=self.data['zustand'])
 
         @self.app.route('/karten_testen')
         def karten_testen():
@@ -108,6 +112,12 @@ class FlaskView:
                                    antwort=self.data['antwort'],
                                    formatierung=self.data['formatierung'],
                                    zustand=self.data['zustand'])
+
+        @self.app.route('/get_aktuelle_frage_und_antwort')
+        def get_aktuelle_frage_und_antwort():
+            """Route fuer index"""
+            return jsonify({'frage': self.data['frage'],
+                            'antwort': self.data['antwort']})
 
         @self.app.route('/karten_pruefen')
         def karten_pruefen():
@@ -141,6 +151,7 @@ class FlaskView:
 
         @self.app.route('/zeige_vokabelliste')
         def zeige_vokabelliste():
+            # TODO Tests
             """Bei pdf-Option wird return render_pdf(HTML(string=html)) aufgerufen."""
             command = request.args.get('zurueck', False)
             pdf = request.args.get('pdf', False)
@@ -159,6 +170,7 @@ class FlaskView:
 
         @self.app.route('/zeige_vokabelliste_komplett')
         def zeige_vokabelliste_komplett():
+            # TODO Tests
             command = request.args.get('fe', False)
             pdf = request.args.get('pdf', False)
             if command:
@@ -170,6 +182,7 @@ class FlaskView:
 
         @self.app.route('/zeige_vokabelliste_lernen')
         def zeige_vokabelliste_lernen():
+            # TODO Tests
             command = request.args.get('fe', False)
             pdf = request.args.get('pdf', False)
             if command:
@@ -181,6 +194,7 @@ class FlaskView:
 
         @self.app.route('/zeige_vokabelliste_neue')
         def zeige_vokabelliste_neue():
+            # TODO Tests
             command = request.args.get('fe', False)
             pdf = request.args.get('pdf', False)
             if command:
@@ -192,6 +206,7 @@ class FlaskView:
 
         @self.app.route('/kommando/<cmd>')
         def antwort(cmd):
+            # TODO Tests
             """Fuehrt ein Kommando aus und leitet dann wieder weiter zu der aufrufenden Route"""
             self.setze_cmd_warte_auf_update(cmd, self.warte_zeit)
             return redirect(url_for(request_to_route(request.referrer)))
@@ -200,6 +215,11 @@ class FlaskView:
         def get_aktuelle_uhrzeit():
             """Route fuer index"""
             return jsonify(self.data['aktuelle_uhrzeit'][:-7] if self.data.get('aktuelle_uhrzeit', False) else '0')
+
+        @self.app.route('/get_aktuellen_zustand')
+        def get_aktuellen_zustand():
+            """Route fuer index"""
+            return jsonify(self.data['zustand'])
 
         @self.app.route('/get_aktuelle_und_neue_uhrzeit')
         def get_aktuelle_und_neue_uhrzeit():
@@ -210,10 +230,15 @@ class FlaskView:
 
         @self.app.route('/kommando_konsole/<cmd>')
         def kommando_konsole(cmd):
+            # TODO Tests
             """Modus, in dem die Kommandos direkt ueber die Adressleiste des Browsers eingegebenwerden koennen
                 und die data als JSON im Browser angezeigt wird."""
             self.setze_cmd_warte_auf_update(cmd, self.warte_zeit)
             return jsonify(self.data)
+
+        @self.app.route('/lade_neuen_zustand')
+        def lade_neuen_zustand():
+            return redirect(f"/{zustand_zu_route[self.data['zustand']]}")
 
     def update(self, daten: dict) -> None:
         """Funktion fuer die Protokoll-Klasse Beobachter"""
@@ -240,7 +265,8 @@ class FlaskView:
 
     def run(self):
         """Startet den Flask-Server in einem separaten Thread."""
-        self.app.run(debug=False, use_reloader=False)
+        # self.app.run(debug=False, use_reloader=False)
+        self.app.run(debug=False, use_reloader=False, host='0.0.0.0')
 
     def start_server(self):
         """Initialisiert und startet den Server im Hintergrund."""

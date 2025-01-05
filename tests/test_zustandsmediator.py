@@ -37,7 +37,7 @@ class test_ZustandsMediator(TestCase):
         zustand_ohne_parrent = ZustandStart(liste=["1", "2", "3"], aktueller_index=0, aktuelle_zeit='test')
         result = obj.zustand_to_consoleview_data(zustand_ohne_parrent, 0)
         expected_data_str = ' 0 : 1\n 1 : 2\n 2 : 3\nAktuelle Box: 1'
-        expected_optionen_str = " 1 ENDE : Beende Programm\n'+' + Zahl\n'-' + Zahl\n'=' + Zahl\n"
+        expected_optionen_str = " 1 ENDE : Beende Programm\n'+' + Zahl\n'-' + Zahl\n'=' + Zahl\n's' + Zahl\n"
         self.assertIsInstance(result, dict)
         self.assertEqual('ZustandStart', result['zustand'])
         self.assertEqual('test', result['aktuelle_zeit'])
@@ -55,7 +55,7 @@ class test_ZustandsMediator(TestCase):
         zustand_mit_zwei_children = replace(zustand_mit_parrent, child=zustand_mit_parrent.child * 2)
         result = obj.zustand_to_consoleview_data(zustand_mit_zwei_children, 0)
         expected_optionen_str = (" 1 ENDE : Beende Programm\n 2 ENDE : Beende Programm\n'" +
-                                 "+' + Zahl\n'-' + Zahl\n'=' + Zahl\n")
+                                 "+' + Zahl\n'-' + Zahl\n'=' + Zahl\n's' + Zahl\n")
         self.assertEqual('ZustandStart', result['zustand'])
         self.assertEqual('test', result['aktuelle_zeit'])
         self.assertEqual(expected_data_str, result['daten'])

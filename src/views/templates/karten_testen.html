@@ -1,7 +1,11 @@
+<!-karten_testen.html->
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Abfragemodus {{ zustand[14:] }}</title>
+        <meta id="startwerte" data-zustand="{{ zustand }}" data-frage="{{ frage }}" data-antwort="{{ antwort }}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
         <link rel="stylesheet" href="/static/css/chinesefonts.css">
         <link rel="stylesheet" href="/static/css/abfrage/{{formatierung}}.css">
         <style>
@@ -35,6 +39,8 @@
                 font-size: 24px;
             }
         </style>
+        <script type="module" src="{{ url_for('static', filename='js/script_aktuelle_frage_und_antwort.js') }}"></script>
+        <script type="module" src="{{ url_for('static', filename='js/script_aktueller_zustand.js') }}"></script>
     </head>
     <body>
         <table class="bildschirm">

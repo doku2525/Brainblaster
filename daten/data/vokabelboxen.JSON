@@ -1,0 +1,792 @@
+[
+    {
+        "titel": "Integrated Chinese Dialoge Alle Lektion",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "'IC3' in a.lerneinheit.daten.keys()",
+            "'dialogid' in a.lerneinheit.daten.keys()",
+            "'grammatik' not in a.lerneinheit.daten.keys()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 103",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 103) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 104",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 104) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 105",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 105) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 106",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 106) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 107",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 107) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 108",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 108) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 109",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 109) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 110",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 110) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 111",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 111) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 112",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 112) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 113",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 113) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 114",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 114) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 115",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 115) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 116",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 116) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 117",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 117) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 118",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 118) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 119",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 119) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 120",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 120) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 201",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 201) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 202",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 202) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 203",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 203) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 204",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 204) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 205",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 205) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Dialoge Lektion 206",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 206) in a.lerneinheit.daten.items()",
+            "a.lerneinheit.daten.get('dialogid', None)",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Alle Lektionen",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "'IC3' in a.lerneinheit.daten.keys()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 103",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 103) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 104",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 104) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 105",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 105) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 106",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 106) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 107",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 107) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 108",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 108) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 109",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 109) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 110",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 110) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 111",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 111) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 112",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 112) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 113",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 113) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 114",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 114) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 115",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 115) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Grammatik Saetze Lektion 116",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 116) in a.lerneinheit.daten.items()",
+            "('grammatik', True) in a.lerneinheit.daten.items()",
+            "('satz', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 101",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 101) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 102",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 102) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 103",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 103) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 104",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 104) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 105",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 105) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 106",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 106) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 107",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 107) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 108",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 108) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 109",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 109) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 110",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 110) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 111",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 111) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 112",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 112) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 113",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 113) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 114",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 114) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 115",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 115) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 116",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 116) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 117",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 117) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 118",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 118) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 119",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 119) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 120",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 120) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 201",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 201) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 202",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 202) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 203",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 203) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 204",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 204) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 205",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 205) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 206",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 206) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 207",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 207) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 208",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 208) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 209",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 209) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 210",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 210) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 211",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 211) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 212",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 212) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 213",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 213) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 214",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 214) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 215",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 215) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 216",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 216) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 217",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 217) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 218",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 218) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 219",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 219) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese Vokabeln Lektion 220",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "('IC3', 220) in a.lerneinheit.daten.items()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese alle Vokabeln 101-220",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "'IC3' in a.lerneinheit.daten.keys()",
+            "('vokabeln', True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese alle Vokabeln Teil 1 101-120",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "'IC3' in a.lerneinheit.daten.keys()",
+            "a.lerneinheit.daten['IC3'] < 200",
+            "('vokabeln',True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    },
+    {
+        "titel": "Integrated Chinese alle Vokabeln Teil 2 201-220",
+        "lernklasse": "LerneinheitChinesisch",
+        "selektor": [
+            "'IC3' in a.lerneinheit.daten.keys()",
+            "a.lerneinheit.daten['IC3'] > 200",
+            "('vokabeln',True) in a.lerneinheit.daten.items()"
+        ],
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+    }
+]

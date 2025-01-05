@@ -6,6 +6,7 @@ from src.classes.vokabeltrainercontroller import VokabeltrainerController
 
 class test_VokabeltrainerController(TestCase):
     def setUp(self):
+        from src.classes.configurator import config
         from src.classes.eventmanager import EventManager
         from src.classes.lernuhr import Lernuhr
         from src.classes.zustandsbeobachter import ObserverManager

@@ -30,7 +30,7 @@ class test_Zustand(TestCase):
         self.assertIsNone(objekt.parent)
         self.assertEqual(1, len(objekt.child))
         self.assertEqual((ZustandENDE(),), objekt.child)
-        self.assertEqual(("+", "-", "="), objekt.kommandos)
+        self.assertEqual(('+', '-', '=', 's'), objekt.kommandos)
         objekt = ZustandStart(aktueller_index=0, liste=["A", "B"])
 
     def test_init_zustand_ende(self):

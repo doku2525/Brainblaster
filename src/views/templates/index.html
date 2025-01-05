@@ -2,6 +2,8 @@
 <html>
     <head>
         <title>{{ title }}</title>
+        <meta id="startwerte"   data-zustand="{{ zustand }}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <style>
             .menue {
                 padding: 15px;
@@ -34,6 +36,7 @@
                 font-size: 28px;
             }
         </style>
+        <script type="module" src="{{ url_for('static', filename='js/script_aktueller_zustand.js') }}"></script>
         <script type="module" src="{{ url_for('static', filename='js/script_aktuelle_uhrzeit.js') }}"></script>
     </head>
     <body>
