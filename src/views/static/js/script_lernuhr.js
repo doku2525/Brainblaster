@@ -177,7 +177,7 @@ function registerListener() {
 
 function initializeElemente() {
     // Lese die Werte aus Meta-Element in <head>
-    startwerte = $('#startwerte').data()
+    let startwerte = $('#startwerte').data();
     var aktuellerModus = startwerte.modus;
     setRadioByData(aktuellerModus);
     document.getElementById('tempo_wert').value = startwerte.tempo_wert;

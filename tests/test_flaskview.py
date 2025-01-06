@@ -86,27 +86,27 @@ class test_FlaskView(TestCase):
         self.assertEqual(redirect_message, response.text)
         response = self.client.get(response.headers['Location'])
         self.assertEqual(200, response.status_code)
-        self.assertEqual('<!-index.html->', response.text.split("\n")[0])
+        self.assertEqual('<!--index.html-->', response.text.split("\n")[0])
 
     def test_route_index(self):
         response = self.client.get('/index')
         self.assertEqual(200, response.status_code)
-        self.assertEqual('<!-index.html->', response.text.split("\n")[0])
+        self.assertEqual('<!--index.html-->', response.text.split("\n")[0])
 
     def test_route_editor_lernuhr(self):
         response = self.client_lernuhr.get('/editor_lernuhr')
         self.assertEqual(200, response.status_code)
-        self.assertEqual('<!-editor_lernuhr.html->', response.text.split("\n")[0])
+        self.assertEqual('<!--editor_lernuhr.html-->', response.text.split("\n")[0])
 
     def test_route_boxinfo(self):
         response = self.client_boxinfo.get('/boxinfo')
         self.assertEqual(200, response.status_code)
-        self.assertEqual('<!-boxinfo.html->', response.text.split("\n")[0])
+        self.assertEqual('<!--boxinfo.html-->', response.text.split("\n")[0])
 
     def test_route_vokabeln_testen(self):
         response = self.client_testen.get('/karten_testen')
         self.assertEqual(200, response.status_code)
-        self.assertEqual('<!-karten_testen.html->', response.text.split("\n")[0])
+        self.assertEqual('<!--karten_testen.html-->', response.text.split("\n")[0])
 
     def test_route_vokabeln_pruefen(self):
         response = self.client_pruefen.get('/karten_pruefen')
@@ -149,7 +149,9 @@ class test_FlaskView(TestCase):
 
     def test_route_get_aktuelle_frage_und_antwort(self):
         response = self.client.get('/get_aktuelle_frage_und_antwort')
-        self.assertEqual(500, response.status_code)
+        self.assertEqual(200, response.status_code)
+        expected = b'{"antwort":"","frage":""}\n'
+        self.assertIn(expected, response.data)
         response = self.client_pruefen.get('/get_aktuelle_frage_und_antwort')
         self.assertEqual(200, response.status_code)
         expected = b'{"antwort":"Antwort","frage":"Frage"}\n'

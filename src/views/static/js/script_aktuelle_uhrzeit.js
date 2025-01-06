@@ -4,6 +4,7 @@ function fetchUhrzeit() {
     .then(data => {
         const uhrzeitElement = document.getElementById('aktuelle_uhrzeit');
         uhrzeitElement.textContent = data;
+        console.log('Uhrzeit: ', data);
     })
     .catch(error => {
         console.error('Fehler beim Abrufen der Uhrzeit:', error);
