@@ -42,6 +42,7 @@
         </style>
         <script type="module" src="{{ url_for('static', filename='js/script_aktuelle_frage_und_antwort.js') }}"></script>
         <script type="module" src="{{ url_for('static', filename='js/script_aktueller_zustand.js') }}"></script>
+        <script type="module" src="{{ url_for('static', filename='js/script_karten_testen_tastatur_listener.js') }}"></script>
         <script>
         </script>
     </head>
@@ -59,12 +60,12 @@
                         {% if zustand == 'ZustandVokabelLernen' %}
                         <tr>
                             <td class="buttonfeld"><a href="/kommando/ca1"><div class="knopf" style="background-color:darkred">  </div></a></td>
-                            <td class="buttonfeld"><a href="/kommando/ca2"><div class="knopf" style="background-color:darkred"> 0 </div></a></td>
+                            <td class="buttonfeld"><a href="/kommando/ca2"><div class="knopf" style="background-color:darkred"> &#x2717; </div></a></td>
                             <td class="buttonfeld"><a href="/kommando/ca3"><div class="knopf" style="background-color:darkred">  </div></a></td>
                         </tr>
                         <tr>
                             <td class="buttonfeld"><a href="/kommando/ca4"><div class="knopf" style="background-color:green">  </div></a></td>
-                            <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:green"> 7 </div></a></td>
+                            <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:green"> &#x2713; </div></a></td>
                             <td class="buttonfeld"><a href="/kommando/ca6"><div class="knopf" style="background-color:green">  </div></a></td>
 
                         </tr>
