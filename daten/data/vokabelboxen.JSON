@@ -8,7 +8,7 @@
             "'grammatik' not in a.lerneinheit.daten.keys()",
             "('satz', True) in a.lerneinheit.daten.items()"
         ],
-        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+        "aktuelle_frage": "FrageeinheitChinesischEintrag"
     },
     {
         "titel": "Integrated Chinese Dialoge Lektion 103",
@@ -258,7 +258,7 @@
             "('grammatik', True) in a.lerneinheit.daten.items()",
             "('satz', True) in a.lerneinheit.daten.items()"
         ],
-        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
+        "aktuelle_frage": "FrageeinheitChinesischEintrag"
     },
     {
         "titel": "Integrated Chinese Grammatik Saetze Lektion 103",
@@ -777,7 +777,7 @@
             "a.lerneinheit.daten['IC3'] < 200",
             "('vokabeln',True) in a.lerneinheit.daten.items()"
         ],
-        "aktuelle_frage": "FrageeinheitChinesischPinyin"
+        "aktuelle_frage": "FrageeinheitChinesischBedeutung"
     },
     {
         "titel": "Integrated Chinese alle Vokabeln Teil 2 201-220",

@@ -12,7 +12,16 @@ function sende_kommando(cmd) {
             return response.text();
         })
         .then(data => {
-            console.log('Erfolgreich gesendet:', data);
+            // data enthaelt die neue gerenderte HTML-Seite.
+            // Schreibe data in ein dummy-div und extrahiere das meta-Element.
+            // Setze die neuen Werte fuer die Kalender- und die Uhr-Objekte wie beim initialisieren
+            if (startUndKalkzeitVeraendert = true) {    // Die if Abfrage ist vermutlich unnoetig
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const metaElement = $(tempDiv).find('#startwerte');
+                initializeKalenderUndUhrElement(metaElement.data());
+                startUndKalkzeitVeraendert = false;
+            }
         })
         .catch(error => {
             console.error('Fehler beim Senden:', error);
@@ -71,7 +80,7 @@ function cmd_build_tempo() {
 }
 
 function cmd_build_modus() {
-    const wert = getCheckedRadioButtonValue()
+    const wert = getCheckedRadioButtonValue();
     const cmd = `/kommando/c${wert}`;
     console.log('Kommando gebaut: ', cmd);
     return cmd
@@ -83,20 +92,10 @@ function fetchData() {
     fetch('/get_aktuelle_und_neue_uhrzeit')
         .then(response => response.json())
         .then(data => {
-        // TODO Wenn reset() oder calibrate() dann setze Flag und Update hier die Kalender und Zeit objekte.
             document.getElementById('aktuelle_uhrzeit').textContent = data.aktuelle_uhrzeit;
             document.getElementById('neue_uhrzeit').textContent = data.neue_uhrzeit;
-            if (startUndKalkzeitVeraendert) {   // Flag wird in den Funktionen fuer die Buttons verwendet
-                const start_zeit = data.neue_uhr.start_zeit
-                const kalk_zeit = data.neue_uhr.kalkulations_zeit
-                document.getElementById('date_start_zeit_datum').value = ISOalsDatum(start_zeit)
-                document.getElementById('time_start_zeit_uhrzeit').value = ISOalsUhrzeit(start_zeit)
-                document.getElementById('date_kalkulations_zeit_datum').value = ISOalsDatum(kalk_zeit)
-                document.getElementById('time_kalkulations_zeit_uhrzeit').value = ISOalsUhrzeit(kalk_zeit)
-                startUndKalkzeitVeraendert = false;
-            }
-            document.getElementById('neue_uhr').textContent = JSON.stringify(data.neue_uhr);
-            document.getElementById('testausgabe').textContent = data.neue_uhr.kalkulations_zeit;
+            // TODO Die Ausgabe als JSON in testausgabe sollte irgendwann entfernt werden.
+            // document.getElementById('neue_uhr').textContent = JSON.stringify(data.neue_uhr);
         })
         .catch(error => {
             console.error('Fehler beim Abrufen der Uhrzeit:', error);
@@ -105,15 +104,16 @@ function fetchData() {
 
 // Funktionen fuer die Buttons
 function speicherLernuhr() { window.location.href = '/index?lernuhr=mit_speichern';}
-
 function verwerfeLernuhr() { window.location.href = '/index?lernuhr=ohne_speichern';}
 function calibriereLernuhr() {
+    // Die neuen Daten weren in sendeKommando dem Kalnder- und Uhr-Element zugwiesen
     sende_kommando('/kommando/cc');
-    startUndKalkzeitVeraendert = true;   // Flag, die in fetchData() abgefragt wird
+    startUndKalkzeitVeraendert = true;   // Flag, die in sendeKommando() abgefragt wird
 }
 function resetLernuhr() {
+    // Die neuen Daten weren in sendeKommando dem Kalnder- und Uhr-Element zugwiesen
     sende_kommando('/kommando/cr');
-    startUndKalkzeitVeraendert = true;   // Flag, die in fetchData() abgefragt wird
+    startUndKalkzeitVeraendert = true;   // Flag, die in sendeKommando() abgefragt wird
 }
 
 // Buttonfunktionen im Global-Space registrieren
@@ -125,7 +125,6 @@ window.resetLernuhr = resetLernuhr;
 // Markiere aktuellen Radiobutton beim Laden der Seite
 function setRadioByData(data) {
     // Hole das Element mit der passenden ID
-    console.log("setRadioByData: data = ", data.toLowerCase())
     const radio = document.getElementById('modus_' + data.toLowerCase() + '_button');
 
     // Überprüfe, ob das Element gefunden wurde
@@ -133,7 +132,7 @@ function setRadioByData(data) {
         // Setze den Radiobutton als ausgewählt
         radio.checked = true;
         // Disable unmoegliche Kombinationen
-        const dummy = getCheckedRadioButtonValue()
+        const dummy = getCheckedRadioButtonValue();
 
     } else {
         console.error('Kein Radiobutton mit der ID gefunden:', 'modus-' + data.toLowerCase() + '-button');
@@ -167,12 +166,19 @@ function registerListener() {
             const cmd = cmd_build_modus();
             sende_kommando('/kommando/cpe');
             // Wenn der Timeout zu kurz ist, wird das Kommando vom Server nicht verarbeitet
-            setTimeout(function() {sende_kommando(cmd)}, 200);});
+            setTimeout(function() {sende_kommando(cmd)}, 500);});
         document.getElementById('modus_pause_button').addEventListener('change', () => {
             const cmd = cmd_build_modus();
             sende_kommando('/kommando/cpb');
             // Wenn der Timeout zu kurz ist, wird das Kommando vom Server nicht verarbeitet
-            setTimeout(function() {sende_kommando(cmd);}, 200)});
+            setTimeout(function() {sende_kommando(cmd);}, 500)});
+}
+
+function initializeKalenderUndUhrElement(daten) {
+    document.getElementById('date_kalkulations_zeit_datum').value = ISOalsDatum(daten.kalkulations_zeit);
+    document.getElementById('time_kalkulations_zeit_uhrzeit').value = ISOalsUhrzeit(daten.kalkulations_zeit);
+    document.getElementById('date_start_zeit_datum').value = ISOalsDatum(daten.start_zeit);
+    document.getElementById('time_start_zeit_uhrzeit').value = ISOalsUhrzeit(daten.start_zeit);
 }
 
 function initializeElemente() {
@@ -186,12 +192,9 @@ function initializeElemente() {
     document.getElementById('tempo_kommastellen_value').textContent = startwerte.tempo_kommastellen;
     document.getElementById('neuer_tempo_wert').textContent = Number(startwerte.tempo_wert) +
                                                               Number(startwerte.tempo_kommastellen);
-    document.getElementById('date_kalkulations_zeit_datum').value = ISOalsDatum(startwerte.kalkulations_zeit);
-    document.getElementById('time_kalkulations_zeit_uhrzeit').value = ISOalsUhrzeit(startwerte.kalkulations_zeit);
-    document.getElementById('date_start_zeit_datum').value = ISOalsDatum(startwerte.start_zeit);
-    document.getElementById('time_start_zeit_uhrzeit').value = ISOalsUhrzeit(startwerte.start_zeit);
+    initializeKalenderUndUhrElement(startwerte)
 }
 
-initializeElemente()
-registerListener()
+initializeElemente();
+registerListener();
 setInterval(fetchData, 1000);
