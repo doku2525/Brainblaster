@@ -3,6 +3,9 @@
 <html>
     <head>
         <title>{{ lektion }}</title>
+        <meta id="startwerte" data-zustand="{{ zustand }}"">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
         <link rel="stylesheet" href="/static/css/chinesefonts.css">
         <style>
             @page {
@@ -49,6 +52,7 @@
                 padding: 5px;
             }
         </style>
+        <script type="module" src="{{ url_for('static', filename='js/script_aktueller_zustand.js') }}"></script>
     </head>
     <body>
     <a href="zeige_vokabelliste?zurueck=1"><h1>{{ titel }}</h1></a>

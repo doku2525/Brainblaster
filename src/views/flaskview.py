@@ -163,6 +163,7 @@ class FlaskView:
             html = render_template('zeigevokabelliste.html',
                                    titel=self.data['box_titel'],
                                    untertitel=f"{self.data.get('modus','')}:{self.data.get('frageeinheit_titel','')}",
+                                   zustand=self.data['zustand'],
                                    karten=self.data['liste'])  # karten=[karte.lerneinheit for karte in kartenListe])
             if pdf:
                 return render_pdf(HTML(string=html))
