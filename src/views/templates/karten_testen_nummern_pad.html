@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        table {
+            width: 100%;
+            height: 100vh; /* 100vh = 100% der Viewport-Höhe */
+            border-collapse: collapse;
+        }
+        .knopf{
+            width: 100%;
+            // display: flex;
+            // align-items: center;
+            text-align: center;
+            background-color: yellow;
+            font-size: 100px;
+        }
+        .knopf_zureuck{
+            width: 100%;
+            height: 30vh;
+            text-align: center;
+            background-color: yellow;
+            font-size: 60px;
+        }
+
+    </style>
+</head>
+<body>
+    <table>
+        {% if zustand == 'ZustandVokabelLernen' %}
+        <tr>
+            <td class="buttonfeld"><a href="/kommando/ca2"><div class="knopf" style="background-color:darkred; height: 85vh;"> &#x2717; </div></a></td>
+            <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:green; height: 85vh;"> &#x2713; </div></a></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="buttonfeld_nein"><a href="/karten_testen?zurueck=1"><div class="knopf_nein" style="background-color:yellow; height: 15vh;"> zurueck </div></a></td>
+        </tr>
+        {% elif zustand == 'ZustandVokabelNeue' %}
+        <tr>
+            <td rowspan="3" class="buttonfeld"><a href="/kommando/ca1"><div class="knopf" style="background-color:darkred; height: 86vh;"> &#x2717; </div></a></td>
+            <td class="buttonfeld"><a href="/kommando/ca4"><div class="knopf" style="background-color:greenyellow; height: 28vh;"> 4 </div></a></td>
+        </tr>
+        <tr>
+            <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:lime; height: 28vh;"> 5 </div></a></td>
+        </tr>
+        <tr>
+            <td class="buttonfeld"><a href="/kommando/ca6"><div class="knopf" style="background-color:green; height: 28vh;"> 6 </div></a></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="buttonfeld_nein"><a href="/karten_testen?zurueck=1"><div class="knopf_nein" style="background-color:yellow; height: 16vh;"> zurueck </div></a></td>
+        </tr>
+        {% elif zustand == 'ZustandVokabelPruefen' %}
+        <tr>
+            <td class="buttonfeld"><a href="/kommando/ca1"><div class="knopf" style="background-color:darkred; height: 28vh;"> 1 </div></a></td>
+            <td class="buttonfeld"><a href="/kommando/ca4"><div class="knopf" style="background-color:greenyellow; height: 28vh;"> 4 </div></a></td>
+        </tr>
+        <tr>
+            <td class="buttonfeld"><a href="/kommando/ca2"><div class="knopf" style="background-color:orangered; height: 28vh;"> 2 </div></a></td>
+            <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:lime; height: 28vh;"> 5 </div></a></td>
+        </tr>
+        <tr>
+            <td class="buttonfeld"><a href="/kommando/ca3"><div class="knopf" style="background-color:orange; height: 28vh;"> 3 </div></a></td>
+            <td class="buttonfeld"><a href="/kommando/ca6"><div class="knopf" style="background-color:green; height: 28vh;"> 6 </div></a></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="buttonfeld_nein"><a href="/karten_testen?zurueck=1"><div class="knopf_nein" style="background-color:yellow; height: 16vh;"> zurueck </div></a></td>
+        </tr>
+        {% else %}
+        <tr>
+            <td class="buttonfeld"><a href="#"><div class="knopf" style="background-color:darkred">  </div></a></td>
+            <td class="buttonfeld"><a href="#"><div class="knopf" style="background-color:green">  </div></a></td>
+        </tr>
+        <tr>
+            <td class="buttonfeld"><a href="#"><div class="knopf" style="background-color:darkred">  </div></a></td>
+            <td class="buttonfeld"><a href="#"><div class="knopf" style="background-color:green">  </div></a></td>
+        </tr>
+        <tr>
+            <td class="buttonfeld"><a href="#"><div class="knopf" style="background-color:darkred">  </div></a></td>
+            <td class="buttonfeld"><a href="#"><div class="knopf" style="background-color:green">  </div></a></td>
+        </tr>
+        {% endif %}
+    </table>
+</body>
+</html>
