@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import replace
+import logging
 import time
 from typing import Callable, cast, TYPE_CHECKING
 from threading import Thread
@@ -11,6 +12,7 @@ from src.classes.lernuhr import Lernuhr
 from src.classes.infomanager import InfoManager
 from src.zustaende.zustandsfactory import ZustandsFactory
 import src.utils.utils_io as u_io
+import src.utils.utils_performancelogger as u_log
 
 if TYPE_CHECKING:
     from src.classes.eventmanager import EventManager
@@ -18,6 +20,11 @@ if TYPE_CHECKING:
     from src.classes.zustandsbeobachter import ObserverManager
     from src.classes.vokabelkarte import Vokabelkarte
     from src.zustaende.zustand import Zustand
+
+
+# Initializiere Logger
+logger = u_log.ZeitLogger.create(f"{config.log_pfad}performance.log", __name__)
+logger.starte_logging()
 
 
 class VokabeltrainerController:
@@ -33,6 +40,7 @@ class VokabeltrainerController:
         self.cmd: str = ''
 
         # Subscribe Events
+        logger.start()
         self.event_manager.subscribe(EventTyp.NEUES_KOMMANDO, self.setze_cmd_str)
         self.event_manager.subscribe(EventTyp.KOMMANDO_EXECUTED,
                                      lambda zustand: self.view_observer.views_updaten(zustand, Lernuhr.echte_zeit()))
@@ -42,12 +50,15 @@ class VokabeltrainerController:
                                      lambda zustand: self.view_observer.views_rendern())
         self.event_manager.subscribe(EventTyp.PROGRAMM_BENDET,
                                      lambda zustand: self.view_observer.views_rendern())
+        logger.fertig("Subscribe Events")
 
     # Definiere Systemkommandos, die von den Zustaenden aufgerufen werden koennen.
     #  Jede Funktion muss im command-Dictionary der Funktion execute_kommando() registriert werden
     def update_uhr(self, neue_uhr: Lernuhr) -> None:
         self.uhr = neue_uhr
+        logger.start()
         self.info_manager = self.info_manager.erzeuge_alle_infos(self.uhr.now(Lernuhr.echte_zeit()))
+        logger.fertig("\tupdate_uhr -> info_manager.erzeuge_alle_infos()")
 
     def update_modell_aktueller_index(self, neuer_index: int) -> None:
         self.modell = replace(self.modell, index_aktuelle_box=neuer_index)
@@ -68,13 +79,18 @@ class VokabeltrainerController:
         die alte Karte durch die neue Karte im repository."""
         alte_karte, funktion = karte
         neue_karte = funktion(self.uhr.now(Lernuhr.echte_zeit()))
+        logger.start()
         self.modell.vokabelkarten.replace_karte(alte_karte, neue_karte)
+        logger.fertig(f"\tupdate_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte")
+        logger.start()
         self.info_manager = self.info_manager.update_infos_fuer_karte(alte_karte,
                                                                       neue_karte,
                                                                       self.uhr.now(Lernuhr.echte_zeit()))
+        logger.fertig(f"\tupdate_vokabelkarte_statistik -> self.info_manager.update_infos_fuer_karte")
 
     def speicher_daten_in_dateien(self):
         def speicher_prozess():
+            logger.start()
             uhr_datei = f"{config.daten_pfad}{config.uhr_dateiname}"
             config_datei = f"{config.daten_pfad}{config.config_dateiname}"
             dateiliste = [self.modell.vokabelkarten.dateiname,
@@ -87,9 +103,12 @@ class VokabeltrainerController:
             self.modell.vokabelboxen.speichern()
             config.speicher()
             u_io.speicher_in_jsondatei(self.uhr.as_iso_dict(), uhr_datei)
+            logger.fertig(f"\t\tspeicher_daten_in_dateien -> speicher_prozess")
 
+        logger.start()
         speicher_thread = Thread(target=speicher_prozess)
         speicher_thread.start()
+        logger.fertig(f"\tspeicher_daten_in_dateien -> thread starten")
 
     # Funktionen zum Ausfuehren und aktuallisieren des Systems
     def execute_kommando(self, kommando_string: str) -> Zustand:
@@ -107,30 +126,39 @@ class VokabeltrainerController:
         if cmd := commands.get(cast(str, result.cmd), False):
             cmd(*result.args)
         # Gib den aktuallisierten aktuellen Zustand zurueck
-        return ZustandsFactory(self.modell, self.uhr, self.info_manager).update_with_childs(result.zustand)
+        return logger.execute(      # TODO Hier muss spaeter wieder das untere return unkommentiert werden
+            lambda: ZustandsFactory(self.modell, self.uhr, self.info_manager).update_with_childs(result.zustand),
+            f"\texecute_kommando -> update_with_childs( {result.zustand.__class__.__name__} )")
+        # return ZustandsFactory(self.modell, self.uhr, self.info_manager).update_with_childs(result.zustand)
 
     # Funktion fuer den EventManager. Wird vom view usw. aufgerufen, wenn ein Kommando auf irgendeinen Weg an das
     #   System geschickt wird.
     def setze_cmd_str(self, cmd_str) -> None:
         self.cmd = cmd_str
+        logger.start(f"setze_cmd_str mit {self.cmd[1:]} zustand = {self.aktueller_zustand.__class__.__name__}")
         self.aktueller_zustand = self.execute_kommando(self.cmd[1:])
+        logger.fertig(f"setze_cmd_str -> execute_kommando(cmd) cmd = {self.cmd[1:]} zustand = {self.aktueller_zustand.__class__.__name__}")
         self.event_manager.publish_event(EventTyp.KOMMANDO_EXECUTED, self.aktueller_zustand)
         self.cmd = ''
 
     def programm_loop(self):
         self.modell.vokabelboxen.laden()
+        logger.start()
         self.modell.vokabelkarten.laden()
-
+        logger.fertig("programm_loop -> karten.laden()")
         # TODO Erstellen des InfoManagers blockiert das System, so dass der aktuelle zustand nicht gesetzt ist
         #   und Flaskview Fehlermeldungen (KeyError) beim Abrufen der Zeit ausgibt (siehe get_Routen in flaskview.py).
+        logger.start()
         self.info_manager = InfoManager.factory(liste_der_boxen=self.modell.vokabelboxen.vokabelboxen,
                                                 liste_der_karten=self.modell.vokabelkarten.vokabelkarten
                                                 ).erzeuge_alle_infos(self.uhr.now(Lernuhr.echte_zeit()))
+        logger.fertig("programm_loop -> InfoManager.factory(start)")
 
         print(f"Beginne mit der Arbeit. { self.info_manager.boxen_als_number_dict()[40] = }")
+        logger.start()
         self.aktueller_zustand = (ZustandsFactory(self.modell, self.uhr, self.info_manager).
                                   buildZustandStart(ZustandsFactory.start_zustand()))
-
+        logger.fertig("programm_loop -> buildZustandStart()")
         self.view_observer.views_updaten(self.aktueller_zustand, Lernuhr.echte_zeit())
         self.view_observer.views_rendern()
 

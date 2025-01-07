@@ -1,0 +1,211 @@
+2025-01-07 17:56:16,680 - src.classes.vokabeltrainercontroller - TIME - - s 0.00002 > Subscribe Events
+2025-01-07 17:56:17,075 - src.classes.vokabeltrainercontroller - TIME - - s 0.39283 > programm_loop -> karten.laden()
+2025-01-07 17:56:22,521 - src.classes.vokabeltrainercontroller - TIME - - s 5.44593 > programm_loop -> InfoManager.factory(start)
+2025-01-07 17:56:22,950 - src.classes.vokabeltrainercontroller - TIME - - s 0.42772 > programm_loop -> buildZustandStart()
+2025-01-07 17:57:40,451 - src.classes.vokabeltrainercontroller - TIME - 0.00001 sek  > Subscribe Events
+2025-01-07 17:57:40,841 - src.classes.vokabeltrainercontroller - TIME - 0.38873 sek  > programm_loop -> karten.laden()
+2025-01-07 17:57:46,149 - src.classes.vokabeltrainercontroller - TIME - 5.30848 sek  > programm_loop -> InfoManager.factory(start)
+2025-01-07 17:57:46,571 - src.classes.vokabeltrainercontroller - TIME - 0.41988 sek  > programm_loop -> buildZustandStart()
+2025-01-07 18:11:52,261 - src.classes.vokabeltrainercontroller - TIME - 0.00002 sek = Subscribe Events
+2025-01-07 18:11:52,769 - src.classes.vokabeltrainercontroller - TIME - 0.50655 sek = programm_loop -> karten.laden()
+2025-01-07 18:11:58,406 - src.classes.vokabeltrainercontroller - TIME - 5.63679 sek = programm_loop -> InfoManager.factory(start)
+2025-01-07 18:11:58,827 - src.classes.vokabeltrainercontroller - TIME - 0.41846 sek = programm_loop -> buildZustandStart()
+2025-01-07 18:12:16,549 - src.classes.vokabeltrainercontroller - TIME - 1.02455 sek = execute_kommando->update_with_childsZustandStart)
+2025-01-07 18:12:16,550 - src.classes.vokabeltrainercontroller - TIME - 1.02519 sek = setze_cmd_str -> execute_kommando(cmd) cmd = =81
+2025-01-07 18:12:17,571 - src.classes.vokabeltrainercontroller - TIME - 1.01675 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:12:17,571 - src.classes.vokabeltrainercontroller - TIME - 1.01689 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:12:21,509 - src.classes.vokabeltrainercontroller - TIME - 0.00002 sek = execute_kommando->update_with_childsZustandVokabelPruefen)
+2025-01-07 18:12:21,509 - src.classes.vokabeltrainercontroller - TIME - 0.00017 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:12:21,516 - src.classes.vokabeltrainercontroller - TIME - 0.00005 sek = execute_kommando->update_with_childsZustandVokabelPruefen)
+2025-01-07 18:12:21,516 - src.classes.vokabeltrainercontroller - TIME - 0.00022 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:12:24,863 - src.classes.vokabeltrainercontroller - TIME - 1.08477 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:12:24,864 - src.classes.vokabeltrainercontroller - TIME - 1.08558 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:12:27,639 - src.classes.vokabeltrainercontroller - TIME - 2.59691 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:12:27,640 - src.classes.vokabeltrainercontroller - TIME - 2.60224 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:12:27,919 - src.classes.vokabeltrainercontroller - TIME - 2.88166 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:12:27,921 - src.classes.vokabeltrainercontroller - TIME - 2.88329 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 
+2025-01-07 18:12:32,170 - src.classes.vokabeltrainercontroller - TIME - 1.01415 sek = execute_kommando->update_with_childsZustandStart)
+2025-01-07 18:12:32,172 - src.classes.vokabeltrainercontroller - TIME - 1.01576 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:12:40,335 - src.classes.vokabeltrainercontroller - TIME - 1.08494 sek = execute_kommando->update_with_childsZustandStart)
+2025-01-07 18:12:40,335 - src.classes.vokabeltrainercontroller - TIME - 1.08580 sek = setze_cmd_str -> execute_kommando(cmd) cmd = =80
+2025-01-07 18:12:41,380 - src.classes.vokabeltrainercontroller - TIME - 1.04076 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:12:41,380 - src.classes.vokabeltrainercontroller - TIME - 1.04089 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:12:46,674 - src.classes.vokabeltrainercontroller - TIME - 0.00002 sek = execute_kommando->update_with_childsZustandVokabelPruefen)
+2025-01-07 18:12:46,674 - src.classes.vokabeltrainercontroller - TIME - 0.00019 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:12:46,678 - src.classes.vokabeltrainercontroller - TIME - 0.00003 sek = execute_kommando->update_with_childsZustandVokabelPruefen)
+2025-01-07 18:12:46,678 - src.classes.vokabeltrainercontroller - TIME - 0.00020 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:12:49,017 - src.classes.vokabeltrainercontroller - TIME - 1.07979 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:12:49,019 - src.classes.vokabeltrainercontroller - TIME - 1.08138 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:12:53,002 - src.classes.vokabeltrainercontroller - TIME - 3.80796 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:12:53,007 - src.classes.vokabeltrainercontroller - TIME - 3.81329 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:12:53,091 - src.classes.vokabeltrainercontroller - TIME - 3.89726 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:12:53,094 - src.classes.vokabeltrainercontroller - TIME - 3.90041 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 
+2025-01-07 18:12:55,737 - src.classes.vokabeltrainercontroller - TIME - 1.10031 sek = execute_kommando->update_with_childsZustandStart)
+2025-01-07 18:12:55,740 - src.classes.vokabeltrainercontroller - TIME - 1.10279 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:13:00,774 - src.classes.vokabeltrainercontroller - TIME - 0.33671 sek = execute_kommando->update_with_childsZustandStart)
+2025-01-07 18:13:00,775 - src.classes.vokabeltrainercontroller - TIME - 0.33797 sek = setze_cmd_str -> execute_kommando(cmd) cmd = =40
+2025-01-07 18:13:01,127 - src.classes.vokabeltrainercontroller - TIME - 0.34681 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:13:01,127 - src.classes.vokabeltrainercontroller - TIME - 0.34692 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:13:03,268 - src.classes.vokabeltrainercontroller - TIME - 0.00003 sek = execute_kommando->update_with_childsZustandVokabelPruefen)
+2025-01-07 18:13:03,269 - src.classes.vokabeltrainercontroller - TIME - 0.00023 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:13:03,275 - src.classes.vokabeltrainercontroller - TIME - 0.00003 sek = execute_kommando->update_with_childsZustandVokabelPruefen)
+2025-01-07 18:13:03,275 - src.classes.vokabeltrainercontroller - TIME - 0.00016 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:13:05,029 - src.classes.vokabeltrainercontroller - TIME - 0.35394 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:13:05,030 - src.classes.vokabeltrainercontroller - TIME - 0.35408 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:13:06,440 - src.classes.vokabeltrainercontroller - TIME - 1.21171 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:13:06,461 - src.classes.vokabeltrainercontroller - TIME - 1.23237 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:13:06,892 - src.classes.vokabeltrainercontroller - TIME - 1.66378 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:13:06,898 - src.classes.vokabeltrainercontroller - TIME - 1.66918 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 
+2025-01-07 18:13:06,946 - src.classes.vokabeltrainercontroller - TIME - 1.71704 sek = execute_kommando->update_with_childsZustandBoxinfo)
+2025-01-07 18:13:06,946 - src.classes.vokabeltrainercontroller - TIME - 1.71761 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 
+2025-01-07 18:13:08,491 - src.classes.vokabeltrainercontroller - TIME - 0.34457 sek = execute_kommando->update_with_childsZustandStart)
+2025-01-07 18:13:08,491 - src.classes.vokabeltrainercontroller - TIME - 0.34482 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:21:08,534 - src.classes.vokabeltrainercontroller - TIME - 0.00002 sek = Subscribe Events
+2025-01-07 18:21:08,933 - src.classes.vokabeltrainercontroller - TIME - 0.39852 sek = programm_loop -> karten.laden()
+2025-01-07 18:21:14,346 - src.classes.vokabeltrainercontroller - TIME - 5.41238 sek = programm_loop -> InfoManager.factory(start)
+2025-01-07 18:21:14,772 - src.classes.vokabeltrainercontroller - TIME - 0.42452 sek = programm_loop -> buildZustandStart()
+2025-01-07 18:21:24,061 - src.classes.vokabeltrainercontroller - TIME - 0.33617 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:21:24,062 - src.classes.vokabeltrainercontroller - TIME - 0.33674 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = =40
+2025-01-07 18:21:24,418 - src.classes.vokabeltrainercontroller - TIME - 0.35255 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:21:24,418 - src.classes.vokabeltrainercontroller - TIME - 0.35269 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:21:27,436 - src.classes.vokabeltrainercontroller - TIME - 0.00004 sek = 	 execute_kommando -> update_with_childs( ZustandVokabelPruefen )
+2025-01-07 18:21:27,436 - src.classes.vokabeltrainercontroller - TIME - 0.00020 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:21:27,440 - src.classes.vokabeltrainercontroller - TIME - 0.00003 sek = 	 execute_kommando -> update_with_childs( ZustandVokabelPruefen )
+2025-01-07 18:21:27,440 - src.classes.vokabeltrainercontroller - TIME - 0.00014 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:21:29,196 - src.classes.vokabeltrainercontroller - TIME - 0.34414 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:21:29,196 - src.classes.vokabeltrainercontroller - TIME - 0.34432 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:21:30,152 - src.classes.vokabeltrainercontroller - TIME - 0.79949 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:21:30,153 - src.classes.vokabeltrainercontroller - TIME - 0.79968 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:21:30,323 - src.classes.vokabeltrainercontroller - TIME - 0.97003 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:21:30,323 - src.classes.vokabeltrainercontroller - TIME - 0.97030 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 
+2025-01-07 18:21:34,218 - src.classes.vokabeltrainercontroller - TIME - 0.35706 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:21:34,218 - src.classes.vokabeltrainercontroller - TIME - 0.35729 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:21:41,163 - src.classes.vokabeltrainercontroller - TIME - 0.89847 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:21:41,164 - src.classes.vokabeltrainercontroller - TIME - 0.89863 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = =82
+2025-01-07 18:21:42,080 - src.classes.vokabeltrainercontroller - TIME - 0.91167 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:21:42,080 - src.classes.vokabeltrainercontroller - TIME - 0.91178 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:21:44,741 - src.classes.vokabeltrainercontroller - TIME - 0.80081 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:21:44,742 - src.classes.vokabeltrainercontroller - TIME - 0.80140 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = =FrageeinheitChinesischBedeutung
+2025-01-07 18:21:44,742 - src.classes.vokabeltrainercontroller - TIME - 0.00001 sek = 	 execute_kommando -> update_with_childs( ZustandVokabelPruefen )
+2025-01-07 18:21:44,742 - src.classes.vokabeltrainercontroller - TIME - 0.00006 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:21:44,745 - src.classes.vokabeltrainercontroller - TIME - 0.00002 sek = 	 execute_kommando -> update_with_childs( ZustandVokabelPruefen )
+2025-01-07 18:21:44,746 - src.classes.vokabeltrainercontroller - TIME - 0.00013 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:21:47,835 - src.classes.vokabeltrainercontroller - TIME - 0.83869 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:21:47,836 - src.classes.vokabeltrainercontroller - TIME - 0.83968 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:21:49,398 - src.classes.vokabeltrainercontroller - TIME - 1.35248 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:21:49,403 - src.classes.vokabeltrainercontroller - TIME - 1.35769 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:21:49,885 - src.classes.vokabeltrainercontroller - TIME - 1.84010 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:21:49,886 - src.classes.vokabeltrainercontroller - TIME - 1.84098 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 
+2025-01-07 18:21:52,331 - src.classes.vokabeltrainercontroller - TIME - 0.79105 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:21:52,332 - src.classes.vokabeltrainercontroller - TIME - 0.79230 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:21:58,014 - src.classes.vokabeltrainercontroller - TIME - 1.08860 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:21:58,015 - src.classes.vokabeltrainercontroller - TIME - 1.08912 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = =80
+2025-01-07 18:21:59,080 - src.classes.vokabeltrainercontroller - TIME - 1.06074 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:21:59,080 - src.classes.vokabeltrainercontroller - TIME - 1.06086 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:22:04,373 - src.classes.vokabeltrainercontroller - TIME - 0.00003 sek = 	 execute_kommando -> update_with_childs( ZustandVokabelPruefen )
+2025-01-07 18:22:04,374 - src.classes.vokabeltrainercontroller - TIME - 0.00024 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:22:04,382 - src.classes.vokabeltrainercontroller - TIME - 0.00005 sek = 	 execute_kommando -> update_with_childs( ZustandVokabelPruefen )
+2025-01-07 18:22:04,382 - src.classes.vokabeltrainercontroller - TIME - 0.00039 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:22:07,538 - src.classes.vokabeltrainercontroller - TIME - 1.15891 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:22:07,540 - src.classes.vokabeltrainercontroller - TIME - 1.16029 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:22:12,541 - src.classes.vokabeltrainercontroller - TIME - 4.78502 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:22:12,546 - src.classes.vokabeltrainercontroller - TIME - 4.79027 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:22:13,591 - src.classes.vokabeltrainercontroller - TIME - 5.83522 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:22:13,598 - src.classes.vokabeltrainercontroller - TIME - 5.84215 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 
+2025-01-07 18:22:13,712 - src.classes.vokabeltrainercontroller - TIME - 5.95635 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:22:13,715 - src.classes.vokabeltrainercontroller - TIME - 5.95902 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 
+2025-01-07 18:22:19,926 - src.classes.vokabeltrainercontroller - TIME - 1.17323 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:22:19,928 - src.classes.vokabeltrainercontroller - TIME - 1.17465 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = =FrageeinheitChinesischPinyin
+2025-01-07 18:22:21,176 - src.classes.vokabeltrainercontroller - TIME - 1.24325 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:22:21,177 - src.classes.vokabeltrainercontroller - TIME - 1.24481 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:22:25,142 - src.classes.vokabeltrainercontroller - TIME - 1.19425 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:22:25,144 - src.classes.vokabeltrainercontroller - TIME - 1.19662 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:34:34,110 - src.classes.vokabeltrainercontroller - TIME - 0.00002 sek = Subscribe Events
+2025-01-07 18:34:34,516 - src.classes.vokabeltrainercontroller - TIME - 0.40466 sek = programm_loop -> karten.laden()
+2025-01-07 18:34:39,965 - src.classes.vokabeltrainercontroller - TIME - 5.44875 sek = programm_loop -> InfoManager.factory(start)
+2025-01-07 18:34:40,395 - src.classes.vokabeltrainercontroller - TIME - 0.42886 sek = programm_loop -> buildZustandStart()
+2025-01-07 18:35:03,282 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:04,374 - src.classes.vokabeltrainercontroller - TIME - 1.09156 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:35:04,375 - src.classes.vokabeltrainercontroller - TIME - 1.09228 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = =80
+2025-01-07 18:35:04,379 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:05,507 - src.classes.vokabeltrainercontroller - TIME - 1.12754 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:35:05,507 - src.classes.vokabeltrainercontroller - TIME - 1.12769 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:35:09,675 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:10,744 - src.classes.vokabeltrainercontroller - TIME - 1.06834 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:35:10,746 - src.classes.vokabeltrainercontroller - TIME - 1.07065 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:35:14,260 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:15,256 - src.classes.vokabeltrainercontroller - TIME - 0.99626 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:35:15,257 - src.classes.vokabeltrainercontroller - TIME - 0.99752 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = =81
+2025-01-07 18:35:18,796 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:19,835 - src.classes.vokabeltrainercontroller - TIME - 1.03827 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:35:19,835 - src.classes.vokabeltrainercontroller - TIME - 1.03838 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:35:24,499 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:25,563 - src.classes.vokabeltrainercontroller - TIME - 1.06357 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:35:25,564 - src.classes.vokabeltrainercontroller - TIME - 1.06444 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = =FrageeinheitChinesischPinyin
+2025-01-07 18:35:25,568 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:26,646 - src.classes.vokabeltrainercontroller - TIME - 1.07789 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:35:26,647 - src.classes.vokabeltrainercontroller - TIME - 1.07872 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:35:28,915 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:28,916 - src.classes.vokabeltrainercontroller - TIME - 0.00002 sek = 	 execute_kommando -> update_with_childs( ZustandVokabelPruefen )
+2025-01-07 18:35:28,916 - src.classes.vokabeltrainercontroller - TIME - 0.00010 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:35:28,923 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:28,923 - src.classes.vokabeltrainercontroller - TIME - 0.00003 sek = 	 execute_kommando -> update_with_childs( ZustandVokabelPruefen )
+2025-01-07 18:35:28,923 - src.classes.vokabeltrainercontroller - TIME - 0.00010 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandVokabelPruefen
+2025-01-07 18:35:30,819 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:31,894 - src.classes.vokabeltrainercontroller - TIME - 1.07486 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:35:31,895 - src.classes.vokabeltrainercontroller - TIME - 1.07591 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:35:31,904 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:32,024 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:34,443 - src.classes.vokabeltrainercontroller - TIME - 2.41370 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:35:34,449 - src.classes.vokabeltrainercontroller - TIME - 2.41911 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo
+2025-01-07 18:35:34,972 - src.classes.vokabeltrainercontroller - TIME - 2.94232 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:35:34,973 - src.classes.vokabeltrainercontroller - TIME - 2.94394 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 
+2025-01-07 18:35:36,307 - src.classes.vokabeltrainercontroller - TIME - ___________ START setze_cmd_str
+2025-01-07 18:35:37,411 - src.classes.vokabeltrainercontroller - TIME - 1.10398 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:35:37,413 - src.classes.vokabeltrainercontroller - TIME - 1.10554 sek =  setze_cmd_str -> execute_kommando(cmd) cmd = 0
+2025-01-07 18:38:36,498 - src.classes.vokabeltrainercontroller - TIME - 0.00001 sek = Subscribe Events
+2025-01-07 18:38:36,916 - src.classes.vokabeltrainercontroller - TIME - 0.41745 sek = programm_loop -> karten.laden()
+2025-01-07 18:38:42,402 - src.classes.vokabeltrainercontroller - TIME - 5.48584 sek = programm_loop -> InfoManager.factory(start)
+2025-01-07 18:38:42,825 - src.classes.vokabeltrainercontroller - TIME - 0.42084 sek = programm_loop -> buildZustandStart()
+2025-01-07 18:38:52,571 - src.classes.vokabeltrainercontroller - TIME - ___________   START setze_cmd_str mit =81 zustand = Zustand 1
+2025-01-07 18:38:53,628 - src.classes.vokabeltrainercontroller - TIME - 1.05674 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:38:53,629 - src.classes.vokabeltrainercontroller - TIME - 1.05777 sek = setze_cmd_str -> execute_kommando(cmd) cmd = =81 zustand = Zustand 1
+2025-01-07 18:38:56,882 - src.classes.vokabeltrainercontroller - TIME - ___________   START setze_cmd_str mit @ZustandBoxinfo zustand = Zustand 1
+2025-01-07 18:38:57,908 - src.classes.vokabeltrainercontroller - TIME - 1.02587 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:38:57,908 - src.classes.vokabeltrainercontroller - TIME - 1.02598 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo zustand = Zustand 2
+2025-01-07 18:39:01,515 - src.classes.vokabeltrainercontroller - TIME - ___________   START setze_cmd_str mit 0 zustand = Zustand 2
+2025-01-07 18:39:02,617 - src.classes.vokabeltrainercontroller - TIME - 1.10139 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:39:02,618 - src.classes.vokabeltrainercontroller - TIME - 1.10288 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 0 zustand = Zustand 1
+2025-01-07 18:39:05,812 - src.classes.vokabeltrainercontroller - TIME - ___________   START setze_cmd_str mit @ZustandBoxinfo zustand = Zustand 1
+2025-01-07 18:39:06,870 - src.classes.vokabeltrainercontroller - TIME - 1.05816 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:39:06,870 - src.classes.vokabeltrainercontroller - TIME - 1.05829 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo zustand = Zustand 2
+2025-01-07 18:39:08,991 - src.classes.vokabeltrainercontroller - TIME - ___________   START setze_cmd_str mit @ZustandZeigeVokabellisteKomplett zustand = Zustand 2
+2025-01-07 18:39:09,136 - src.classes.vokabeltrainercontroller - TIME - 0.14527 sek = 	 execute_kommando -> update_with_childs( ZustandZeigeVokabellisteKomplett )
+2025-01-07 18:39:09,136 - src.classes.vokabeltrainercontroller - TIME - 0.14543 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandZeigeVokabellisteKomplett zustand = Zustand Zeige Vokablliste
+2025-01-07 18:39:09,140 - src.classes.vokabeltrainercontroller - TIME - ___________   START setze_cmd_str mit @ZustandZeigeVokabelliste zustand = Zustand Zeige Vokablliste
+2025-01-07 18:39:09,266 - src.classes.vokabeltrainercontroller - TIME - 0.12640 sek = 	 execute_kommando -> update_with_childs( ZustandZeigeVokabellisteKomplett )
+2025-01-07 18:39:09,266 - src.classes.vokabeltrainercontroller - TIME - 0.12665 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandZeigeVokabelliste zustand = Zustand Zeige Vokablliste
+2025-01-07 18:39:13,329 - src.classes.vokabeltrainercontroller - TIME - ___________   START setze_cmd_str mit 0 zustand = Zustand Zeige Vokablliste
+2025-01-07 18:39:14,331 - src.classes.vokabeltrainercontroller - TIME - 1.00196 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:39:14,332 - src.classes.vokabeltrainercontroller - TIME - 1.00341 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 0 zustand = Zustand 2
+2025-01-07 18:39:14,337 - src.classes.vokabeltrainercontroller - TIME - ___________   START setze_cmd_str mit @ZustandBoxinfo zustand = Zustand 2
+2025-01-07 18:39:14,369 - src.classes.vokabeltrainercontroller - TIME - ___________   START setze_cmd_str mit @ZustandBoxinfo zustand = Zustand 2
+2025-01-07 18:39:18,629 - src.classes.vokabeltrainercontroller - TIME - 4.25395 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:39:18,629 - src.classes.vokabeltrainercontroller - TIME - 4.25409 sek = setze_cmd_str -> execute_kommando(cmd) cmd = @ZustandBoxinfo zustand = Zustand 2
+2025-01-07 18:39:18,693 - src.classes.vokabeltrainercontroller - TIME - 4.31813 sek = 	 execute_kommando -> update_with_childs( ZustandBoxinfo )
+2025-01-07 18:39:18,695 - src.classes.vokabeltrainercontroller - TIME - 4.31995 sek = setze_cmd_str -> execute_kommando(cmd) cmd =  zustand = Zustand 2
+2025-01-07 18:39:20,162 - src.classes.vokabeltrainercontroller - TIME - ___________   START setze_cmd_str mit 0 zustand = Zustand 2
+2025-01-07 18:39:21,174 - src.classes.vokabeltrainercontroller - TIME - 1.01147 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:39:21,176 - src.classes.vokabeltrainercontroller - TIME - 1.01343 sek = setze_cmd_str -> execute_kommando(cmd) cmd = 0 zustand = Zustand 1
+2025-01-07 18:42:09,331 - src.classes.vokabeltrainercontroller - TIME - ___________   START setze_cmd_str mit s zustand = Zustand 1
+2025-01-07 18:42:09,331 - src.classes.vokabeltrainercontroller - TIME - 0.00018 sek = 	speicher_daten_in_dateien -> thread starten
+2025-01-07 18:42:10,350 - src.classes.vokabeltrainercontroller - TIME - 1.01871 sek = 	 execute_kommando -> update_with_childs( ZustandStart )
+2025-01-07 18:42:10,351 - src.classes.vokabeltrainercontroller - TIME - 1.01962 sek = setze_cmd_str -> execute_kommando(cmd) cmd = s zustand = Zustand 1
+2025-01-07 18:42:13,178 - src.classes.vokabeltrainercontroller - TIME - 3.84638 sek = 		speicher_daten_in_dateien -> speicher_prozess
+2025-01-07 18:45:44,441 - src.classes.vokabeltrainercontroller - TIME - 0.00001 sek = Subscribe Events
+2025-01-07 18:45:44,441 - src.classes.vokabeltrainercontroller - TIME - 0.00004 sek = 	update_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte
+2025-01-07 18:45:44,441 - src.classes.vokabeltrainercontroller - TIME - 0.00001 sek = 	update_vokabelkarte_statistik -> self.info_manager.update_infos_fuer_karte
+2025-01-07 19:20:39,343 - src.classes.vokabeltrainercontroller - TIME - *****  Beginne neue Session  *****
+2025-01-07 19:22:31,047 - src.classes.vokabeltrainercontroller - TIME - 0.00001 sek = Subscribe Events
+2025-01-07 19:22:31,047 - src.classes.vokabeltrainercontroller - TIME - 0.00004 sek = 	update_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte
+2025-01-07 19:22:31,047 - src.classes.vokabeltrainercontroller - TIME - 0.00001 sek = 	update_vokabelkarte_statistik -> self.info_manager.update_infos_fuer_karte
