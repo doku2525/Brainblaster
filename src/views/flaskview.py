@@ -17,6 +17,9 @@ zustand_zu_route = {
     'ZustandVokabelPruefen': 'karten_pruefen',
     'ZustandVokabelLernen': 'karten_lernen',
     'ZustandVokabelNeue': 'karten_neue',
+    'ZustandZeigeVokabellisteKomplett': 'zeige_vokabelliste_komplett',
+    'ZustandZeigeVokabellisteLernen': 'zeige_vokabelliste_lernen',
+    'ZustandZeigeVokabellisteNeue': 'zeige_vokabelliste_neue'
 }
 
 # Dictionary mit den Routen, die eigene Zustaende haben.
