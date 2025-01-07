@@ -2,6 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field, replace
 from typing import Callable, Type, TYPE_CHECKING, cast
 
+from src.classes.configurator import config
 from src.classes.filterlistenfactory import FilterlistenFactory
 from src.classes.lernuhr import Lernuhr
 
@@ -12,7 +13,7 @@ from src.zustaende.zustandvokabeltesten import (ZustandVokabelTesten, ZustandVok
                                                 ZustandVokabelLernen, ZustandVokabelNeue)
 from src.zustaende.zustandzeigevokabelliste import (ZustandZeigeVokabelliste, ZustandZeigeVokabellisteKomplett,
                                                     ZustandZeigeVokabellisteLernen, ZustandZeigeVokabellisteNeue)
-
+import src.utils.utils_performancelogger as u_log
 if TYPE_CHECKING:
     from src.classes.vokabeltrainermodell import VokabeltrainerModell
     from src.classes.infomanager import InfoManager
@@ -25,6 +26,9 @@ if TYPE_CHECKING:
     3. ein Zustandsmediator-Klasse definiert werden.
     falls notwendig:
     4. eine Route in flaskview erstellt werden"""
+
+logger = u_log.ZeitLogger.create(f"{config.log_pfad}performance.log", __name__)
+logger.starte_logging()
 
 
 @dataclass(frozen=True)
@@ -155,7 +159,7 @@ class ZustandsFactory:
         func = service_liste.get(alter_zustand.__class__, lambda x: x)
         return func(alter_zustand)
 
-    def update_frageeinheit(self, zustand: Zustand):
+    def update_frageeinheit(self, zustand: Zustand) -> Zustand:
         return replace(
             zustand,
             child=[replace(alter_zustand, aktuelle_frageeinheit=self.modell.aktuelle_box().aktuelle_frage)
@@ -163,8 +167,10 @@ class ZustandsFactory:
                    for alter_zustand
                    in zustand.child])
 
-    def update_with_childs(self, zustand: Zustand):
+    def update_with_childs(self, zustand: Zustand) -> Zustand:
         return replace(zustand if zustand.__class__ in ZustandsFactory.zustaende_ohne_update()
-                       else self.update_zustand(zustand),
-                       child=[self.update_zustand(child_zustand)
-                              for child_zustand in zustand.child])
+                       else self.update_zustand(zustand))
+        # return replace(zustand if zustand.__class__ in ZustandsFactory.zustaende_ohne_update()
+        #                else self.update_zustand(zustand),
+        #                child=[self.update_zustand(child_zustand)
+        #                       for child_zustand in zustand.child])

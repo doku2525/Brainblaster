@@ -116,6 +116,11 @@ class FlaskView:
                                    formatierung=self.data['formatierung'],
                                    zustand=self.data['zustand'])
 
+        @self.app.route('/karten_testen_nummern_pad')
+        def karten_testen_nummern_pad():
+            return render_template('karten_testen_nummern_pad.html',
+                                   zustand=self.data['zustand'])
+
         @self.app.route('/get_aktuelle_frage_und_antwort')
         def get_aktuelle_frage_und_antwort():
             """Route fuer index"""
@@ -158,6 +163,7 @@ class FlaskView:
             """Bei pdf-Option wird return render_pdf(HTML(string=html)) aufgerufen."""
             command = request.args.get('zurueck', False)
             pdf = request.args.get('pdf', False)
+            print(f"zeige {pdf = }")
             if command:
                 self.setze_cmd_warte_auf_update('c0', self.warte_zeit)
                 return redirect(url_for('boxinfo'))
@@ -177,6 +183,8 @@ class FlaskView:
             # TODO Tests
             command = request.args.get('fe', False)
             pdf = request.args.get('pdf', False)
+            print(f"komplett {request.args = }")
+            print(f"komplett {pdf = }")
             if command:
                 self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
             self.setze_cmd_warte_auf_update(f"c@ZustandZeigeVokabellisteKomplett", self.warte_zeit)
@@ -207,6 +215,7 @@ class FlaskView:
             return redirect(
                 url_for('zeige_vokabelliste', pdf=True)) if pdf else redirect(
                 url_for('zeige_vokabelliste'))
+
 
         @self.app.route('/kommando/<cmd>')
         def antwort(cmd):
