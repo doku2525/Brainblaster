@@ -120,15 +120,17 @@ class VokabeltrainerController:
     def programm_loop(self):
         self.modell.vokabelboxen.laden()
         self.modell.vokabelkarten.laden()
+
         # TODO Erstellen des InfoManagers blockiert das System, so dass der aktuelle zustand nicht gesetzt ist
         #   und Flaskview Fehlermeldungen (KeyError) beim Abrufen der Zeit ausgibt (siehe get_Routen in flaskview.py).
         self.info_manager = InfoManager.factory(liste_der_boxen=self.modell.vokabelboxen.vokabelboxen,
                                                 liste_der_karten=self.modell.vokabelkarten.vokabelkarten
                                                 ).erzeuge_alle_infos(self.uhr.now(Lernuhr.echte_zeit()))
-        print(f"Beginne mit der Arbeit. { self.info_manager.boxen_als_number_dict()[40] = }")
 
+        print(f"Beginne mit der Arbeit. { self.info_manager.boxen_als_number_dict()[40] = }")
         self.aktueller_zustand = (ZustandsFactory(self.modell, self.uhr, self.info_manager).
                                   buildZustandStart(ZustandsFactory.start_zustand()))
+
         self.view_observer.views_updaten(self.aktueller_zustand, Lernuhr.echte_zeit())
         self.view_observer.views_rendern()
 

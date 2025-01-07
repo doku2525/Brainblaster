@@ -1,6 +1,7 @@
 {
     "daten_pfad": "daten/data/",
     "backup_pfad": "daten/data/backups/",
+    "log_pfad": "daten/log/",
     "config_dateiname": "config.JSON",
     "uhr_dateiname": "uhrzeit.JSON",
     "vokabelkarten_dateiname": "vokabelkarten.JSON",

@@ -7,6 +7,7 @@ import src.utils.utils_io as u_io
 class Configurator:
     daten_pfad: str = "daten/data/"
     backup_pfad: str = "daten/data/backups/"
+    log_pfad: str = "daten/log/"
     config_dateiname: str = "config.JSON"
     uhr_dateiname: str = "uhrzeit.JSON"
     vokabelkarten_dateiname: str = "vokabelkarten.JSON"
