@@ -1,10 +1,13 @@
 from __future__ import annotations
+
+import threading
 from abc import ABC, abstractmethod
 from dataclasses import replace
 import logging
 import time
 from typing import Callable, cast, TYPE_CHECKING
 from threading import Thread
+import threading
 
 from src.classes.configurator import config
 from src.classes.eventmanager import EventTyp
@@ -38,6 +41,7 @@ class VokabeltrainerController:
         self.view_observer: ObserverManager = view_observer
         self.event_manager: EventManager = event_manager
         self.cmd: str = ''
+        self.info_manager_lock = None       # Lock fuer Threads zum Updaten des Infomanagers
 
         # Subscribe Events
         logger.start()
@@ -82,10 +86,20 @@ class VokabeltrainerController:
         logger.start()
         self.modell.vokabelkarten.replace_karte(alte_karte, neue_karte)
         logger.fertig(f"\tupdate_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte")
-        logger.start()
-        self.info_manager = self.info_manager.update_infos_fuer_karte(alte_karte,
-                                                                      neue_karte,
-                                                                      self.uhr.now(Lernuhr.echte_zeit()))
+        logger.start(f"\tupdate_vokabelkarte_statistik Thread info_manager.update_infos_fuer_karte")
+        self.info_manager_lock = threading.Lock()
+
+        def update_info_in_thread():
+            """Urspruengliche Funktion in Funktion verpackt, die vom Thread gestartet wird"""
+            logger.start(f"\t\tupdate_vokabelkarte_statistik -> update_info_in_thread")
+            with self.info_manager_lock:
+                self.info_manager = self.info_manager.update_infos_fuer_karte(alte_karte,
+                                                                              neue_karte,
+                                                                              self.uhr.now(Lernuhr.echte_zeit()))
+            logger.fertig(f"\t\tupdate_vokabelkarte_statistik -> update_info_in_thread")
+
+        thread = threading.Thread(target=update_info_in_thread)
+        thread.start()
         logger.fertig(f"\tupdate_vokabelkarte_statistik -> self.info_manager.update_infos_fuer_karte")
 
     def speicher_daten_in_dateien(self):
