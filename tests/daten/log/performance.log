@@ -311,3 +311,17 @@
 2025-01-09 17:51:06,086 - src.classes.vokabeltrainercontroller - TIME - 0.00004 sek = 	update_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte
 2025-01-09 17:51:06,086 - src.classes.vokabeltrainercontroller - TIME - ___________   START 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt
 2025-01-09 17:51:06,086 - src.classes.vokabeltrainercontroller - TIME - 0.00008 sek = 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt
+2025-01-09 18:40:23,424 - src.classes.infomanager - TIME - *****  Beginne neue Session  *****
+2025-01-09 18:40:23,454 - src.zustaende.zustandsfactory - TIME - *****  Beginne neue Session  *****
+2025-01-09 18:40:23,455 - src.classes.vokabeltrainercontroller - TIME - *****  Beginne neue Session  *****
+2025-01-09 18:41:27,743 - src.classes.infomanager - TIME - 0.05695 sek = boxen_als_number_dict
+2025-01-09 18:42:20,893 - src.classes.vokabeltrainercontroller - TIME - 0.00002 sek = Subscribe Events
+2025-01-09 18:42:20,893 - src.classes.vokabeltrainercontroller - TIME - 0.00009 sek = 	update_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte
+2025-01-09 18:42:20,893 - src.classes.vokabeltrainercontroller - TIME - ___________   START 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt
+2025-01-09 18:42:20,893 - src.classes.vokabeltrainercontroller - TIME - 0.00011 sek = 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt
+2025-01-09 18:42:40,802 - src.classes.infomanager - TIME - *****  Beginne neue Session  *****
+2025-01-09 18:42:40,832 - src.zustaende.zustandsfactory - TIME - *****  Beginne neue Session  *****
+2025-01-09 18:42:40,833 - src.classes.vokabeltrainercontroller - TIME - *****  Beginne neue Session  *****
+2025-01-09 18:42:57,434 - src.classes.infomanager - TIME - *****  Beginne neue Session  *****
+2025-01-09 18:42:57,463 - src.zustaende.zustandsfactory - TIME - *****  Beginne neue Session  *****
+2025-01-09 18:42:57,464 - src.classes.vokabeltrainercontroller - TIME - *****  Beginne neue Session  *****

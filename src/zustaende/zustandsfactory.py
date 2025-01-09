@@ -97,19 +97,19 @@ class ZustandsFactory:
     def buildZustandVokabelPruefen(self, zustand: ZustandVokabelPruefen) -> ZustandVokabelPruefen:
         filter_liste = FilterlistenFactory.filterliste_vokabeln_pruefen(self.modell.aktuelle_box(),
                                                                         self.uhr.now(Lernuhr.echte_zeit()),
-                                                                        20)
+                                                                        config.karten_max_pruefen)
         return cast(ZustandVokabelPruefen, self.buildZustandVokabelTesten(zustand, filter_liste))
 
     def buildZustandVokabelLernen(self, zustand: ZustandVokabelLernen) -> ZustandVokabelLernen:
         filter_liste = FilterlistenFactory.filterliste_vokabeln_lernen(self.modell.aktuelle_box(),
                                                                        self.uhr.now(Lernuhr.echte_zeit()),
-                                                                       20)
+                                                                       config.karten_max_lernen)
         return cast(ZustandVokabelLernen, self.buildZustandVokabelTesten(zustand, filter_liste))
 
     def buildZustandVokabelNeue(self, zustand: ZustandVokabelNeue) -> ZustandVokabelNeue:
         filter_liste = FilterlistenFactory.filterliste_vokabeln_neue(self.modell.aktuelle_box(),
                                                                      self.uhr.now(Lernuhr.echte_zeit()),
-                                                                     10)
+                                                                     config.karten_max_neue)
         return cast(ZustandVokabelNeue, self.buildZustandVokabelTesten(zustand, filter_liste))
 
     def buildZustandZeigeVokabelliste(self, zustand: ZustandZeigeVokabelliste,

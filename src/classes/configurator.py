@@ -12,6 +12,9 @@ class Configurator:
     uhr_dateiname: str = "uhrzeit.JSON"
     vokabelkarten_dateiname: str = "vokabelkarten.JSON"
     vokabelboxen_dateiname: str = "vokabelboxen.JSON"
+    karten_max_pruefen: int = 20
+    karten_max_lernen: int = 20
+    karten_max_neue: int = 10
 
     def speicher(self) -> None:
         u_io.speicher_in_jsondatei(asdict(self), self.daten_pfad + self.config_dateiname)

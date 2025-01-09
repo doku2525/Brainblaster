@@ -41,6 +41,7 @@ class test_FlaskView(TestCase):
                                 'frage': 'Frage',
                                 'antwort': 'Antwort',
                                 'formatierung': 'Chinesisch',
+                                'wiederholung': 'False',
                                 'zustand': 'ZustandVokabelPruefen'}
         self.client_testen = self.app_testen.app.test_client()
         self.app_pruefen = FlaskView(EventManager())
@@ -48,6 +49,7 @@ class test_FlaskView(TestCase):
                                  'frage': 'Frage',
                                  'antwort': 'Antwort',
                                  'formatierung': 'Chinesisch',
+                                 'wiederholung': 'False',
                                  'zustand': 'ZustandVokabelPruefen'}
         self.client_pruefen = self.app_pruefen.app.test_client()
         self.app_lernen = FlaskView(EventManager())
@@ -55,6 +57,7 @@ class test_FlaskView(TestCase):
                                 'frage': 'Frage',
                                 'antwort': 'Antwort',
                                 'formatierung': 'Chinesisch',
+                                'wiederholung': 'False',
                                 'zustand': 'ZustandVokabelLernen'}
         self.client_lernen = self.app_lernen.app.test_client()
         self.app_neue = FlaskView(EventManager())
@@ -62,6 +65,7 @@ class test_FlaskView(TestCase):
                               'frage': 'Frage',
                               'antwort': 'Antwort',
                               'formatierung': 'Chinesisch',
+                              'wiederholung': 'False',
                               'zustand': 'ZustandVokabelNeue'}
         self.client_neue = self.app_neue.app.test_client()
 
