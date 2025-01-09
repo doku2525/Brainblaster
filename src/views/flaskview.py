@@ -114,6 +114,7 @@ class FlaskView:
                                    frage=self.data['frage'],
                                    antwort=self.data['antwort'],
                                    formatierung=self.data['formatierung'],
+                                   wiederholung=self.data['wiederholung'],
                                    zustand=self.data['zustand'])
 
         @self.app.route('/karten_testen_nummern_pad')

@@ -58,28 +58,59 @@
                 <td class="bewertungsfeld">
                     <table>
                         {% if zustand == 'ZustandVokabelLernen' %}
-                        <tr>
-                            <td class="buttonfeld"><a href="/kommando/ca1"><div class="knopf" style="background-color:darkred">  </div></a></td>
-                            <td class="buttonfeld"><a href="/kommando/ca2"><div class="knopf" style="background-color:darkred"> &#x2717; </div></a></td>
-                            <td class="buttonfeld"><a href="/kommando/ca3"><div class="knopf" style="background-color:darkred">  </div></a></td>
-                        </tr>
-                        <tr>
-                            <td class="buttonfeld"><a href="/kommando/ca4"><div class="knopf" style="background-color:green">  </div></a></td>
-                            <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:green"> &#x2713; </div></a></td>
-                            <td class="buttonfeld"><a href="/kommando/ca6"><div class="knopf" style="background-color:green">  </div></a></td>
-
-                        </tr>
+                            <tr>
+                                <td class="buttonfeld"><a href="/kommando/ca1"><div class="knopf" style="background-color:darkred">  </div></a></td>
+                                <td class="buttonfeld"><a href="/kommando/ca2"><div class="knopf" style="background-color:darkred"> &#x2717; </div></a></td>
+                                <td class="buttonfeld"><a href="/kommando/ca3"><div class="knopf" style="background-color:darkred">  </div></a></td>
+                            </tr>
+                            <tr>
+                                <td class="buttonfeld"><a href="/kommando/ca4"><div class="knopf" style="background-color:green">  </div></a></td>
+                                <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:green"> &#x2713; </div></a></td>
+                                <td class="buttonfeld"><a href="/kommando/ca6"><div class="knopf" style="background-color:green">  </div></a></td>
+                            </tr>
+                        {% elif zustand == 'ZustandVokabelNeue' %}
+                            <tr>
+                                <td class="buttonfeld"><a href="/kommando/ca1"><div class="knopf" style="background-color:darkred">  </div></a></td>
+                                <td class="buttonfeld"><a href="/kommando/ca2"><div class="knopf" style="background-color:darkred"> &#x2717; </div></a></td>
+                                <td class="buttonfeld"><a href="/kommando/ca3"><div class="knopf" style="background-color:darkred">  </div></a></td>
+                            </tr>
+                            {% if wiederholung == 'False' %}
+                                <tr>
+                                    <td class="buttonfeld"><a href="/kommando/ca4"><div class="knopf" style="background-color:greenyellow"> 4 </div></a></td>
+                                    <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:lime"> 5 </div></a></td>
+                                    <td class="buttonfeld"><a href="/kommando/ca6"><div class="knopf" style="background-color:green"> 6 </div></a></td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td class="buttonfeld"><a href="/kommando/ca4"><div class="knopf" style="background-color:green">  </div></a></td>
+                                    <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:green"> &#x2713; </div></a></td>
+                                    <td class="buttonfeld"><a href="/kommando/ca6"><div class="knopf" style="background-color:green">  </div></a></td>
+                                </tr>
+                            {% endif %}
                         {% else %}
-                        <tr>
-                            <td class="buttonfeld"><a href="/kommando/ca1"><div class="knopf" style="background-color:darkred"> 1 </div></a></td>
-                            <td class="buttonfeld"><a href="/kommando/ca2"><div class="knopf" style="background-color:orangered"> 2 </div></a></td>
-                            <td class="buttonfeld"><a href="/kommando/ca3"><div class="knopf" style="background-color:orange"> 3 </div></a></td>
-                        </tr>
-                        <tr>
-                            <td class="buttonfeld"><a href="/kommando/ca4"><div class="knopf" style="background-color:greenyellow"> 4 </div></a></td>
-                            <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:lime"> 5 </div></a></td>
-                            <td class="buttonfeld"><a href="/kommando/ca6"><div class="knopf" style="background-color:green"> 6 </div></a></td>
-                        </tr>
+                            {% if wiederholung == 'True' %}
+                                <tr>
+                                    <td class="buttonfeld"><a href="/kommando/ca1"><div class="knopf" style="background-color:darkred">  </div></a></td>
+                                    <td class="buttonfeld"><a href="/kommando/ca2"><div class="knopf" style="background-color:darkred"> &#x2717; </div></a></td>
+                                    <td class="buttonfeld"><a href="/kommando/ca3"><div class="knopf" style="background-color:darkred">  </div></a></td>
+                                </tr>
+                                <tr>
+                                    <td class="buttonfeld"><a href="/kommando/ca4"><div class="knopf" style="background-color:green">  </div></a></td>
+                                    <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:green"> &#x2713; </div></a></td>
+                                    <td class="buttonfeld"><a href="/kommando/ca6"><div class="knopf" style="background-color:green">  </div></a></td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td class="buttonfeld"><a href="/kommando/ca1"><div class="knopf" style="background-color:darkred"> 1 </div></a></td>
+                                    <td class="buttonfeld"><a href="/kommando/ca2"><div class="knopf" style="background-color:orangered"> 2 </div></a></td>
+                                    <td class="buttonfeld"><a href="/kommando/ca3"><div class="knopf" style="background-color:orange"> 3 </div></a></td>
+                                </tr>
+                                <tr>
+                                    <td class="buttonfeld"><a href="/kommando/ca4"><div class="knopf" style="background-color:greenyellow"> 4 </div></a></td>
+                                    <td class="buttonfeld"><a href="/kommando/ca5"><div class="knopf" style="background-color:lime"> 5 </div></a></td>
+                                    <td class="buttonfeld"><a href="/kommando/ca6"><div class="knopf" style="background-color:green"> 6 </div></a></td>
+                                </tr>
+                            {% endif %}
                         {% endif %}
                     </table>
                 </td>

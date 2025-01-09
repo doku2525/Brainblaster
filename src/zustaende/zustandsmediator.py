@@ -142,14 +142,17 @@ class ZustandsMediatorZustandVokabelTesten(ZustandsMediator):
         if zustand.input_liste:
             return {'frage': zustand.aktuelle_frageeinheit().frage(zustand.input_liste[0].lerneinheit),
                     'antwort': zustand.aktuelle_frageeinheit().antwort(zustand.input_liste[0].lerneinheit),
-                    'formatierung': zustand.aktuelle_frageeinheit().titel()}
+                    'formatierung': zustand.aktuelle_frageeinheit().titel(),
+                    'wiederholung': 'False'}
         if zustand.output_liste:
             return {'frage': zustand.aktuelle_frageeinheit().frage(zustand.output_liste[0].lerneinheit),
                     'antwort': zustand.aktuelle_frageeinheit().antwort(zustand.output_liste[0].lerneinheit),
-                    'formatierung': zustand.aktuelle_frageeinheit().titel()}
+                    'formatierung': zustand.aktuelle_frageeinheit().titel(),
+                    'wiederholung': 'True'}
         return {'frage': 'Fertig',
                 'antwort': 'Fertig',
-                'formatierung': zustand.aktuelle_frageeinheit().titel()}
+                'formatierung': zustand.aktuelle_frageeinheit().titel(),
+                'wiederholung': 'True'}
 
     def prepare_consoleview_daten_string(self, zustand: Zustand, zeit_in_ms: int = 0) -> str:
         """Wird in der Elternklasse zum bauen des data-Dicitonarys verwendet"""
