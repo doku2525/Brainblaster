@@ -5,5 +5,8 @@
     "config_dateiname": "config.JSON",
     "uhr_dateiname": "uhrzeit.JSON",
     "vokabelkarten_dateiname": "vokabelkarten.JSON",
-    "vokabelboxen_dateiname": "vokabelboxen.JSON"
+    "vokabelboxen_dateiname": "vokabelboxen.JSON",
+    "karten_max_pruefen": 20,
+    "karten_max_lernen": 20,
+    "karten_max_neue": 10
 }

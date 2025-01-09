@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Konfigurations-Editor</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Konfiguration bearbeiten</h1>
+    <form id="configForm">
+        <table>
+            {% for key, value in data.items() %}
+            <tr>
+                <td>{{ key }}</td>
+                <td><input type="text" name="{{ key }}" value="{{ value }}"></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
+    <button type="submit" form="configForm">Speichern</button>
+
+    <script>
+        // Speichere die Änderungen
+        document.getElementById('configForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const updatedConfig = Object.fromEntries(formData.entries());
+
+            // Hier musst du die Funktion zum Speichern der Konfiguration implementieren
+            // Beispielsweise könntest du ein POST-Request an einen Server senden oder
+            // die Daten lokal speichern
+            console.log('Updated config:', updatedConfig);
+            // ...
+        });
+    </script>
+</body>
+</html>
