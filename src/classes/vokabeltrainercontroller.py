@@ -34,7 +34,7 @@ logger.starte_logging()
 class VokabeltrainerController:
 
     def __init__(self, modell: VokabeltrainerModell, uhr: Lernuhr, view_observer: ObserverManager,
-                 event_manager: EventManager):
+                 event_manager: EventManager, task_manager: TaskManager = None):
         self.modell: VokabeltrainerModell = modell
         self.info_manager: InfoManager = InfoManager()
         self.uhr: Lernuhr = uhr
@@ -42,7 +42,7 @@ class VokabeltrainerController:
         self.view_observer: ObserverManager = view_observer
         self.event_manager: EventManager = event_manager
         self.cmd: str = ''
-        self.task_manager = TaskManager()
+        self.task_manager = task_manager
         """ Variablen, die vom Taskmanager verwaltet werden sollen, duerfen dann nur noch ueber die Funktionen in den
             Tasks veraendert werden. Die result Funktionen, die vom Wrapper an den Task uebergeben werden muss folgende
             Form haben:
@@ -83,8 +83,11 @@ class VokabeltrainerController:
         logger.start()
         # Registriere die Funktion mit den aktuellen Werten als Parameter im Taskmanager
         #   Der Taskmanager fuer 'INFO_MANAGER' wurde schon in programm_loop() gestartet
-        self.task_manager.task('INFO_MANAGER').registriere_funktion(
-            self.__task_funktion_erzeuge_infos(self.uhr.now(Lernuhr.echte_zeit())))
+        if self.task_manager:
+            self.task_manager.task('INFO_MANAGER').registriere_funktion(
+                self.__task_funktion_erzeuge_infos(self.uhr.now(Lernuhr.echte_zeit())))
+        else:
+            self.info_manager = self.info_manager.erzeuge_alle_infos(self.uhr.now(Lernuhr.echte_zeit()))
         logger.fertig("\tupdate_uhr -> info_manager.erzeuge_alle_infos()")
 
     def update_modell_aktueller_index(self, neuer_index: int) -> None:
@@ -122,10 +125,15 @@ class VokabeltrainerController:
         logger.fertig(f"\tupdate_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte")
         logger.start(f"\tupdate_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt")
 
-        # Registriere die Funktion mit den aktuellen Werten als Parameter im Taskmanager
+        # Registriere die Funktion mit den aktuellen Werten als Parameter im Taskmanager, falls Taskmanager existiert
         #   Der Taskmanager fuer 'INFO_MANAGER' wurde schon in programm_loop() gestartet
-        self.task_manager.task('INFO_MANAGER').registriere_funktion(
-            self.__task_funktion_update_infos(alte_karte, neue_karte, self.uhr.now(Lernuhr.echte_zeit())))
+        if self.task_manager:
+            self.task_manager.task('INFO_MANAGER').registriere_funktion(
+                self.__task_funktion_update_infos(alte_karte, neue_karte, self.uhr.now(Lernuhr.echte_zeit())))
+        else:
+            self.info_manager = self.info_manager.update_infos_fuer_karte(alte_karte,
+                                                                          neue_karte,
+                                                                          self.uhr.now(Lernuhr.echte_zeit()))
         logger.fertig(f"\tupdate_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt")
 
     def speicher_daten_in_dateien(self):
@@ -196,15 +204,20 @@ class VokabeltrainerController:
         logger.fertig("programm_loop -> InfoManager.factory(start)")
 
         # Registriere InfoManager im Taskmanager
-        self.task_manager.registriere_task('INFO_MANAGER', Task(self.info_manager))
-        self.task_manager.task('INFO_MANAGER').start()
+        if self.task_manager:
+            self.task_manager.registriere_task('INFO_MANAGER', Task(self.info_manager))
+            self.task_manager.task('INFO_MANAGER').start()
 
         logger.start()
         # DAUER: 3.10568
-        self.task_manager.task('INFO_MANAGER').registriere_funktion(
-            self.__task_funktion_erzeuge_infos(self.uhr.now(Lernuhr.echte_zeit())))
-        # Task muss beendet sein fuer folgenden Block. Siehe Kommentar im folgenden Block mit self.aktueller_zustand
-        self.task_manager.task('INFO_MANAGER').join()
+        if self.task_manager:
+            self.task_manager.task('INFO_MANAGER').registriere_funktion(
+                self.__task_funktion_erzeuge_infos(self.uhr.now(Lernuhr.echte_zeit())))
+            # Task muss beendet sein fuer folgenden Block. Siehe Kommentar im folgenden Block mit self.aktueller_zustand
+            self.task_manager.task('INFO_MANAGER').join()
+        else:
+            self.info_manager = self.info_manager.erzeuge_alle_infos(self.uhr.now(Lernuhr.echte_zeit()))
+
         logger.fertig("programm_loop -> info_manager.erzeuge_alle_infos()")
 
         print(f"Beginne mit der Arbeit. { self.info_manager.boxen_als_number_dict()[40] = }")

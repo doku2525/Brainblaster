@@ -283,3 +283,31 @@
 2025-01-09 15:19:06,914 - src.classes.infomanager - TIME - *****  Beginne neue Session  *****
 2025-01-09 15:19:12,563 - src.classes.infomanager - TIME - ___________   START boxen_als_number_dict
 2025-01-09 15:19:12,565 - src.classes.infomanager - TIME - 0.00146 sek = boxen_als_number_dict
+2025-01-09 17:17:06,598 - src.classes.infomanager - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:17:06,629 - src.zustaende.zustandsfactory - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:17:06,630 - src.classes.vokabeltrainercontroller - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:18:11,128 - src.classes.infomanager - TIME - 0.00142 sek = boxen_als_number_dict
+2025-01-09 17:45:15,671 - src.classes.infomanager - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:45:15,693 - src.zustaende.zustandsfactory - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:45:15,694 - src.classes.vokabeltrainercontroller - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:46:46,482 - src.classes.infomanager - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:46:46,503 - src.zustaende.zustandsfactory - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:46:46,504 - src.classes.vokabeltrainercontroller - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:46:46,512 - src.classes.vokabeltrainercontroller - TIME - 0.00001 sek = Subscribe Events
+2025-01-09 17:46:46,513 - src.classes.vokabeltrainercontroller - TIME - 0.00004 sek = 	update_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte
+2025-01-09 17:46:46,513 - src.classes.vokabeltrainercontroller - TIME - ___________   START 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt
+2025-01-09 17:47:28,174 - src.classes.infomanager - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:47:28,195 - src.zustaende.zustandsfactory - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:47:28,196 - src.classes.vokabeltrainercontroller - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:47:28,204 - src.classes.vokabeltrainercontroller - TIME - 0.00001 sek = Subscribe Events
+2025-01-09 17:47:28,205 - src.classes.vokabeltrainercontroller - TIME - 0.00004 sek = 	update_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte
+2025-01-09 17:47:28,205 - src.classes.vokabeltrainercontroller - TIME - ___________   START 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt
+2025-01-09 17:47:28,205 - src.classes.vokabeltrainercontroller - TIME - 0.00007 sek = 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt
+2025-01-09 17:49:11,628 - src.classes.infomanager - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:49:11,659 - src.zustaende.zustandsfactory - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:49:11,659 - src.classes.vokabeltrainercontroller - TIME - *****  Beginne neue Session  *****
+2025-01-09 17:50:15,420 - src.classes.infomanager - TIME - 0.00148 sek = boxen_als_number_dict
+2025-01-09 17:51:06,086 - src.classes.vokabeltrainercontroller - TIME - 0.00001 sek = Subscribe Events
+2025-01-09 17:51:06,086 - src.classes.vokabeltrainercontroller - TIME - 0.00004 sek = 	update_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte
+2025-01-09 17:51:06,086 - src.classes.vokabeltrainercontroller - TIME - ___________   START 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt
+2025-01-09 17:51:06,086 - src.classes.vokabeltrainercontroller - TIME - 0.00008 sek = 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt

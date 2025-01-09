@@ -4,6 +4,7 @@ from typing import Callable, cast
 from src.classes.configurator import config
 from src.classes.eventmanager import EventManager
 from src.classes.lernuhr import Lernuhr
+from src.classes.taskmanager import TaskManager
 from src.classes.vokabeltrainercontroller import VokabeltrainerController
 from src.classes.vokabeltrainermodell import VokabeltrainerModell
 from src.classes.zustandsbeobachter import Beobachter, ObserverManager
@@ -42,7 +43,7 @@ def main() -> None:
     liste_der_views = [flask_html_view, ConsoleView()]
     view_observer: ObserverManager = factory_ViewObserver(liste_der_views)
     controller = VokabeltrainerController(modell=modell, uhr=uhr, view_observer=view_observer,
-                                          event_manager=event_manager)
+                                          event_manager=event_manager, task_manager=TaskManager())
     controller.programm_loop()
 
 
