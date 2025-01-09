@@ -13,6 +13,7 @@ from src.classes.configurator import config
 from src.classes.eventmanager import EventTyp
 from src.classes.lernuhr import Lernuhr
 from src.classes.infomanager import InfoManager
+from src.classes.taskmanager import TaskManager, Task
 from src.zustaende.zustandsfactory import ZustandsFactory
 import src.utils.utils_io as u_io
 import src.utils.utils_performancelogger as u_log
@@ -41,7 +42,15 @@ class VokabeltrainerController:
         self.view_observer: ObserverManager = view_observer
         self.event_manager: EventManager = event_manager
         self.cmd: str = ''
-        self.info_manager_lock = None       # Lock fuer Threads zum Updaten des Infomanagers
+        self.task_manager = TaskManager()
+        """ Variablen, die vom Taskmanager verwaltet werden sollen, duerfen dann nur noch ueber die Funktionen in den
+            Tasks veraendert werden. Die result Funktionen, die vom Wrapper an den Task uebergeben werden muss folgende
+            Form haben:
+            wrapper_func(paramaterliste) -> Callable:
+             def result_func(obj: T) -> T:
+                self.variable = obj.func()
+                return self.variable
+             return result_func"""
 
         # Subscribe Events
         logger.start()
@@ -56,12 +65,28 @@ class VokabeltrainerController:
                                      lambda zustand: self.view_observer.views_rendern())
         logger.fertig("Subscribe Events")
 
+    def __task_funktion_erzeuge_infos(self, zeit: int) -> Callable:
+        """Hilfsfunktion in programm_loop() und update_uhr() fuer den Taskmanager zum erzeugen der Infos und
+            Aktuallisieren von self.info_manager"""
+        def result_func(obj: InfoManager) -> InfoManager:
+            logger.start(" TASKFUNKTION erzeuge_alle_infos")
+            self.info_manager = obj.erzeuge_alle_infos(zeit)
+            logger.fertig(" TASKFUNKTION erzeuge_alle_infos")
+            return self.info_manager
+
+        return result_func
+
     # Definiere Systemkommandos, die von den Zustaenden aufgerufen werden koennen.
     #  Jede Funktion muss im command-Dictionary der Funktion execute_kommando() registriert werden
     def update_uhr(self, neue_uhr: Lernuhr) -> None:
         self.uhr = neue_uhr
         logger.start()
-        self.info_manager = self.info_manager.erzeuge_alle_infos(self.uhr.now(Lernuhr.echte_zeit()))
+        # Registriere die Funktion mit den aktuellen Werten als Parameter im Taskmanager
+        #   Der Taskmanager fuer 'INFO_MANAGER' wurde schon in programm_loop() gestartet
+        self.task_manager.task('INFO_MANAGER').registriere_funktion(
+            self.__task_funktion_erzeuge_infos(self.uhr.now(Lernuhr.echte_zeit())))
+        # TODO Loesche folgende Zeile, wenn Aufruf funktioniert
+#        self.info_manager = self.info_manager.erzeuge_alle_infos(self.uhr.now(Lernuhr.echte_zeit()))
         logger.fertig("\tupdate_uhr -> info_manager.erzeuge_alle_infos()")
 
     def update_modell_aktueller_index(self, neuer_index: int) -> None:
@@ -78,6 +103,17 @@ class VokabeltrainerController:
         self.aktueller_zustand = (ZustandsFactory(self.modell, self.uhr, self.info_manager).
                                   update_frageeinheit(self.aktueller_zustand))
 
+    def __task_funktion_update_infos(self, karte_alt: Vokabelkarte, karte_neu: Vokabelkarte, zeit: int) -> Callable:
+        """Hilfsfunktion in update_vokabelkarte_statistik() fuer den Taskmanager zum berechnen der Infos und
+            Aktuallisieren von self.info_manager"""
+        def result_func(obj: InfoManager) -> InfoManager:
+            logger.start(" TASKFUNKTION update_infos_fuer_karte")
+            self.info_manager = obj.update_infos_fuer_karte(karte_alt, karte_neu, zeit)
+            logger.fertig(" TASKFUNKTION update_infos_fuer_karte")
+            return self.info_manager
+
+        return result_func
+
     def update_vokabelkarte_statistik(self, karte: tuple[Vokabelkarte, Callable[[int], Vokabelkarte]]) -> None:
         """Ruft die Funktion zum Erstellen und Hinzufuegen der Antwort mit der aktuellen Zeit auf und ersetzt dann
         die alte Karte durch die neue Karte im repository."""
@@ -86,21 +122,13 @@ class VokabeltrainerController:
         logger.start()
         self.modell.vokabelkarten.replace_karte(alte_karte, neue_karte)
         logger.fertig(f"\tupdate_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte")
-        logger.start(f"\tupdate_vokabelkarte_statistik Thread info_manager.update_infos_fuer_karte")
-        self.info_manager_lock = threading.Lock()
+        logger.start(f"\tupdate_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt")
 
-        def update_info_in_thread():
-            """Urspruengliche Funktion in Funktion verpackt, die vom Thread gestartet wird"""
-            logger.start(f"\t\tupdate_vokabelkarte_statistik -> update_info_in_thread")
-            with self.info_manager_lock:
-                self.info_manager = self.info_manager.update_infos_fuer_karte(alte_karte,
-                                                                              neue_karte,
-                                                                              self.uhr.now(Lernuhr.echte_zeit()))
-            logger.fertig(f"\t\tupdate_vokabelkarte_statistik -> update_info_in_thread")
-
-        thread = threading.Thread(target=update_info_in_thread)
-        thread.start()
-        logger.fertig(f"\tupdate_vokabelkarte_statistik -> self.info_manager.update_infos_fuer_karte")
+        # Registriere die Funktion mit den aktuellen Werten als Parameter im Taskmanager
+        #   Der Taskmanager fuer 'INFO_MANAGER' wurde schon in programm_loop() gestartet
+        self.task_manager.task('INFO_MANAGER').registriere_funktion(
+            self.__task_funktion_update_infos(alte_karte, neue_karte, self.uhr.now(Lernuhr.echte_zeit())))
+        logger.fertig(f"\tupdate_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt")
 
     def speicher_daten_in_dateien(self):
         def speicher_prozess():
@@ -151,7 +179,8 @@ class VokabeltrainerController:
         self.cmd = cmd_str
         logger.start(f"setze_cmd_str mit {self.cmd[1:]} zustand = {self.aktueller_zustand.__class__.__name__}")
         self.aktueller_zustand = self.execute_kommando(self.cmd[1:])
-        logger.fertig(f"setze_cmd_str -> execute_kommando(cmd) cmd = {self.cmd[1:]} zustand = {self.aktueller_zustand.__class__.__name__}")
+        logger.fertig(f"setze_cmd_str -> execute_kommando(cmd) cmd = {self.cmd[1:]} " +
+                      f"zustand = {self.aktueller_zustand.__class__.__name__}")
         self.event_manager.publish_event(EventTyp.KOMMANDO_EXECUTED, self.aktueller_zustand)
         self.cmd = ''
 
@@ -160,16 +189,29 @@ class VokabeltrainerController:
         logger.start()
         self.modell.vokabelkarten.laden()
         logger.fertig("programm_loop -> karten.laden()")
-        # TODO Erstellen des InfoManagers blockiert das System, so dass der aktuelle zustand nicht gesetzt ist
-        #   und Flaskview Fehlermeldungen (KeyError) beim Abrufen der Zeit ausgibt (siehe get_Routen in flaskview.py).
+
         logger.start()
+        # DAUER: 4.74630.
         self.info_manager = InfoManager.factory(liste_der_boxen=self.modell.vokabelboxen.vokabelboxen,
                                                 liste_der_karten=self.modell.vokabelkarten.vokabelkarten
-                                                ).erzeuge_alle_infos(self.uhr.now(Lernuhr.echte_zeit()))
+                                                )
         logger.fertig("programm_loop -> InfoManager.factory(start)")
+
+        # Registriere InfoManager im Taskmanager
+        self.task_manager.registriere_task('INFO_MANAGER', Task(self.info_manager))
+        self.task_manager.task('INFO_MANAGER').start()
+
+        logger.start()
+        # DAUER: 3.10568
+        self.task_manager.task('INFO_MANAGER').registriere_funktion(
+            self.__task_funktion_erzeuge_infos(self.uhr.now(Lernuhr.echte_zeit())))
+        # Task muss beendet sein fuer folgenden Block. Siehe Kommentar im folgenden Block mit self.aktueller_zustand
+        self.task_manager.task('INFO_MANAGER').join()
+        logger.fertig("programm_loop -> info_manager.erzeuge_alle_infos()")
 
         print(f"Beginne mit der Arbeit. { self.info_manager.boxen_als_number_dict()[40] = }")
         logger.start()
+        # TODO ZustandsFactory.buildStart Benoetigt zum erstellen des Child BoxInfo bereits einen InfoManager mit Daten
         self.aktueller_zustand = (ZustandsFactory(self.modell, self.uhr, self.info_manager).
                                   buildZustandStart(ZustandsFactory.start_zustand()))
         logger.fertig("programm_loop -> buildZustandStart()")
