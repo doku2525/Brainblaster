@@ -63,9 +63,12 @@ class ZustandsFactory:
                                    'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit()),
                                    'box_titel': self.modell.aktuelle_box().titel,
                                    'child': (self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),
-                                             self.buildZustandVokabelPruefen(ZustandVokabelPruefen()),
-                                             self.buildZustandVokabelLernen(ZustandVokabelLernen()),
-                                             self.buildZustandVokabelNeue(ZustandVokabelNeue()),
+                                             logger.execute(
+                                                 lambda: self.buildZustandVokabelPruefen(ZustandVokabelPruefen()), "buildZustandVokabelPruefen"),
+                                             logger.execute(
+                                                 lambda: self.buildZustandVokabelLernen(ZustandVokabelLernen()), "buildZustandVokabelLernen"),
+                                             logger.execute(
+                                                 lambda: self.buildZustandVokabelNeue(ZustandVokabelNeue()), "buildZustandVokabelLernen"),
                                              self.buildZustandZeigeVokabellisteKomplett(
                                                  ZustandZeigeVokabellisteKomplett()),
                                              self.buildZustandZeigeVokabellisteLernen(
@@ -86,6 +89,7 @@ class ZustandsFactory:
                        **{'input_liste': FilterlistenFactory.filter_und_execute(
                                            funktion=None,
                                            filter_liste=filter_liste,
+                           # TODO Fuer besser Performance nicht auf modell.alle_karten, sondern info_manager.boxen.[aktueller_index].karten ausfuehren.
                                            liste_der_vokabeln=self.modell.alle_vokabelkarten()),
                           'aktuelle_frageeinheit': self.modell.aktuelle_box().aktuelle_frage,
                           'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit())})

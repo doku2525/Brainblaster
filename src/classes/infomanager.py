@@ -6,8 +6,15 @@ from src.classes.lerninfos import Lerninfos
 from src.classes.vokabelbox import Vokabelbox
 from src.classes.kartenfilter import FilterVokabelbox
 
+import src.utils.utils_performancelogger as u_log
+from src.classes.configurator import config
+
 if TYPE_CHECKING:
     from src.classes.vokabelkarte import Vokabelkarte
+
+
+logger = u_log.ZeitLogger.create(f"{config.log_pfad}performance.log", __name__)
+logger.starte_logging()
 
 
 """Die Klasse soll spaeter die Aktuallisierung der Boxen managen, damit nicht bei jeder Anederung alle Boxen
@@ -37,9 +44,12 @@ class InfoManager:
 
     def boxen_als_number_dict(self) -> list[dict[str, dict[str: dict[str: int]]]]:
         """Liefer Liste, in der jede Lerneinheit durch ein Dictionary mit dem Statistikzahlen fuer jede Frageeinheit"""
-        return [{frage_einheit.__name__: lern_info.infos[frage_einheit].as_number_dict()
+        return logger.execute(lambda: [{frage_einheit.__name__: lern_info.infos[frage_einheit].as_number_dict()
                  for frage_einheit
-                 in lern_info.infos.keys()} for lern_info in self.boxen]
+                 in lern_info.infos.keys()} for lern_info in self.boxen], "boxen_als_number_dict")
+        # return [{frage_einheit.__name__: lern_info.infos[frage_einheit].as_number_dict()
+        #          for frage_einheit
+        #          in lern_info.infos.keys()} for lern_info in self.boxen]
 
     @classmethod
     def factory(cls, liste_der_boxen: list[Vokabelbox], liste_der_karten: list[Vokabelkarte]) -> cls:

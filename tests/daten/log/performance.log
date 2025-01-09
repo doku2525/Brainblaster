@@ -280,3 +280,6 @@
 2025-01-09 14:52:21,170 - src.classes.vokabeltrainercontroller - TIME - 0.00001 sek = Subscribe Events
 2025-01-09 14:53:52,692 - src.zustaende.zustandsfactory - TIME - *****  Beginne neue Session  *****
 2025-01-09 14:53:52,693 - src.classes.vokabeltrainercontroller - TIME - *****  Beginne neue Session  *****
+2025-01-09 15:19:06,914 - src.classes.infomanager - TIME - *****  Beginne neue Session  *****
+2025-01-09 15:19:12,563 - src.classes.infomanager - TIME - ___________   START boxen_als_number_dict
+2025-01-09 15:19:12,565 - src.classes.infomanager - TIME - 0.00146 sek = boxen_als_number_dict

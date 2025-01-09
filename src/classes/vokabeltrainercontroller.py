@@ -85,8 +85,6 @@ class VokabeltrainerController:
         #   Der Taskmanager fuer 'INFO_MANAGER' wurde schon in programm_loop() gestartet
         self.task_manager.task('INFO_MANAGER').registriere_funktion(
             self.__task_funktion_erzeuge_infos(self.uhr.now(Lernuhr.echte_zeit())))
-        # TODO Loesche folgende Zeile, wenn Aufruf funktioniert
-#        self.info_manager = self.info_manager.erzeuge_alle_infos(self.uhr.now(Lernuhr.echte_zeit()))
         logger.fertig("\tupdate_uhr -> info_manager.erzeuge_alle_infos()")
 
     def update_modell_aktueller_index(self, neuer_index: int) -> None:

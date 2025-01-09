@@ -15,10 +15,12 @@ if TYPE_CHECKING:
     from src.classes.vokabelkarte import Vokabelkarte
 
 
-#InfotypStatModus = namedtuple('InfotypStatModus', ['insgesamt', 'aktuell'])
+# InfotypStatModus = namedtuple('InfotypStatModus', ['insgesamt', 'aktuell'])
 """Insgesamt ist die Anzahl aller Statistiken, die den entsprechenden Modus haben.
    Aktuell ist die Anzahl aller Statisitken, die im entsprechenden Test ausgewaehlt werden wuerden.
         Z.B. Insgaesamt 40 Karten mit dem Status PRUEFEN, aber nur 10 Karten davon sind pruefen() == True"""
+
+
 class InfotypStatModus(NamedTuple):
     insgesamt: list[Vokabelkarte]
     aktuell: list[Vokabelkarte]
