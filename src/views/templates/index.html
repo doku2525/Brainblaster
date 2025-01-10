@@ -5,6 +5,7 @@
         <title>{{ title }}</title>
         <meta id="startwerte"   data-zustand="{{ zustand }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <link rel="stylesheet" href="/static/css/element_aktuelle_uhrzeit.css">
         <style>
             .menue {
                 padding: 15px;
@@ -20,14 +21,6 @@
                 font-size: 24px;
                 text-align: right;
             }
-            .uhrzeit {
-                padding: 10px;
-                margin-top: 10px;
-                color: black;
-                text-decoration: none;
-                font-size: 28px;
-                text-align: left;
-            }
             .aktuelle_box_zeile {
                 padding: 10px;
                 margin-top: 10px;
@@ -36,18 +29,23 @@
                 text-decoration: none;
                 font-size: 28px;
             }
+            .uhr-container-lernuhr-link {
+                text-align: left;
+                text-decoration: none;
+            }
+
         </style>
         <script type="module" src="{{ url_for('static', filename='js/script_aktueller_zustand.js') }}"></script>
-        <script type="module" src="{{ url_for('static', filename='js/script_aktuelle_uhrzeit.js') }}"></script>
+        <script type="module" src="{{ url_for('static', filename='js/script_element_aktuelle_uhrzeit.js') }}"></script>
         <script type="module" src="{{ url_for('static', filename='js/script_index_tastatur_listener.js') }}"></script>
     </head>
     <body>
         <table>
             <tr>
-                <th colspan="2" class="uhrzeit">
-                    <div>
-                        <a href="/editor_lernuhr" class="uhrzeit" id="aktuelle_uhrzeit">{{ aktuelle_uhrzeit }}</a>
-                    </div>
+                <th colspan="2">
+                    <a href="/editor_lernuhr" class="uhr-container-lernuhr-link">
+                        <div> {% include 'element_aktuelle_uhrzeit.html' %} </div>
+                    </a>
                 </th>
                 <th class="speichern"><a class="speichern" href="/kommando/cs"> Speicher</a></th>
             </tr>

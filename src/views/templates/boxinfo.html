@@ -5,6 +5,7 @@
         <title>{{ title }}</title>
         <meta id="startwerte"   data-zustand="{{ zustand }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <link rel="stylesheet" href="/static/css/element_aktuelle_uhrzeit.css">
         <style>
             th {
                 padding: 0.25em;
@@ -32,14 +33,16 @@
             }
         </style>
         <script type="module" src="{{ url_for('static', filename='js/script_aktueller_zustand.js') }}"></script>
-        <script type="module" src="{{ url_for('static', filename='js/script_aktuelle_uhrzeit.js') }}"></script>
+        <script type="module" src="{{ url_for('static', filename='js/script_element_aktuelle_uhrzeit.js') }}"></script>
         <script type="module" src="{{ url_for('static', filename='js/script_boxinfo_tastatur_listener.js') }}"></script>
     </head>
     <body>
         <h1> Daten fuer {{ box_titel }}</h1>
         <table>
             <tr>
-                <th colspan="3"><div class="uhrzeit" id="aktuelle_uhrzeit">{{ aktuelle_uhrzeit }}</div></th>
+                <th colspan="3">
+                        <div> {% include 'element_aktuelle_uhrzeit.html' %} </div>
+                </th>
             </tr>
             <tr>
                 {% set karten_gesamt = info[aktuelle_frageeinheit]['pruefen']['insgesamt'] %}
