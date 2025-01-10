@@ -217,6 +217,22 @@ class FlaskView:
                 url_for('zeige_vokabelliste', pdf=True)) if pdf else redirect(
                 url_for('zeige_vokabelliste'))
 
+        @self.app.route('/editor_configurator')
+        def editor_configurator():
+            return render_template('editor_configurator.html',
+                                   data={
+                                            "daten_pfad": "daten/data/",
+                                            "backup_pfad": "daten/data/backups/",
+                                            "log_pfad": "daten/log/",
+                                            "config_dateiname": "config.JSON",
+                                            "uhr_dateiname": "uhrzeit.JSON",
+                                            "vokabelkarten_dateiname": "vokabelkarten.JSON",
+                                            "vokabelboxen_dateiname": "vokabelboxen.JSON",
+                                            "karten_max_pruefen": "20",
+                                            "karten_max_lernen": "20",
+                                            "karten_max_neue": "10"
+                                        },
+                                   zustand=self.data['zustand'])
 
         @self.app.route('/kommando/<cmd>')
         def antwort(cmd):
