@@ -27,6 +27,9 @@
                 text-decoration: none;
                 font-size: 24px;
             }
+            .aktuelle_frageeinheit {
+                border: 2px solid black;
+            }
         </style>
         <script type="module" src="{{ url_for('static', filename='js/script_aktueller_zustand.js') }}"></script>
         <script type="module" src="{{ url_for('static', filename='js/script_aktuelle_uhrzeit.js') }}"></script>
@@ -55,9 +58,9 @@
                 {% for frage_einheit in info: %}
                     {% set urlboxindex = "/kommando/c=" + frage_einheit %}
                     {% if frage_einheit == aktuelle_frageeinheit %}
-                        <th><h3> {{ frage_einheit }} </h3></th>
+                        <th><h3 class="aktuelle_frageeinheit"> {{ frage_einheit }} </h3></th>
                     {% else %}
-                        <th><a href={{urlboxindex}}> {{ frage_einheit }} </a></th>
+                        <th class="frageeinheit"><a href={{urlboxindex}}> {{ frage_einheit }} </a></th>
                     {% endif %}
                 {% endfor %}
             </tr>
