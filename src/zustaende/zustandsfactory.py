@@ -82,15 +82,17 @@ class ZustandsFactory:
                                        'neue_uhr': self.uhr})
         return replace(zustand, neue_uhr=self.uhr)
 
-    def buildZustandVokabelTesten(self, zustand: ZustandVokabelTesten, filter_liste: list) -> ZustandVokabelTesten:
+    def buildZustandVokabelTesten(self, zustand: ZustandVokabelTesten, filter_liste: list,
+                                  vokabel_liste: list = None) -> ZustandVokabelTesten:
         """Basefunktion, die den Zustand zurueckgeliefert.
            Wird von den konkreten build-Funktion fuer pruefen, lernen und neu aufgerufen. (Siehe folgende Funktionen)"""
+        vokabel_liste = self.modell.alle_vokabelkarten() if vokabel_liste is None else vokabel_liste
         return replace(zustand,
                        **{'input_liste': FilterlistenFactory.filter_und_execute(
                                            funktion=None,
                                            filter_liste=filter_liste,
                            # TODO Fuer besser Performance nicht auf modell.alle_karten, sondern info_manager.boxen.[aktueller_index].karten ausfuehren.
-                                           liste_der_vokabeln=self.modell.alle_vokabelkarten()),
+                                           liste_der_vokabeln=vokabel_liste),
                           'aktuelle_frageeinheit': self.modell.aktuelle_box().aktuelle_frage,
                           'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit())})
 
@@ -98,19 +100,31 @@ class ZustandsFactory:
         filter_liste = FilterlistenFactory.filterliste_vokabeln_pruefen(self.modell.aktuelle_box(),
                                                                         self.uhr.now(Lernuhr.echte_zeit()),
                                                                         config.karten_max_pruefen)
-        return cast(ZustandVokabelPruefen, self.buildZustandVokabelTesten(zustand, filter_liste))
+        return cast(ZustandVokabelPruefen,
+                    self.buildZustandVokabelTesten(
+                        zustand, filter_liste,
+                        (self.info_manager.boxen[self.modell.index_aktuelle_box].
+                         infos[self.modell.aktuelle_box().aktuelle_frage].pruefen.aktuell)))
 
     def buildZustandVokabelLernen(self, zustand: ZustandVokabelLernen) -> ZustandVokabelLernen:
         filter_liste = FilterlistenFactory.filterliste_vokabeln_lernen(self.modell.aktuelle_box(),
                                                                        self.uhr.now(Lernuhr.echte_zeit()),
                                                                        config.karten_max_lernen)
-        return cast(ZustandVokabelLernen, self.buildZustandVokabelTesten(zustand, filter_liste))
+        return cast(ZustandVokabelLernen,
+                    self.buildZustandVokabelTesten(
+                        zustand, filter_liste,
+                        (self.info_manager.boxen[self.modell.index_aktuelle_box].
+                         infos[self.modell.aktuelle_box().aktuelle_frage].lernen.aktuell)))
 
     def buildZustandVokabelNeue(self, zustand: ZustandVokabelNeue) -> ZustandVokabelNeue:
         filter_liste = FilterlistenFactory.filterliste_vokabeln_neue(self.modell.aktuelle_box(),
                                                                      self.uhr.now(Lernuhr.echte_zeit()),
                                                                      config.karten_max_neue)
-        return cast(ZustandVokabelNeue, self.buildZustandVokabelTesten(zustand, filter_liste))
+        return cast(ZustandVokabelNeue,
+                    self.buildZustandVokabelTesten(
+                        zustand, filter_liste,
+                        (self.info_manager.boxen[self.modell.index_aktuelle_box].
+                         infos[self.modell.aktuelle_box().aktuelle_frage].neu.aktuell)))
 
     def buildZustandZeigeVokabelliste(self, zustand: ZustandZeigeVokabelliste,
                                       modus: str, liste: list) -> ZustandZeigeVokabelliste:
