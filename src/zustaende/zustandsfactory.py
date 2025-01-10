@@ -64,17 +64,20 @@ class ZustandsFactory:
                                    'box_titel': self.modell.aktuelle_box().titel,
                                    'child': (self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),
                                              logger.execute(
-                                                 lambda: self.buildZustandVokabelPruefen(ZustandVokabelPruefen()), "buildZustandVokabelPruefen"),
+                                                 lambda: self.buildZustandVokabelPruefen(ZustandVokabelPruefen()), "buildZustandBoxinfo -> Pruefen"),
                                              logger.execute(
-                                                 lambda: self.buildZustandVokabelLernen(ZustandVokabelLernen()), "buildZustandVokabelLernen"),
+                                                 lambda: self.buildZustandVokabelLernen(ZustandVokabelLernen()), "buildZustandBoxinfo -> Lernen"),
                                              logger.execute(
-                                                 lambda: self.buildZustandVokabelNeue(ZustandVokabelNeue()), "buildZustandVokabelLernen"),
-                                             self.buildZustandZeigeVokabellisteKomplett(
-                                                 ZustandZeigeVokabellisteKomplett()),
-                                             self.buildZustandZeigeVokabellisteLernen(
-                                                 ZustandZeigeVokabellisteLernen()),
-                                             self.buildZustandZeigeVokabellisteNeue(
-                                                 ZustandZeigeVokabellisteNeue()))})
+                                                 lambda: self.buildZustandVokabelNeue(ZustandVokabelNeue()), "buildZustandBoxinfo -> Neue"),
+                                             logger.execute(
+                                                 lambda: self.buildZustandZeigeVokabellisteKomplett(
+                                                    ZustandZeigeVokabellisteKomplett()), "buildZustandBoxinfo -> ListeKomplett"),
+                                             logger.execute(
+                                                 lambda: self.buildZustandZeigeVokabellisteLernen(
+                                                    ZustandZeigeVokabellisteLernen()), "buildZustandBoxinfo -> ListeLernen"),
+                                             logger.execute(
+                                                 lambda: self.buildZustandZeigeVokabellisteNeue(
+                                                     ZustandZeigeVokabellisteNeue()), "buildZustandBoxinfo -> ListeNeue"))})
 
     def buildZustandVeraenderLernuhr(self, zustand: ZustandVeraenderLernuhr) -> ZustandVeraenderLernuhr:
         if zustand.aktuelle_zeit == '':
@@ -139,8 +142,9 @@ class ZustandsFactory:
 
     def buildZustandZeigeVokabellisteKomplett(
             self, zustand: ZustandZeigeVokabellisteKomplett) -> ZustandZeigeVokabellisteKomplett:
+        # TODO Die Begrenzung auf 75 aus Perfomancegruenden spaeter irgendwie umgehen.
         liste = ZustandZeigeVokabelliste.erzeuge_aus_vokabelliste(
-            self.info_manager.boxen[self.modell.index_aktuelle_box].karten).liste
+            self.info_manager.boxen[self.modell.index_aktuelle_box].karten[:75]).liste
         return cast(ZustandZeigeVokabellisteKomplett,
                     self.buildZustandZeigeVokabelliste(zustand, zustand.modus, liste))
 
@@ -175,7 +179,7 @@ class ZustandsFactory:
             ZustandZeigeVokabellisteNeue: self.buildZustandZeigeVokabellisteNeue
         }
         func = service_liste.get(alter_zustand.__class__, lambda x: x)
-        return func(alter_zustand)
+        return logger.execute(lambda: func(alter_zustand), f"update_zustand -> {alter_zustand.__class__.__name__}")
 
     def update_frageeinheit(self, zustand: Zustand) -> Zustand:
         return replace(
