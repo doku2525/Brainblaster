@@ -55,6 +55,9 @@ class InfoManager:
     def factory(cls, liste_der_boxen: list[Vokabelbox], liste_der_karten: list[Vokabelkarte]) -> cls:
         """Erzeuge ein InfoManager-Objekt. Sollte im Normalfall mit der Vokabelbox und der Kartenliste aus dem
         Repository aufgerufen werden."""
+        # TODO konvertierte_boxen sollte in zwei Schritte, 1.filtern -> 2. Lerninfos berechnen, aufgeteilt werden,
+        #  um die Erzeugung der Lerninfos erst bei Bedarf ausfuehren zu muessen bzw. im Hintergrund laufen zu lassen.
+        #  !!! Die gesamte Funktion hat eine katastrophal schlechte Runtime.
         konvertierte_boxen = list(map(
             lambda box: Lerninfos(box=box, karten=FilterVokabelbox(vokabelbox=box).filter(liste_der_karten)),
             liste_der_boxen))

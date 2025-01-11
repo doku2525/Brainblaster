@@ -127,6 +127,20 @@
         </table>
     </body>
     <script>
+        // Deaktiviere die Bewertungsfelder, wenn "Fertig"
+        const bewertungElements = document.querySelectorAll('.buttonfeld');
+
+        // Für jedes gefundene Bewertungsfeld:
+        bewertungElements.forEach(element => {
+            // Alle <a>-Elemente innerhalb finden
+            const anchorElements = element.querySelectorAll('a');
+            // Für jedes <a>-Element den href-Wert auf "#" setzen
+            anchorElements.forEach(anchor => {
+                anchor.href = '#';
+            });
+        });
+
+        // Blende die Antwort nach 3 Sekunden ein
         const antwortElement = document.getElementById('antwort');
         antwortElement.style.opacity = 0; // Initial unsichtbar machen
 
