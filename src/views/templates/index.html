@@ -35,11 +35,28 @@
             }
 
         </style>
+        <script src="https://unpkg.com/whatwg-fetch"></script>
+        <script src="/static/js/modules/howler.min.js"></script>
+        <script src="/static/js/alpa_waves_sound.js"></script>
         <script type="module" src="{{ url_for('static', filename='js/script_aktueller_zustand.js') }}"></script>
         <script type="module" src="{{ url_for('static', filename='js/script_element_aktuelle_uhrzeit.js') }}"></script>
         <script type="module" src="{{ url_for('static', filename='js/script_index_tastatur_listener.js') }}"></script>
     </head>
     <body>
+        <div id="trigger" style="width: 1px; height: 1px; opacity: 0;"></div>
+        <script>
+            // Hole das Element
+            const trigger = document.getElementById('trigger');
+
+            // Starte die Animation (z.B. eine CSS-Transition)
+            trigger.style.transform = 'scale(1.1)';
+            requestAnimationFrame(() => {
+                trigger.style.transform = 'scale(1)';
+            });
+
+            // Rufe hier deine Howl.js-Funktion zum Abspielen auf
+            alphaWavesSound.play();
+        </script>
         <table>
             <tr>
                 <th colspan="2">
@@ -48,6 +65,9 @@
                     </a>
                 </th>
                 <th class="speichern"><a class="speichern" href="/kommando/cs"> Speicher</a></th>
+                <th class="speichern">
+                    <a style="font-size: 16px;" href="/alpha_waves_player">AlphaWavePlayer<br>
+                        <div style="font-size: 12px;">(In neuem Tab oeffnen)</div></a></th>
             </tr>
             <tr >
                 {% for index, box in data: %}
@@ -87,5 +107,5 @@
                 {% endif %}
 	            {% endfor %}
 	    </table>
-    </body>
+     </body>
 </html>

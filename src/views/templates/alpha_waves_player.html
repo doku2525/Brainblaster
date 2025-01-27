@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>backgroundMusicController</title>
+</head>
+<script src="/static/js/modules/howler.min.js"></script>
+<script src="/static/js/alpa_waves_sound.js"></script>
+<body>
+    <h1>backgroundMusicController</h1>
+    <button id="playButton">Play</button>
+    <input type="range" min="0" max="1" step="0.01" id="volumeSlider">
+    <button id="stopButton">Stop</button>
+</body>
+<script>
+    const playButton = document.getElementById('playButton');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const stopButton = document.getElementById('stopButton');
+
+    playButton.addEventListener('click', function() {
+        console.log("Playbutton gedrueckt");
+        if (window.alphaWavesSound.playing()) {
+            window.alphaWavesSound.pause();
+            playButton.textContent = 'Play';
+        } else {
+            window.alphaWavesSound.play();
+            playButton.textContent = 'Pause';
+        }
+    })
+    volumeSlider.addEventListener('input', () => {
+        window.alphaWavesSound.volume(volumeSlider.value);
+    });
+    stopButton.addEventListener('click', function() {
+        console.log("Playbutton gedrueckt");
+        if (window.alphaWavesSound.playing()) {
+            window.alphaWavesSound.stop();
+            playButton.textContent = 'Play';
+            stopButton.textContent = 'Play';
+        } else {
+            window.alphaWavesSound.play();
+            stopButton.textContent = 'Stop';
+            playButton.textContent = 'Pause';
+        }
+    })
+
+</script>
+</html>
