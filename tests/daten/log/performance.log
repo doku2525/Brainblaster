@@ -349,3 +349,11 @@
 2025-01-10 19:34:41,956 - src.classes.vokabeltrainercontroller - TIME - 0.00004 sek = 	update_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte
 2025-01-10 19:34:41,956 - src.classes.vokabeltrainercontroller - TIME - ___________   START 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt
 2025-01-10 19:34:41,956 - src.classes.vokabeltrainercontroller - TIME - 0.00008 sek = 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt
+2025-01-11 19:03:20,353 - src.classes.infomanager - TIME - *****  Beginne neue Session  *****
+2025-01-11 19:03:20,382 - src.zustaende.zustandsfactory - TIME - *****  Beginne neue Session  *****
+2025-01-11 19:03:20,383 - src.classes.vokabeltrainercontroller - TIME - *****  Beginne neue Session  *****
+2025-01-11 19:04:24,871 - src.classes.infomanager - TIME - 0.00280 sek = boxen_als_number_dict
+2025-01-11 19:05:14,716 - src.classes.vokabeltrainercontroller - TIME - 0.00001 sek = Subscribe Events
+2025-01-11 19:05:14,716 - src.classes.vokabeltrainercontroller - TIME - 0.00004 sek = 	update_vokabelkarte_statistik->self.modell.vokabelkarten.replace_karte
+2025-01-11 19:05:14,716 - src.classes.vokabeltrainercontroller - TIME - ___________   START 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt
+2025-01-11 19:05:14,716 - src.classes.vokabeltrainercontroller - TIME - 0.00008 sek = 	update_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt

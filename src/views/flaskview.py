@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from flask import Flask, jsonify, render_template, request, redirect, url_for
+from flask import Flask, jsonify, render_template, request, redirect, url_for, send_file
 from flask_weasyprint import HTML, render_pdf
 import inspect
 from threading import Thread
@@ -52,6 +52,7 @@ class FlaskView:
         self.event_manager = event_manager
         self.cmd = False
         self.warte_zeit = 0.25      # siehe Funktion warte_auf_update()
+        self.pdf = False
 
         @self.app.route('/')
         def root():
@@ -164,7 +165,7 @@ class FlaskView:
             """Bei pdf-Option wird return render_pdf(HTML(string=html)) aufgerufen."""
             command = request.args.get('zurueck', False)
             pdf = request.args.get('pdf', False)
-            print(f"zeige {pdf = }")
+            print(f"zeige_vokabelliste  {self.pdf = }")
             if command:
                 self.setze_cmd_warte_auf_update('c0', self.warte_zeit)
                 return redirect(url_for('boxinfo'))
@@ -174,9 +175,14 @@ class FlaskView:
                                    titel=self.data['box_titel'],
                                    untertitel=f"{self.data.get('modus','')}:{self.data.get('frageeinheit_titel','')}",
                                    zustand=self.data['zustand'],
-                                   karten=self.data['liste'])  # karten=[karte.lerneinheit for karte in kartenListe])
-            if pdf:
-                return render_pdf(HTML(string=html))
+                                   karten=self.data['liste'],
+                                   pdf=self.pdf)  # karten=[karte.lerneinheit for karte in kartenListe])
+            if self.pdf:
+                print(f"Render PDF")
+#                self.pdf = False
+                pdf = render_pdf(HTML(string=html))
+                print(f"PDF Gerendert")
+                return pdf
             return html
 
         @self.app.route('/zeige_vokabelliste_komplett')
@@ -184,14 +190,14 @@ class FlaskView:
             # TODO Tests
             command = request.args.get('fe', False)
             pdf = request.args.get('pdf', False)
-            print(f"komplett {request.args = }")
-            print(f"komplett {pdf = }")
+            self.pdf = True if pdf else False or self.pdf
+            print(f"zeige_vokabelliste_komplett  {self.pdf = }")
             if command:
                 self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
             self.setze_cmd_warte_auf_update(f"c@ZustandZeigeVokabellisteKomplett", self.warte_zeit)
-            return redirect(
-                url_for('zeige_vokabelliste', pdf=True)) if pdf else redirect(
-                url_for('zeige_vokabelliste'))
+            return redirect(url_for('zeige_vokabelliste'))
+                # url_for('zeige_vokabelliste', pdf=True)) if pdf else redirect(
+                # url_for('zeige_vokabelliste'))
 
         @self.app.route('/zeige_vokabelliste_lernen')
         def zeige_vokabelliste_lernen():
@@ -266,9 +272,26 @@ class FlaskView:
             self.setze_cmd_warte_auf_update(cmd, self.warte_zeit)
             return jsonify(self.data)
 
+        @self.app.route('/get_current_data')
+        def get_current_data():
+            """Route fuer die Clienten, die nur die aktuellen Daten empfangen wollen"""
+            return jsonify(self.data)
+
         @self.app.route('/lade_neuen_zustand')
         def lade_neuen_zustand():
             return redirect(url_for(f"{zustand_zu_route[self.data['zustand']]}"))
+
+        @self.app.route('/alpha_waves.mp3')
+        def stream_alpha_waves():
+            if config.background_musik:
+                send_file(url_for('static', filename='musik/alpha_waves.mp3'),
+                          as_attachment=False, mimetype='audio/mpeg')
+            else:
+                return 'Background music is disabled'
+
+        @self.app.route('/alpha_waves_player')
+        def alpha_waves_player():
+            return render_template('alpha_waves_player.html')
 
     def update(self, daten: dict) -> None:
         """Funktion fuer die Protokoll-Klasse Beobachter"""

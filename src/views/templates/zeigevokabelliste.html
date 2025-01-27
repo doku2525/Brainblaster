@@ -3,7 +3,7 @@
 <html>
     <head>
         <title>{{ lektion }}</title>
-        <meta id="startwerte" data-zustand="{{ zustand }}"">
+        <meta id="startwerte" data-zustand="{{ zustand }}" data-pdf="{{ pdf }}"">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
         <link rel="stylesheet" href="/static/css/chinesefonts.css">
@@ -52,7 +52,9 @@
                 padding: 5px;
             }
         </style>
-        <script type="module" src="{{ url_for('static', filename='js/script_aktueller_zustand.js') }}"></script>
+        {% if not pdf %}
+            <script type="module" src="{{ url_for('static', filename='js/script_aktueller_zustand.js') }}"></script>
+        {% endif %}
         <script type="module" src="{{ url_for('static', filename='js/script_zeigevokabelliste_tastatur_listener.js') }}"></script>
     </head>
     <body>
