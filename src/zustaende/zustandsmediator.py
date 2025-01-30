@@ -6,6 +6,15 @@ if TYPE_CHECKING:
     from src.zustaende.zustand import Zustand
 
 
+"""
+Die Klasse ZustandMediator wandelt die Daten des Zustands in die Daten fuer die verschiedenen Views um.
+Jeder Zustand muss eine von ZustandsMediator abgeleitete Klasse haben.
+Der Name muss im Attribut zustand der ZustandsMediator-Klassen gespeichert sein, weil darueber die Zuordnung erfolgt,
+da beim Aufruf von ZustandsMediator im Attribut klassen ein Mapping der String auf die Konkreten Klassen erfolgt. Dieses
+Mapping wird dann von den Funktionen ausgewertet.
+"""
+
+
 @dataclass(frozen=True)
 class ZustandsMediator:
     klassen: dict[str, Type] = field(default_factory=dict)

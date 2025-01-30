@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import patch
-from src.classes.zustandsbeobachter import ObserverManager, Beobachter
+from src.classes.zustandsbeobachter import ObserverManager, Beobachter, ObserverManagerFactory
 from src.zustaende.zustandstart import ZustandStart
 
 
@@ -99,6 +99,26 @@ class TestObserverManager(TestCase):
         self.observer_manager = self.observer_manager.view_anmelden(self.mock_view)
         self.observer_manager.views_rendern()
         self.assertTrue(self.mock_view.rendered)
+
+    def test_observer_manager_factory(self):
+        mapping = {
+            MockView: MockView.konverter
+        }
+        # Leere Views Liste
+        observer_manager: ObserverManager = ObserverManagerFactory.factory_from_liste([], mapping)
+        self.assertEqual(0, len(observer_manager.registrierte_view_klassen))
+        # Leeres Mapping Dictionary
+        observer_manager: ObserverManager = ObserverManagerFactory.factory_from_liste([self.mock_view],
+                                                                                      {})
+        self.assertEqual(0, len(observer_manager.registrierte_view_klassen))
+
+        observer_manager: ObserverManager = ObserverManagerFactory.factory_from_liste([self.mock_view], mapping)
+        self.assertEqual(1, len(observer_manager.registrierte_view_klassen))
+        # Die Factory fuegt automatisch die views_updaten()-Funktion hinzu, deshalb sollte die als Schluessel dort sein
+        self.assertEqual(self.observer_manager.views_updaten.__func__.__name__,
+                         list(observer_manager.registrierte_view_klassen[MockView].keys())[0])
+        # Unter "views_updaten" sollte die im mapping_dicitionary uebergeben Funktion gespeichert sein
+        self.assertEqual(MockView.konverter, observer_manager.registrierte_view_klassen[MockView]['views_updaten'])
 
     # TODO Weitere Tests:
     # - Testen von Fehlern (z.B. wenn ein Beobachter nicht gefunden wird)

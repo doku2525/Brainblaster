@@ -55,3 +55,26 @@ class ObserverManager:
         """ Rufe die render()-Funktion der angemeldeten Beobachter (Views). """
         [observer.render() for observer in self.beobachter if hasattr(observer, 'render')]
         return self
+
+
+class ObserverManagerFactory:
+    @classmethod
+    def factory_from_liste(cls,
+                           view_liste: list[Beobachter],
+                           klassen_mapping: dict[Beobachter, Callable]) -> cls:
+        """
+        rekursive Factory-Funktion, die einen ObserverManager fuer eine Liste von Views erzeugt.
+        Die Mediator-Funktion wird von der Klasse ZustandsMediator ausgewaehlt.
+        Die in der Liste uebergebenen Views sollten alle eine Funktion updaten() implementiet haben und
+        somit zur Protokoll-Klasse Beobachter (siehe Type von view_liste) gehoeren.
+
+        :param view_liste: list[Beobachter]
+        :param klassen_mapping: : dict[Beobachter, Callable]
+        :return: ObserverManager
+        """
+        if not view_liste or not klassen_mapping:
+            return ObserverManager()
+        return (cls.factory_from_liste(view_liste[1:], klassen_mapping).
+                registriere_mapping(view_liste[0],
+                                    mediator_funktion=klassen_mapping[view_liste[0].__class__],
+                                    observer_funktion=ObserverManager().views_updaten))
