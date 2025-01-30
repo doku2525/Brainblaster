@@ -55,6 +55,28 @@ class TestWorkflowManager(TestCase):
         with self.assertRaises(ValueError):
             neuer_zustand.transition_zu(MockStateC)
 
+    def test_transition_zu_mit_namen_valid(self):
+        neuer_zustand = self.workflow.transition_zu_per_namen("MockStateB")
+        self.assertIsInstance(neuer_zustand.aktueller_zustand, MockStateB)
+        self.assertIsNot(self.workflow.aktueller_zustand, neuer_zustand.aktueller_zustand)
+        self.assertEqual(len(self.workflow.zustands_history), 0)
+        self.assertEqual(len(neuer_zustand.zustands_history), 1)
+
+    def test_transition_zu_mit_namen_invalid(self):
+        with self.assertRaises(ValueError):
+            self.workflow.transition_zu_per_namen("MockStateA")
+
+    def test_transition_zu_mit_index_valid(self):
+        neuer_zustand = self.workflow.transition_zu_per_index(0)
+        self.assertIsInstance(neuer_zustand.aktueller_zustand, MockStateB)
+        self.assertIsNot(self.workflow.aktueller_zustand, neuer_zustand.aktueller_zustand)
+        self.assertEqual(len(self.workflow.zustands_history), 0)
+        self.assertEqual(len(neuer_zustand.zustands_history), 1)
+
+    def test_transition_zu_mit_index_invalid(self):
+        with self.assertRaises(ValueError):
+            self.workflow.transition_zu_per_index(100)
+
     def test_go_back(self):
         # Teste "Zurück"-Funktion: A → B → zurück zu A
         neuer_zustand = self.workflow.transition_zu(MockStateB)
