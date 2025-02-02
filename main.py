@@ -1,18 +1,28 @@
 import time
 from typing import Callable, cast, TYPE_CHECKING
 
+# Klassen
 from src.classes.configurator import config
 from src.classes.eventmanager import EventManager
 from src.classes.lernuhr import Lernuhr
+from src.classes.programmloop import ProgrammLoop
 from src.classes.taskmanager import TaskManager
 from src.classes.vokabeltrainercontroller import VokabeltrainerController
 from src.classes.vokabeltrainermodell import VokabeltrainerModell
 from src.classes.zustandsbeobachter import Beobachter, ObserverManagerFactory
+# Kommandos
+from src.kommandos.kommandointerpreter import KommandoInterpreter
+# Repository
 from src.repositories.vokabelkarten_repository import InMemoryVokabelkartenRepository, JSONDateiformatVokabelkarte
 from src.repositories.vokabelbox_repository import InMemeoryVokabelboxRepository, JSONDateiformatVokabelbox
+# Views
 from src.views.consoleview import ConsoleView
 from src.views.flaskview import FlaskView
+# Zustaende
 from src.zustaende.zustandsmediator import ZustandsMediator
+from src.zustaende.zustandsfactory import ZustandsFactory
+from src.zustaende.workflowmanager import WorkflowManager
+# Utils
 import src.utils.utils_io as u_io
 
 if TYPE_CHECKING:
@@ -52,10 +62,24 @@ def main() -> None:
     liste_der_views = [flask_html_view, ConsoleView()]
     view_observer: ObserverManager = ObserverManagerFactory.factory_from_liste(liste_der_views,
                                                                                view_to_mediator_mapping)
-    controller = VokabeltrainerController(modell=modell, uhr=uhr, view_observer=view_observer,
-                                          event_manager=event_manager, task_manager=TaskManager())
-    controller.programm_loop()
+    controller = VokabeltrainerController(modell=modell, uhr=uhr, view_observer=view_observer)
+    print(f"Stage 1 abgeschlossen!")
+    programm_loop = ProgrammLoop(controller=controller,
+                                 event_manager=event_manager,
+                                 task_manager=TaskManager(),
+                                 cmd_interpreter=KommandoInterpreter(),
+                                 workflow=WorkflowManager(aktueller_zustand=ZustandsFactory.start_zustand().__class__,
+                                                          transitions=ZustandsFactory.transitions()))
+    programm_loop.start()
 
+"""
+Hier sollte auch die ZustandsFactory initialisiert werden.
+Und der StartZustand in den WorkflowManager als aktuellen_zustand und ZustandsFactory.transitions als tranasitions.
+Dabei wird eine Instanze von Startzustand im cache. gespeichert. 
+So hat StartZustand niemals parrents, weil history immer leer ist.
+Wenn in ProgrammLoop der InfoManager fetig gebaut wurde, kann die ZustandsFactory anfangen die in Transition des aktuellen
+Zustands gespeicherten Klassen im hintergrund in den Cache zu schreiben. 
+"""
 
 if __name__ == "__main__":
     main()
