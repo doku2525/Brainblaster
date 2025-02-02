@@ -30,8 +30,7 @@ class ZustandStart(Zustand):
                 neuer_index = max(0, self.aktueller_index - int(''.join(wert)))
                 return "CmdStartChangeAktuellenIndex", (neuer_index,)
             case 's': return 'CmdSpeicherRepositories', tuple()
-            case '': return '', tuple()
-        return super().verarbeite_userinput(cmd_str)
+        return super().parse_user_eingabe(cmd_str)   # Liefert tuple("", tuple())
 
 
     def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:

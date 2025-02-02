@@ -83,8 +83,7 @@ class ZustandBoxinfo(Zustand):
                 neuer_index = (index_aktuelle_frage - int(''.join(wert))) % len(self.info) % len(self.info)
                 neue_frageeinheit = list(self.info.keys())[neuer_index]
                 return "CmdStartChangeAktuellenFrageeinheit", (neue_frageeinheit,)
-            case '': return '', tuple()
-        return super().verarbeite_userinput(cmd_str)
+        return super().parse_user_eingabe(cmd_str)   # Liefert tuple("", tuple())
 
     def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:
         """Veraendert die aktuelle Frageeinheit.
