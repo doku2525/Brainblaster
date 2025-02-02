@@ -64,9 +64,9 @@ class FlaskView:
             command = request.args.get('lernuhr', False)
             if command:
                 if command == 'ohne_speichern':
-                    self.setze_cmd_warte_auf_update('c0', self.warte_zeit)
+                    self.setze_cmd_warte_auf_update('z0', self.warte_zeit)
                 elif command == 'mit_speichern':
-                    self.setze_cmd_warte_auf_update('c@ZustandStart', self.warte_zeit)
+                    self.setze_cmd_warte_auf_update('z@ZustandStart', self.warte_zeit)
                 return redirect(url_for('index'))           # sorgt dafuer, dass args nicht in url angezeigt werden
             return render_template('index.html',
                                    data=list(enumerate(self.data['liste'])),
@@ -76,7 +76,7 @@ class FlaskView:
 
         @self.app.route('/editor_lernuhr')
         def editor_lernuhr():
-            self.setze_cmd_warte_auf_update('c@ZustandVeraenderLernuhr', self.warte_zeit)
+            self.setze_cmd_warte_auf_update('z@ZustandVeraenderLernuhr', self.warte_zeit)
             return render_template('editor_lernuhr.html',
                                    aktuelle_uhrzeit=self.data['aktuelle_uhrzeit'][:-7],
                                    neue_uhrzeit=self.data['neue_uhrzeit'][:-7],
@@ -93,7 +93,7 @@ class FlaskView:
             if command:
                 self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
                 return redirect(url_for('boxinfo'))           # sorgt dafuer, dass args nicht in url angezeigt werden
-            self.setze_cmd_warte_auf_update('c@ZustandBoxinfo', self.warte_zeit+1)
+            self.setze_cmd_warte_auf_update('z@ZustandBoxinfo', self.warte_zeit+1)
             return render_template('boxinfo.html',
                                    aktuelle_uhrzeit=self.data['aktuelle_uhrzeit'][:-7],
                                    info=self.data['info'],
