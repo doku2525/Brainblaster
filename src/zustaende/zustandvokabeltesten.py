@@ -20,6 +20,57 @@ class ZustandVokabelTesten(Zustand):
     beschreibung: str = field(default='Zustand Testen, fuehrt die Tests aus und verarbeitet Antworten')
     kommandos: list[str] = field(default=('a', 'e'))
 
+    # TODO Loesche die alte verarbeite_user_input()-Methode
+    def parse_user_eingabe(self, cmd_str: list[str]) -> tuple[str, tuple]:
+        """
+        In der Originalversion wird sowhl an den Controller eine Kommando gesendet, als auch die Zustand veraendert.
+        Deshalb sollte als return-Wert
+          return "CmdTestErgebnis", (TestZustand,(alte_karte, neue_karte))
+          In der Klasse CmdTestErgebnis(Kommando) kann dann
+             zustand, kartentupel = args
+            1. die Funktion update_vokabelkarte_statistik(kartentupel)
+            2. controller.aktueller_zustand = zustand
+        """
+        match cmd_str:
+            case ['a', *antwort]: return "CmdTestErgebnis", (self.handle_antwort(''.join(antwort)))
+            case ['e', *antwort]: raise NotImplementedError
+        return super().parse_user_eingabe(cmd_str)
+
+    def handle_antwort(self,
+                       cmd_str: str) -> tuple[ZustandVokabelTesten, tuple[Vokabelkarte, Callable[[int], Vokabelkarte]]]:
+        if not self.input_liste and (not self.output_liste or not self.wiederholen):
+            # TODO Hier muss irgendwie ein Kommando zum Aendern des Zustands an die ProgrammLoop() gesendet werden
+            return super().verarbeite_userinput("0")        # Zurueck zu Parrent wenn alles leer oder wiedh-option
+        if not self.input_liste and self.output_liste:      # Wenn die input_liste leer ist, dann in Wiederholung
+            return self.handle_antwort_bei_wiederholung(cmd_str)
+
+        aktuelle_karte = self.input_liste[0]
+        # Berechnung der neuen Karte als Funktion zurueckgeben,
+        # die der Controller mit Frageeinheit und Uhrzeit aufruft.
+        # 'neue_karte(uhr.now()) -> Vokabelkarte' erzeugt dann die Instanz.
+        neue_karte: Callable[[int], Vokabelkarte] = lambda zeit: (
+            aktuelle_karte.neue_antwort(frage_einheit=self.aktuelle_frageeinheit,
+                                        antwort=Antwort(antwort=int(cmd_str), erzeugt=zeit)))
+        if int(cmd_str) > 3:
+            return replace(self, input_liste=self.input_liste[1:]), (aktuelle_karte, neue_karte)
+        if int(cmd_str) < 4:
+            """Wenn eine Karte falsch beantwortet wird, die aktuelle Karte wieder ans Ende der output_liste gesetzt.
+            Es wird nicht neue_karte benutzt, da neue_karte erst im Controller berechnet wird und zum Wiederholen
+            die Veraenderunen in neue_karte keine Rolle spielen."""
+            return replace(self,
+                            input_liste=self.input_liste[1:],
+                            output_liste=self.output_liste + ([aktuelle_karte] if self.wiederholen else [])
+                            ), (aktuelle_karte, neue_karte)
+
+    def handle_antwort_bei_wiederholung(
+            self, cmd_str: str) -> tuple[ZustandVokabelTesten, tuple[Vokabelkarte, Callable[[int], Vokabelkarte]]]:
+        print(f"wiederholung ----------")
+        if int(cmd_str) > 3:
+            return replace(self, output_liste=self.output_liste[1:]), tuple()
+        if int(cmd_str) < 4:
+            aktuelle_karte = self.output_liste[0]
+            return replace(self, output_liste=self.output_liste[1:] + [aktuelle_karte]), tuple()
+
     def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:
         """Liefert ein Tupel mit der alten Vokabelkarte und der veraenderten Vokabelkarte.
         Der Controller kann dann im Repository, InfoManager usw. die alte Karte durch die Neue ersetzen"""
