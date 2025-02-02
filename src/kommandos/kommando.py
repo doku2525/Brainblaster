@@ -4,17 +4,37 @@ from dataclasses import replace
 from typing import Callable, TYPE_CHECKING
 
 from src.classes.vokabeltrainercontroller import VokabeltrainerController
+if TYPE_CHECKING:
+    from src.zustaende.zustand import Zustand
+    from src.classes.lernuhr import Lernuhr
 
 
 class Kommando(ABC):
-    def execute(self, controller: VokabeltrainerController) -> VokabeltrainerController:
+    def execute(self, controller: VokabeltrainerController) -> Callable[[Any], VokabeltrainerController]:
+        """Liefert eine Funktion, die dann die an sie uebergebenen Argumente auf den Controller anwendet."""
         ...
 
 
-class CmdUpdateUhr(Kommando):
+class CmdErsetzeAktuellenZustand(Kommando):
+
+    def execute(self, controller: VokabeltrainerController) -> Callable[[Any], VokabeltrainerController]:
+        """
+        Ersetze den aktuellen Zustand durch den als Argument uebergebenen Zustand.
+        Das Kommando wird vor allem von Lernuhr benoetigt
+        """
+        def funktion(zustand: Zustand) -> VokabeltrainerController:
+            controller.aktueller_zustand = zustand
+            return controller
+        return funktion
+
+
+class CmdErsetzeLernuhr(Kommando):
     def execute(self, controller: VokabeltrainerController) -> Callable[[Any], VokabeltrainerController]:
         # Speicher die Werte
-        raise NotImplementedError
+        def funktion(neue_uhr: Lernuhr) -> VokabeltrainerController:
+            controller.update_uhr(neue_uhr)
+            return controller
+        return funktion
 
 
 class CmdStartChangeAktuellenIndex(Kommando):
@@ -30,7 +50,7 @@ class CmdStartChangeAktuellenIndex(Kommando):
         return funktion
 
 
-class CmdStartChangeAktuellenFrageeinheit(Kommando):
+class CmdStartChangeAktuelleFrageeinheit(Kommando):
     def execute(
             self,
             controller: VokabeltrainerController) -> Callable[[Any], VokabeltrainerController]:
@@ -52,5 +72,16 @@ class CmdSpeicherRepositories(Kommando):
     def execute(self, controller: VokabeltrainerController) -> Callable[[Any], VokabeltrainerController]:
         def funktion(irgendwas: Any = None) -> VokabeltrainerController:
             controller.speicher_daten_in_dateien()
+            return controller
+        return funktion
+
+
+class CmdTestErgebnis(Kommando):
+    def execute(self, controller: VokabeltrainerController) -> Callable[[Any], VokabeltrainerController]:
+        def funktion(*args):
+            zustand, karten_tupel = args
+            if karten_tupel:
+                controller.update_vokabelkarte_statistik(karten_tupel)
+            controller.aktueller_zustand = zustand
             return controller
         return funktion
