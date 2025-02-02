@@ -49,35 +49,69 @@ class ZustandsFactory:
     def end_zustand() -> Type[Zustand]:
         return ZustandENDE
 
+    @staticmethod
+    def transitions() -> dict[Type[Zustand], list[Type[Zustand]]]:
+        return {
+            ZustandStart: [ZustandBoxinfo, ZustandVeraenderLernuhr, ZustandENDE],
+            ZustandVeraenderLernuhr: [],
+            ZustandBoxinfo: [ZustandVokabelPruefen, ZustandVokabelLernen, ZustandVokabelNeue,
+                             ZustandZeigeVokabellisteKomplett, ZustandZeigeVokabellisteLernen,
+                             ZustandZeigeVokabellisteNeue],
+        }
+
+    def suche_build_funktion(self, zustand: Type[Zustand]) -> Callable[[Zustand], Zustand]:
+        """
+        Meta-Funktion, die im __dict__ der Klasse nach einer Funktion
+        'build' + [Name des Zustand] sucht.
+        Dadurch kann der match-case- in build() vermieden werden bzw. das manuelle erstellen eins Mapping-Dictionarys.
+        Siehe Funktion updaten()
+        """
+        def wrapper(fun: list[Callabal]) -> Callable:
+            def funktion(state: Zustand) -> Zustand:
+                return fun[0](self, state)
+            return funktion
+
+        funktions = [funktion       # mehr als 1 Treffer sollte es nicht geben.
+                     for name, funktion
+                     in self.__class__.__dict__.items() if name == f"build{zustand.__name__}"]
+        return wrapper(funktions) if funktions else None
+
+    def build(self, zustand: Type[Zustand]) -> Zustand:
+        funktion = self.suche_build_funktion(zustand)
+        if funktion:
+            return funktion(zustand())
+
     def buildZustandStart(self, zustand: ZustandStart) -> ZustandStart:
         return replace(zustand, **{'liste': self.modell.vokabelboxen.titel_aller_vokabelboxen(),
                                    'aktueller_index': self.modell.index_aktuelle_box,
                                    'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit()),
-                                   'child': (self.buildZustandBoxinfo(ZustandBoxinfo()),
-                                             self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),
-                                             ZustandENDE())})
+                                   # 'child': (self.buildZustandBoxinfo(ZustandBoxinfo()),
+                                   #           self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),
+                                   #           ZustandENDE())
+                                   })
 
     def buildZustandBoxinfo(self, zustand: ZustandBoxinfo) -> ZustandBoxinfo:
         return replace(zustand, **{'info': self.info_manager.boxen_als_number_dict()[self.modell.index_aktuelle_box],
                                    'aktuelle_frageeinheit': self.modell.aktuelle_box().aktuelle_frage.__name__,
                                    'aktuelle_zeit': self.uhr.as_iso_format(Lernuhr.echte_zeit()),
                                    'box_titel': self.modell.aktuelle_box().titel,
-                                   'child': (self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),
-                                             logger.execute(
-                                                 lambda: self.buildZustandVokabelPruefen(ZustandVokabelPruefen()), "buildZustandBoxinfo -> Pruefen"),
-                                             logger.execute(
-                                                 lambda: self.buildZustandVokabelLernen(ZustandVokabelLernen()), "buildZustandBoxinfo -> Lernen"),
-                                             logger.execute(
-                                                 lambda: self.buildZustandVokabelNeue(ZustandVokabelNeue()), "buildZustandBoxinfo -> Neue"),
-                                             logger.execute(
-                                                 lambda: self.buildZustandZeigeVokabellisteKomplett(
-                                                    ZustandZeigeVokabellisteKomplett()), "buildZustandBoxinfo -> ListeKomplett"),
-                                             logger.execute(
-                                                 lambda: self.buildZustandZeigeVokabellisteLernen(
-                                                    ZustandZeigeVokabellisteLernen()), "buildZustandBoxinfo -> ListeLernen"),
-                                             logger.execute(
-                                                 lambda: self.buildZustandZeigeVokabellisteNeue(
-                                                     ZustandZeigeVokabellisteNeue()), "buildZustandBoxinfo -> ListeNeue"))})
+                                   # 'child': (self.buildZustandVeraenderLernuhr(ZustandVeraenderLernuhr()),
+                                   #           logger.execute(
+                                   #               lambda: self.buildZustandVokabelPruefen(ZustandVokabelPruefen()), "buildZustandBoxinfo -> Pruefen"),
+                                   #           logger.execute(
+                                   #               lambda: self.buildZustandVokabelLernen(ZustandVokabelLernen()), "buildZustandBoxinfo -> Lernen"),
+                                   #           logger.execute(
+                                   #               lambda: self.buildZustandVokabelNeue(ZustandVokabelNeue()), "buildZustandBoxinfo -> Neue"),
+                                   #           logger.execute(
+                                   #               lambda: self.buildZustandZeigeVokabellisteKomplett(
+                                   #                  ZustandZeigeVokabellisteKomplett()), "buildZustandBoxinfo -> ListeKomplett"),
+                                   #           logger.execute(
+                                   #               lambda: self.buildZustandZeigeVokabellisteLernen(
+                                   #                  ZustandZeigeVokabellisteLernen()), "buildZustandBoxinfo -> ListeLernen"),
+                                   #           logger.execute(
+                                   #               lambda: self.buildZustandZeigeVokabellisteNeue(
+                                   #                   ZustandZeigeVokabellisteNeue()), "buildZustandBoxinfo -> ListeNeue"))
+                                   })
 
     def buildZustandVeraenderLernuhr(self, zustand: ZustandVeraenderLernuhr) -> ZustandVeraenderLernuhr:
         if zustand.aktuelle_zeit == '':
