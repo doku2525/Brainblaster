@@ -19,7 +19,7 @@ import src.utils.utils_io as u_io
 import src.utils.utils_performancelogger as u_log
 
 if TYPE_CHECKING:
-    from src.classes.eventmanager import EventManager
+    # from src.classes.eventmanager import EventManager
     from src.classes.vokabeltrainermodell import VokabeltrainerModell
     from src.classes.zustandsbeobachter import ObserverManager
     from src.classes.vokabelkarte import Vokabelkarte
@@ -34,13 +34,14 @@ logger.starte_logging()
 class VokabeltrainerController:
 
     def __init__(self, modell: VokabeltrainerModell, uhr: Lernuhr, view_observer: ObserverManager,
-                 event_manager: EventManager, task_manager: TaskManager = None):
+                 # event_manager: EventManager,
+                 task_manager: TaskManager = None):
         self.modell: VokabeltrainerModell = modell
         self.info_manager: InfoManager = InfoManager()
         self.uhr: Lernuhr = uhr
         self.aktueller_zustand: Zustand | None = None
         self.view_observer: ObserverManager = view_observer
-        self.event_manager: EventManager = event_manager
+        # self.event_manager: EventManager = event_manager
         self.cmd: str = ''
         self.task_manager = task_manager
         """ Variablen, die vom Taskmanager verwaltet werden sollen, duerfen dann nur noch ueber die Funktionen in den
@@ -51,19 +52,6 @@ class VokabeltrainerController:
                 self.variable = obj.func()
                 return self.variable
              return result_func"""
-
-        # Subscribe Events
-        logger.start()
-        self.event_manager.subscribe(EventTyp.NEUES_KOMMANDO, self.setze_cmd_str)
-        self.event_manager.subscribe(EventTyp.KOMMANDO_EXECUTED,
-                                     lambda zustand: self.view_observer.views_updaten(zustand, Lernuhr.echte_zeit()))
-        self.event_manager.subscribe(EventTyp.LOOP_ENDE,
-                                     lambda zustand: self.view_observer.views_updaten(zustand, Lernuhr.echte_zeit()))
-        self.event_manager.subscribe(EventTyp.KOMMANDO_EXECUTED,
-                                     lambda zustand: self.view_observer.views_rendern())
-        self.event_manager.subscribe(EventTyp.PROGRAMM_BENDET,
-                                     lambda zustand: self.view_observer.views_rendern())
-        logger.fertig("Subscribe Events")
 
     def __task_funktion_erzeuge_infos(self, zeit: int) -> Callable:
         """Hilfsfunktion in programm_loop() und update_uhr() fuer den Taskmanager zum erzeugen der Infos und
@@ -137,6 +125,8 @@ class VokabeltrainerController:
         logger.fertig(f"\tupdate_vokabelkarte_statistik  task_funktion_update_infos an Taskmanager geschickt")
 
     def speicher_daten_in_dateien(self):
+        print(f"Beginne mit speichern")
+
         def speicher_prozess():
             logger.start()
             uhr_datei = f"{config.daten_pfad}{config.uhr_dateiname}"
@@ -181,35 +171,29 @@ class VokabeltrainerController:
 
     # Funktion fuer den EventManager. Wird vom view usw. aufgerufen, wenn ein Kommando auf irgendeinen Weg an das
     #   System geschickt wird.
-    def setze_cmd_str(self, cmd_str) -> None:
-        self.cmd = cmd_str
-        logger.start(f"setze_cmd_str mit {self.cmd[1:]} zustand = {self.aktueller_zustand.__class__.__name__}")
-        self.aktueller_zustand = self.execute_kommando(self.cmd[1:])
-        logger.fertig(f"setze_cmd_str -> execute_kommando(cmd) cmd = {self.cmd[1:]} " +
-                      f"zustand = {self.aktueller_zustand.__class__.__name__}")
-        self.event_manager.publish_event(EventTyp.KOMMANDO_EXECUTED, self.aktueller_zustand)
-        self.cmd = ''
+    # def setze_cmd_str(self, cmd_str) -> None:
+    #     self.cmd = cmd_str
+    #     logger.start(f"setze_cmd_str mit {self.cmd[1:]} zustand = {self.aktueller_zustand.__class__.__name__}")
+    #     self.aktueller_zustand = self.execute_kommando(self.cmd[1:])
+    #     logger.fertig(f"setze_cmd_str -> execute_kommando(cmd) cmd = {self.cmd[1:]} " +
+    #                   f"zustand = {self.aktueller_zustand.__class__.__name__}")
+    #     self.event_manager.publish_event(EventTyp.KOMMANDO_EXECUTED, self.aktueller_zustand)
+    #     self.cmd = ''
 
     def programm_loop(self):
-        self.modell.vokabelboxen.laden()
-        logger.start()
-        self.modell.vokabelkarten.laden()
-        logger.fertig("programm_loop -> karten.laden()")
+        # TODO In ProgrammLoop ausgelagert
+        # self.modell.vokabelboxen.laden()
+        # self.modell.vokabelkarten.laden()
 
-        logger.start()
-        # DAUER: 4.74630.
-        self.info_manager = InfoManager.factory(liste_der_boxen=self.modell.vokabelboxen.vokabelboxen,
-                                                liste_der_karten=self.modell.vokabelkarten.vokabelkarten
-                                                )
-        logger.fertig("programm_loop -> InfoManager.factory(start)")
+        # self.info_manager = InfoManager.factory(liste_der_boxen=self.modell.vokabelboxen.vokabelboxen,
+        #                                         liste_der_karten=self.modell.vokabelkarten.vokabelkarten
+        #                                         )
 
         # Registriere InfoManager im Taskmanager
         if self.task_manager:
             self.task_manager.registriere_task('INFO_MANAGER', Task(self.info_manager))
             self.task_manager.task('INFO_MANAGER').start()
 
-        logger.start()
-        # DAUER: 3.10568
         if self.task_manager:
             self.task_manager.task('INFO_MANAGER').registriere_funktion(
                 self.__task_funktion_erzeuge_infos(self.uhr.now(Lernuhr.echte_zeit())))
@@ -218,17 +202,13 @@ class VokabeltrainerController:
         else:
             self.info_manager = self.info_manager.erzeuge_alle_infos(self.uhr.now(Lernuhr.echte_zeit()))
 
-        logger.fertig("programm_loop -> info_manager.erzeuge_alle_infos()")
-
-        print(f"Beginne mit der Arbeit. { self.info_manager.boxen_als_number_dict()[40] = }")
-        logger.start()
         # TODO ZustandsFactory.buildStart Benoetigt zum erstellen des Child BoxInfo bereits einen InfoManager mit Daten
         self.aktueller_zustand = (ZustandsFactory(self.modell, self.uhr, self.info_manager).
                                   buildZustandStart(ZustandsFactory.start_zustand()))
-        logger.fertig("programm_loop -> buildZustandStart()")
         self.view_observer.views_updaten(self.aktueller_zustand, Lernuhr.echte_zeit())
         self.view_observer.views_rendern()
 
+        # Die eiegentliche Programmschleife
         while not isinstance(self.aktueller_zustand, ZustandsFactory.end_zustand()):
             self.aktueller_zustand = self.aktueller_zustand.update_zeit(self.uhr.as_iso_format(Lernuhr.echte_zeit()))
             self.event_manager.publish_event(EventTyp.LOOP_ENDE, self.aktueller_zustand)
