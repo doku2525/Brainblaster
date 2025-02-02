@@ -1,0 +1,23 @@
+@startuml
+title Zustandsdiagramm für Vokabeltrainer
+
+[*] --> ZustandStart : Start
+ZustandStart --> ZustandBoxinfo : Benutzereingabe
+ZustandStart --> ZustandVeraenderLernuhr : Benutzereingabe
+ZustandVeraenderLernuhr --> ZustandStart : Zurück
+ZustandBoxinfo --> ZustandVokabelPruefen : Benutzereingabe
+ZustandBoxinfo --> ZustandVokabelLernen : Benutzereingabe
+ZustandBoxinfo --> ZustandVokabelNeue : Benutzereingabe
+ZustandBoxinfo --> ZustandZeigeVokabellisteKomplett : Benutzereingabe
+ZustandBoxinfo --> ZustandZeigeVokabellisteLernen : Benutzereingabe
+ZustandBoxinfo --> ZustandZeigeVokabellisteNeue : Benutzereingabe
+ZustandVokabelPruefen --> ZustandBoxinfo : Zurück
+ZustandVokabelLernen --> ZustandBoxinfo : Zurück
+ZustandVokabelNeue --> ZustandBoxinfo : Zurück
+ZustandZeigeVokabellisteKomplett --> ZustandBoxinfo : Zurück
+ZustandZeigeVokabellisteLernen --> ZustandBoxinfo : Zurück
+ZustandZeigeVokabellisteNeue --> ZustandBoxinfo : Zurück
+ZustandStart --> ZustandENDE : Beenden
+ZustandBoxinfo --> ZustandENDE : Beenden
+
+@enduml
