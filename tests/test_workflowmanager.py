@@ -34,18 +34,18 @@ class TestWorkflowManager(TestCase):
             MockStateC: []  # Keine erlaubten Übergänge
         }
         self.workflow = self.workflow.register_transitions(self.transitions)
-        self.workflow = replace(self.workflow, aktueller_zustand=MockStateA())
+        self.workflow = replace(self.workflow, aktueller_zustand=MockStateA)
 
     def test_initial_state(self):
         # Teste Initialisierung
-        self.assertIsInstance(self.workflow.aktueller_zustand, MockStateA)
+        self.assertEqual(self.workflow.aktueller_zustand, MockStateA)
         self.assertEqual(len(self.workflow.zustands_history), 0)
 
     def test_valid_transition(self):
         # Teste erlaubten Übergang: A → B
         neuer_zustand = self.workflow.transition_zu(MockStateB)
-        self.assertIsInstance(neuer_zustand.aktueller_zustand, MockStateB)
-        self.assertIsNot(self.workflow.aktueller_zustand, neuer_zustand.aktueller_zustand)
+        self.assertEqual(neuer_zustand.aktueller_zustand, MockStateB)
+        self.assertNotEqual(self.workflow.aktueller_zustand, neuer_zustand.aktueller_zustand)
         self.assertEqual(len(self.workflow.zustands_history), 0)
         self.assertEqual(len(neuer_zustand.zustands_history), 1)
 
@@ -57,8 +57,8 @@ class TestWorkflowManager(TestCase):
 
     def test_transition_zu_mit_namen_valid(self):
         neuer_zustand = self.workflow.transition_zu_per_namen("MockStateB")
-        self.assertIsInstance(neuer_zustand.aktueller_zustand, MockStateB)
-        self.assertIsNot(self.workflow.aktueller_zustand, neuer_zustand.aktueller_zustand)
+        self.assertEqual(neuer_zustand.aktueller_zustand, MockStateB)
+        self.assertNotEqual(self.workflow.aktueller_zustand, neuer_zustand.aktueller_zustand)
         self.assertEqual(len(self.workflow.zustands_history), 0)
         self.assertEqual(len(neuer_zustand.zustands_history), 1)
 
@@ -68,8 +68,8 @@ class TestWorkflowManager(TestCase):
 
     def test_transition_zu_mit_index_valid(self):
         neuer_zustand = self.workflow.transition_zu_per_index(0)
-        self.assertIsInstance(neuer_zustand.aktueller_zustand, MockStateB)
-        self.assertIsNot(self.workflow.aktueller_zustand, neuer_zustand.aktueller_zustand)
+        self.assertEqual(neuer_zustand.aktueller_zustand, MockStateB)
+        self.assertNotEqual(self.workflow.aktueller_zustand, neuer_zustand.aktueller_zustand)
         self.assertEqual(len(self.workflow.zustands_history), 0)
         self.assertEqual(len(neuer_zustand.zustands_history), 1)
 
@@ -81,7 +81,7 @@ class TestWorkflowManager(TestCase):
         # Teste "Zurück"-Funktion: A → B → zurück zu A
         neuer_zustand = self.workflow.transition_zu(MockStateB)
         prev_state = neuer_zustand.go_back()
-        self.assertIsInstance(prev_state.aktueller_zustand, MockStateA)
+        self.assertEqual(prev_state.aktueller_zustand, MockStateA)
         self.assertEqual(len(prev_state.zustands_history), 0)
         self.assertEqual(len(neuer_zustand.zustands_history), 1)
 
@@ -90,8 +90,8 @@ class TestWorkflowManager(TestCase):
         neuer_zustand = self.workflow.transition_zu(MockStateB)
         neuer_zustand = neuer_zustand.transition_zu(MockStateA)
         self.assertEqual(len(neuer_zustand.zustands_history), 2)
-        self.assertIsInstance(neuer_zustand.zustands_history[0], MockStateA)
-        self.assertIsInstance(neuer_zustand.zustands_history[1], MockStateB)
+        self.assertEqual(neuer_zustand.zustands_history[0], MockStateA)
+        self.assertEqual(neuer_zustand.zustands_history[1], MockStateB)
 
     def test_transition_registration(self):
         # Teste, ob Transitionen korrekt registriert wurden
