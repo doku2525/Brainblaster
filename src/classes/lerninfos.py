@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 # InfotypStatModus = namedtuple('InfotypStatModus', ['insgesamt', 'aktuell'])
 """Insgesamt ist die Anzahl aller Statistiken, die den entsprechenden Modus haben.
    Aktuell ist die Anzahl aller Statisitken, die im entsprechenden Test ausgewaehlt werden wuerden.
-        Z.B. Insgaesamt 40 Karten mit dem Status PRUEFEN, aber nur 10 Karten davon sind pruefen() == True"""
+        Z.B. Insgesamt 40 Karten mit dem Status PRUEFEN, aber Aktuell nur 10 Karten davon sind pruefen() == True"""
 
 
 class InfotypStatModus(NamedTuple):
@@ -84,7 +84,7 @@ class Lerninfos:
 
     def ersetze_karte(self, alte_karte: Vokabelkarte, neue_karte: Vokabelkarte, uhrzeit: int):
         neue_lerninfo = replace(self, karten=[karte if karte != alte_karte else neue_karte
-                                                for karte in self.karten])
+                                              for karte in self.karten])
         return neue_lerninfo.erzeuge_infos(uhrzeit)
 
     def sammle_infos_zu_frageeinheit(self, uhrzeit: int, frageeinheit: Type[Frageeinheit]) -> InfotypStatistik:
