@@ -74,15 +74,15 @@ class ZustandBoxinfo(Zustand):
         index_aktuelle_frage = list(self.info.keys()).index(self.aktuelle_frageeinheit)
         match cmd_str:
             case ['=', *frage_einheit]:
-                return "CmdStartChangeAktuellenFrageeinheit", (''.join(frage_einheit),)
+                return "CmdStartChangeAktuelleFrageeinheit", (''.join(frage_einheit),)
             case ['+', *wert]:
                 neuer_index = (index_aktuelle_frage + int(''.join(wert))) % len(self.info) % len(self.info)
                 neue_frageeinheit = list(self.info.keys())[neuer_index]
-                return "CmdStartChangeAktuellenFrageeinheit", (neue_frageeinheit,)
+                return "CmdStartChangeAktuelleFrageeinheit", (neue_frageeinheit,)
             case ['-', *wert]:
                 neuer_index = (index_aktuelle_frage - int(''.join(wert))) % len(self.info) % len(self.info)
                 neue_frageeinheit = list(self.info.keys())[neuer_index]
-                return "CmdStartChangeAktuellenFrageeinheit", (neue_frageeinheit,)
+                return "CmdStartChangeAktuelleFrageeinheit", (neue_frageeinheit,)
         return super().parse_user_eingabe(cmd_str)   # Liefert tuple("", tuple())
 
     def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:
