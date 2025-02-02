@@ -19,6 +19,10 @@ class Zustand(ABC):
     kommandos: list[str] = field(default_factory=list)
     aktuelle_zeit: str = field(default_factory=str)
 
+    def parse_user_eingabe(self, cmd_str: list[str]) -> tuple[str, tuple]:
+        """Liest cmd-String und liefert Tuple mit KommandoString und args"""
+        return "", tuple()   # Abstarkte Klasse, deshalb gibt es keine Kommandos
+
     def position_zustand_in_child_mit_namen(self, klassen_name: str) -> str:
         """Da 0 fuer die Position parrent reserviert ist, ist result = '' oder '1..n'  """
         return "".join([str(index)
@@ -64,6 +68,23 @@ class ZustandBoxinfo(Zustand):
     beschreibung: str = 'Zustand 2, Zeigt die Boxinfos der aktuellen Box an.'
     child: list[Zustand] = field(default_factory=list)
     kommandos: list[str] = field(default=("+", "-", "="))
+
+    def parse_user_eingabe(self, cmd_str: list[str]) -> tuple[str, tuple]:
+        print(f" cmdParser Zustand: {self.__class__.__name__} - {cmd_str = }")
+        index_aktuelle_frage = list(self.info.keys()).index(self.aktuelle_frageeinheit)
+        match cmd_str:
+            case ['=', *frage_einheit]:
+                return "CmdStartChangeAktuellenFrageeinheit", (''.join(frage_einheit),)
+            case ['+', *wert]:
+                neuer_index = (index_aktuelle_frage + int(''.join(wert))) % len(self.info) % len(self.info)
+                neue_frageeinheit = list(self.info.keys())[neuer_index]
+                return "CmdStartChangeAktuellenFrageeinheit", (neue_frageeinheit,)
+            case ['-', *wert]:
+                neuer_index = (index_aktuelle_frage - int(''.join(wert))) % len(self.info) % len(self.info)
+                neue_frageeinheit = list(self.info.keys())[neuer_index]
+                return "CmdStartChangeAktuellenFrageeinheit", (neue_frageeinheit,)
+            case '': return '', tuple()
+        return super().verarbeite_userinput(cmd_str)
 
     def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:
         """Veraendert die aktuelle Frageeinheit.
