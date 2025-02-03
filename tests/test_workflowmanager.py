@@ -62,9 +62,12 @@ class TestWorkflowManager(TestCase):
         self.assertEqual(len(self.workflow.zustands_history), 0)
         self.assertEqual(len(neuer_zustand.zustands_history), 1)
 
+    def test_transition_zu_mit_gleichen_namen_wie_aktuell(self):
+        self.assertEqual(self.workflow,self.workflow.transition_zu_per_namen("MockStateA"))
+
     def test_transition_zu_mit_namen_invalid(self):
         with self.assertRaises(ValueError):
-            self.workflow.transition_zu_per_namen("MockStateA")
+            self.workflow.transition_zu_per_namen("MockStateF")
 
     def test_transition_zu_mit_index_valid(self):
         neuer_zustand = self.workflow.transition_zu_per_index(0)
