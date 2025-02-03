@@ -19,7 +19,6 @@ import src.utils.utils_io as u_io
 import src.utils.utils_performancelogger as u_log
 
 if TYPE_CHECKING:
-    # from src.classes.eventmanager import EventManager
     from src.classes.vokabeltrainermodell import VokabeltrainerModell
     from src.classes.zustandsbeobachter import ObserverManager
     from src.classes.vokabelkarte import Vokabelkarte
@@ -33,25 +32,31 @@ logger.starte_logging()
 
 class VokabeltrainerController:
 
-    def __init__(self, modell: VokabeltrainerModell, uhr: Lernuhr, view_observer: ObserverManager,
-                 # event_manager: EventManager,
+    def __init__(self,
+                 modell: VokabeltrainerModell,
+                 uhr: Lernuhr,
+                 view_observer: ObserverManager,
                  task_manager: TaskManager = None):
+
         self.modell: VokabeltrainerModell = modell
         self.info_manager: InfoManager = InfoManager()
         self.uhr: Lernuhr = uhr
         self.aktueller_zustand: Zustand | None = None
         self.view_observer: ObserverManager = view_observer
-        # self.event_manager: EventManager = event_manager
-        self.cmd: str = ''
+#        self.cmd: str = ''
         self.task_manager = task_manager
-        """ Variablen, die vom Taskmanager verwaltet werden sollen, duerfen dann nur noch ueber die Funktionen in den
-            Tasks veraendert werden. Die result Funktionen, die vom Wrapper an den Task uebergeben werden muss folgende
-            Form haben:
-            wrapper_func(paramaterliste) -> Callable:
-             def result_func(obj: T) -> T:
-                self.variable = obj.func()
-                return self.variable
-             return result_func"""
+
+    # ###########################################################################################
+    #   TaskManager-Funktionen - Funktionen, die nur fuer den TaskManager geeignet sind
+    # ###########################################################################################
+    """ Variablen, die vom Taskmanager verwaltet werden sollen, duerfen dann nur noch ueber die Funktionen in den
+        Tasks veraendert werden. Die result Funktionen, die vom Wrapper an den Task uebergeben werden muss folgende
+        Form haben:
+        wrapper_func(paramaterliste) -> Callable:
+         def result_func(obj: T) -> T:
+            self.variable = obj.func()
+            return self.variable
+         return result_func"""
 
     def __task_funktion_erzeuge_infos(self, zeit: int) -> Callable:
         """Hilfsfunktion in programm_loop() und update_uhr() fuer den Taskmanager zum erzeugen der Infos und
@@ -61,11 +66,21 @@ class VokabeltrainerController:
             self.info_manager = obj.erzeuge_alle_infos(zeit)
             logger.fertig(" TASKFUNKTION erzeuge_alle_infos")
             return self.info_manager
-
         return result_func
 
-    # Definiere Systemkommandos, die von den Zustaenden aufgerufen werden koennen.
-    #  Jede Funktion muss im command-Dictionary der Funktion execute_kommando() registriert werden
+    def __task_funktion_update_infos(self, karte_alt: Vokabelkarte, karte_neu: Vokabelkarte, zeit: int) -> Callable:
+        """Hilfsfunktion in update_vokabelkarte_statistik() fuer den Taskmanager zum berechnen der Infos und
+            Aktuallisieren von self.info_manager"""
+        def result_func(obj: InfoManager) -> InfoManager:
+            logger.start(" TASKFUNKTION update_infos_fuer_karte")
+            self.info_manager = obj.update_infos_fuer_karte(karte_alt, karte_neu, zeit)
+            logger.fertig(" TASKFUNKTION update_infos_fuer_karte")
+            return self.info_manager
+        return result_func
+
+    # ###########################################################################################
+    #   Systemkommandos, die vom KommandoInterpreter aufgerufen werden.
+    # ###########################################################################################
     def update_uhr(self, neue_uhr: Lernuhr) -> None:
         self.uhr = neue_uhr
         logger.start()
@@ -91,17 +106,6 @@ class VokabeltrainerController:
         self.modell.vokabelboxen.vokabelboxen[self.modell.index_aktuelle_box] = neue_box
         self.aktueller_zustand = (ZustandsFactory(self.modell, self.uhr, self.info_manager).
                                   update_frageeinheit(self.aktueller_zustand))
-
-    def __task_funktion_update_infos(self, karte_alt: Vokabelkarte, karte_neu: Vokabelkarte, zeit: int) -> Callable:
-        """Hilfsfunktion in update_vokabelkarte_statistik() fuer den Taskmanager zum berechnen der Infos und
-            Aktuallisieren von self.info_manager"""
-        def result_func(obj: InfoManager) -> InfoManager:
-            logger.start(" TASKFUNKTION update_infos_fuer_karte")
-            self.info_manager = obj.update_infos_fuer_karte(karte_alt, karte_neu, zeit)
-            logger.fertig(" TASKFUNKTION update_infos_fuer_karte")
-            return self.info_manager
-
-        return result_func
 
     def update_vokabelkarte_statistik(self, karte: tuple[Vokabelkarte, Callable[[int], Vokabelkarte]]) -> None:
         """Ruft die Funktion zum Erstellen und Hinzufuegen der Antwort mit der aktuellen Zeit auf und ersetzt dann
@@ -148,46 +152,10 @@ class VokabeltrainerController:
         speicher_thread.start()
         logger.fertig(f"\tspeicher_daten_in_dateien -> thread starten")
 
-    # Funktionen zum Ausfuehren und aktuallisieren des Systems
-    def execute_kommando(self, kommando_string: str) -> Zustand:
-        # TODO Scheibe funktion self.execute_kommando_interpreter(zustand, interpreter, cmd
-        #   das systemcommands des vokabeltrainers mit uebergibt.
-        commands = {'update_uhr': self.update_uhr,
-                    'update_modell_aktueller_index': self.update_modell_aktueller_index,
-                    'update_vokabelkarte_statistik': self.update_vokabelkarte_statistik,
-                    'update_modell_aktuelle_frageeinheit': self.update_modell_aktuelle_frageeinheit,
-                    'speicher_daten_in_dateien': self.speicher_daten_in_dateien}
-
-        print(f"execute_kommando: {kommando_string = }")  # TODO Debug entfernen
-        result: ZustandReturnValue = self.aktueller_zustand.verarbeite_userinput(kommando_string)
-        print(f"execute_kommando: {result.cmd = }")  # TODO Debug entfernen
-        if cmd := commands.get(cast(str, result.cmd), False):
-            cmd(*result.args)
-        # Gib den aktuallisierten aktuellen Zustand zurueck
-        return logger.execute(      # TODO Hier muss spaeter wieder das untere return unkommentiert werden
-            lambda: ZustandsFactory(self.modell, self.uhr, self.info_manager).update_with_childs(result.zustand),
-            f"\texecute_kommando -> update_with_childs( {result.zustand.__class__.__name__} )")
-        # return ZustandsFactory(self.modell, self.uhr, self.info_manager).update_with_childs(result.zustand)
-
-    # Funktion fuer den EventManager. Wird vom view usw. aufgerufen, wenn ein Kommando auf irgendeinen Weg an das
-    #   System geschickt wird.
-    # def setze_cmd_str(self, cmd_str) -> None:
-    #     self.cmd = cmd_str
-    #     logger.start(f"setze_cmd_str mit {self.cmd[1:]} zustand = {self.aktueller_zustand.__class__.__name__}")
-    #     self.aktueller_zustand = self.execute_kommando(self.cmd[1:])
-    #     logger.fertig(f"setze_cmd_str -> execute_kommando(cmd) cmd = {self.cmd[1:]} " +
-    #                   f"zustand = {self.aktueller_zustand.__class__.__name__}")
-    #     self.event_manager.publish_event(EventTyp.KOMMANDO_EXECUTED, self.aktueller_zustand)
-    #     self.cmd = ''
-
-    def programm_loop(self):
-        # TODO In ProgrammLoop ausgelagert
-        # self.modell.vokabelboxen.laden()
-        # self.modell.vokabelkarten.laden()
-
-        # self.info_manager = InfoManager.factory(liste_der_boxen=self.modell.vokabelboxen.vokabelboxen,
-        #                                         liste_der_karten=self.modell.vokabelkarten.vokabelkarten
-        #                                         )
+    def starte_info_und_task_manager(self):
+        self.info_manager = InfoManager.factory(liste_der_boxen=self.modell.vokabelboxen.vokabelboxen,
+                                                liste_der_karten=self.modell.vokabelkarten.vokabelkarten
+                                                )
 
         # Registriere InfoManager im Taskmanager
         if self.task_manager:
@@ -201,17 +169,3 @@ class VokabeltrainerController:
             self.task_manager.task('INFO_MANAGER').join()
         else:
             self.info_manager = self.info_manager.erzeuge_alle_infos(self.uhr.now(Lernuhr.echte_zeit()))
-
-        # TODO ZustandsFactory.buildStart Benoetigt zum erstellen des Child BoxInfo bereits einen InfoManager mit Daten
-        self.aktueller_zustand = (ZustandsFactory(self.modell, self.uhr, self.info_manager).
-                                  buildZustandStart(ZustandsFactory.start_zustand()))
-        self.view_observer.views_updaten(self.aktueller_zustand, Lernuhr.echte_zeit())
-        self.view_observer.views_rendern()
-
-        # Die eiegentliche Programmschleife
-        while not isinstance(self.aktueller_zustand, ZustandsFactory.end_zustand()):
-            self.aktueller_zustand = self.aktueller_zustand.update_zeit(self.uhr.as_iso_format(Lernuhr.echte_zeit()))
-            self.event_manager.publish_event(EventTyp.LOOP_ENDE, self.aktueller_zustand)
-            time.sleep(0.25)
-
-        self.event_manager.publish_event(EventTyp.PROGRAMM_BENDET, self.aktueller_zustand)
