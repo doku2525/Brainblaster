@@ -103,10 +103,10 @@ function fetchData() {
 }
 
 // Funktionen fuer die Buttons
-function speicherLernuhr() { window.location.href = '/index?lernuhr=mit_speichern';}
-function verwerfeLernuhr() { window.location.href = '/index?lernuhr=ohne_speichern';}
+function speicherLernuhr() { window.location.href = '/lade_neuen_zustand?lernuhr=mit_speichern';}
+function verwerfeLernuhr() { window.location.href = '/lade_neuen_zustand?lernuhr=ohne_speichern';}
 function calibriereLernuhr() {
-    // Die neuen Daten weren in sendeKommando dem Kalnder- und Uhr-Element zugwiesen
+    // Die neuen Daten werden in sendeKommando dem Kalnder- und Uhr-Element zugwiesen
     sende_kommando('/kommando/cc');
     startUndKalkzeitVeraendert = true;   // Flag, die in sendeKommando() abgefragt wird
 }

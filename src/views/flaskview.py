@@ -66,7 +66,8 @@ class FlaskView:
                 if command == 'ohne_speichern':
                     self.setze_cmd_warte_auf_update('z0', self.warte_zeit)
                 elif command == 'mit_speichern':
-                    self.setze_cmd_warte_auf_update('z@ZustandStart', self.warte_zeit)
+                    self.setze_cmd_warte_auf_update('cupdate', self.warte_zeit)
+                    self.setze_cmd_warte_auf_update('z0', self.warte_zeit)
                 return redirect(url_for('index'))           # sorgt dafuer, dass args nicht in url angezeigt werden
             return render_template('index.html',
                                    data=list(enumerate(self.data['liste'])),
@@ -89,6 +90,13 @@ class FlaskView:
 
         @self.app.route('/boxinfo')
         def boxinfo():
+            command = request.args.get('lernuhr', False)
+            if command:
+                if command == 'ohne_speichern':
+                    self.setze_cmd_warte_auf_update('z0', self.warte_zeit)
+                elif command == 'mit_speichern':
+                    self.setze_cmd_warte_auf_update('cupdate', self.warte_zeit)
+                    self.setze_cmd_warte_auf_update('z0', self.warte_zeit)
             command = request.args.get('c', False)
             if command:
                 self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
@@ -105,12 +113,15 @@ class FlaskView:
         def karten_testen():
             """Fuer die Zustaende pruefen, lernen und neue wird das gleiche Template benutzt.
             Die Routen fuer pruefen, lernen und neue setzen nur den Zustand und leiten dann zu dieser Route weiter."""
+            print(f"109 {self.data['zustand']}")
             command = request.args.get('zurueck', False)
             if command:
-                self.setze_cmd_warte_auf_update('c0', self.warte_zeit)
+                print(f"112 {self.data['zustand']}")
+                self.setze_cmd_warte_auf_update('z0', self.warte_zeit)
                 return redirect(url_for('lade_neuen_zustand'))
-
-            self.setze_cmd_warte_auf_update(f"c@{self.data['zustand']}", self.warte_zeit)
+            print(f"115 {self.data['zustand']}")
+            self.setze_cmd_warte_auf_update(f"z@{self.data['zustand']}", self.warte_zeit)
+            print(f"117 {self.data['zustand']}")
             return render_template('karten_testen.html',
                                    frage=self.data['frage'],
                                    antwort=self.data['antwort'],
@@ -136,7 +147,7 @@ class FlaskView:
             command = request.args.get('fe', False)
             if command:
                 self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
-            self.setze_cmd_warte_auf_update(f"c@ZustandVokabelPruefen", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"z@ZustandVokabelPruefen", self.warte_zeit)
             return redirect(url_for('karten_testen'))
 
         @self.app.route('/karten_lernen')
@@ -146,7 +157,7 @@ class FlaskView:
             command = request.args.get('fe', False)
             if command:
                 self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
-            self.setze_cmd_warte_auf_update(f"c@ZustandVokabelLernen", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"z@ZustandVokabelLernen", self.warte_zeit)
             return redirect(url_for('karten_testen'))
 
         @self.app.route('/karten_neue')
@@ -156,7 +167,7 @@ class FlaskView:
             command = request.args.get('fe', False)
             if command:
                 self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
-            self.setze_cmd_warte_auf_update(f"c@ZustandVokabelNeue", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"z@ZustandVokabelNeue", self.warte_zeit)
             return redirect(url_for('karten_testen'))
 
         @self.app.route('/zeige_vokabelliste')
@@ -167,10 +178,10 @@ class FlaskView:
             pdf = request.args.get('pdf', False)
             print(f"zeige_vokabelliste  {self.pdf = }")
             if command:
-                self.setze_cmd_warte_auf_update('c0', self.warte_zeit)
+                self.setze_cmd_warte_auf_update('z0', self.warte_zeit)
                 return redirect(url_for('boxinfo'))
 
-            self.setze_cmd_warte_auf_update(f"c@ZustandZeigeVokabelliste", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"z@{self.data['zustand']}", self.warte_zeit)
             html = render_template('zeigevokabelliste.html',
                                    titel=self.data['box_titel'],
                                    untertitel=f"{self.data.get('modus','')}:{self.data.get('frageeinheit_titel','')}",
@@ -194,7 +205,7 @@ class FlaskView:
             print(f"zeige_vokabelliste_komplett  {self.pdf = }")
             if command:
                 self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
-            self.setze_cmd_warte_auf_update(f"c@ZustandZeigeVokabellisteKomplett", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"z@ZustandZeigeVokabellisteKomplett", self.warte_zeit)
             return redirect(url_for('zeige_vokabelliste'))
                 # url_for('zeige_vokabelliste', pdf=True)) if pdf else redirect(
                 # url_for('zeige_vokabelliste'))
@@ -206,7 +217,7 @@ class FlaskView:
             pdf = request.args.get('pdf', False)
             if command:
                 self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
-            self.setze_cmd_warte_auf_update(f"c@ZustandZeigeVokabellisteLernen", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"z@ZustandZeigeVokabellisteLernen", self.warte_zeit)
             return redirect(
                 url_for('zeige_vokabelliste', pdf=True)) if pdf else redirect(
                 url_for('zeige_vokabelliste'))
@@ -218,7 +229,7 @@ class FlaskView:
             pdf = request.args.get('pdf', False)
             if command:
                 self.setze_cmd_warte_auf_update(f"c={command}", self.warte_zeit)
-            self.setze_cmd_warte_auf_update(f"c@ZustandZeigeVokabellisteNeue", self.warte_zeit)
+            self.setze_cmd_warte_auf_update(f"z@ZustandZeigeVokabellisteNeue", self.warte_zeit)
             return redirect(
                 url_for('zeige_vokabelliste', pdf=True)) if pdf else redirect(
                 url_for('zeige_vokabelliste'))
@@ -279,6 +290,14 @@ class FlaskView:
 
         @self.app.route('/lade_neuen_zustand')
         def lade_neuen_zustand():
+            command = request.args.get('lernuhr', False)
+            if command:
+                if command == 'ohne_speichern':
+                    self.setze_cmd_warte_auf_update('z0', self.warte_zeit)
+                elif command == 'mit_speichern':
+                    self.setze_cmd_warte_auf_update('cupdate', self.warte_zeit)
+                    self.setze_cmd_warte_auf_update('z0', self.warte_zeit)
+
             return redirect(url_for(f"{zustand_zu_route[self.data['zustand']]}"))
 
         @self.app.route('/alpha_waves.mp3')
@@ -305,6 +324,7 @@ class FlaskView:
         def kommando_ausgefuehrt(data: Any):
             self.cmd = False
 
+        print(f"F_cdm 317 {self.data['zustand']}")
         self.cmd = True
         self.event_manager.subscribe(EventTyp.KOMMANDO_EXECUTED, kommando_ausgefuehrt)
         self.event_manager.publish_event(EventTyp.NEUES_KOMMANDO, cmd)
