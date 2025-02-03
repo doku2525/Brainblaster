@@ -10,40 +10,30 @@ from src.zustaende.zustandsfactory import ZustandsFactory
 
 if TYPE_CHECKING:
     from src.classes.eventmanager import EventManager
-    from src.classes.taskmanager import TaskManager
     from src.classes.vokabeltrainercontroller import VokabeltrainerController
     from src.kommandos.kommandointerpreter import KommandoInterpreter
     from src.zustaende.workflowmanager import WorkflowManager
 
-
+"""
+Die Klasse fuehrt die programm_schleife aus und verarbeitet die von den Views usw. gesendeten Kommandos.
+Die beiden wesentlichen Funktionen sind:
+kommando_event_handler()
+start()
+"""
 @dataclass
 class ProgrammLoop:
     controller: VokabeltrainerController
     workflow: WorkflowManager
     cmd_interpreter: KommandoInterpreter
     event_manager: EventManager
-    task_manager: TaskManager
     cmd: str = field(default='')
 
     def __post_init__(self):
         print(f"ProgrammLoop: {self.workflow.aktueller_zustand.__name__ = }")
         self.lade_repositories()
         self.register_cmds_in_event_manager()
-        # TODO TaskManager/InfoManager-Sachen sollten vielleicht in Controller-Klasse bleiben
         self.erzeuge_task_info_manager()
         # Zum Erzeugen des StartZustands muss der InfoManagerTask erst beendet sein. (siehe Bemerkung in Funktion)
-        # TODO ZustandsFactory.buildStart Benoetigt zum erstellen des Child BoxInfo bereits einen InfoManager mit Daten
-        """
-        In workflow ist bereits StartZustand als aktueller_zustand gespeichert, so dass nur noch eine Update-Funktion,
-        die den aktuellen_zustand des Controller und des WorkflowManagers vergleicht und dann entsprechend die
-        builder-Methode aufruft.
-        Zum Beispiel:
-        self.controller.aktueller_zustand = (ZustandsFactory(self.controller.modell,
-                                                             self.controller.uhr,
-                                                             self.controller.info_manager).
-                                                             build(self.workflow.aktueller_zustand))
-        Die Factory sucht dann den entsprechenden Zustand heraus. Falls vorhanden aus dem Cache, ansonsten bauen.
-        """
         # starte_workflow_task()
         self.controller.aktueller_zustand = (
             ZustandsFactory(self.controller.modell, self.controller.uhr, self.controller.info_manager).
@@ -72,38 +62,8 @@ class ProgrammLoop:
         self.controller.modell.vokabelkarten.laden()
         return self.controller
 
-    def __task_funktion_erzeuge_infos(self, zeit: int) -> Callable:
-        # TODO TaskManager/InfoManager-Sachen sollten vielleicht in Controller-Klasse bleiben
-        """Hilfsfunktion in programm_loop() und update_uhr() fuer den Taskmanager zum erzeugen der Infos und
-            Aktuallisieren von self.info_manager"""
-        def result_func(obj: InfoManager) -> InfoManager:
-            self.controller.info_manager = obj.erzeuge_alle_infos(zeit)
-            return self.controller.info_manager
-
-        return result_func
-
     def erzeuge_task_info_manager(self) -> VokabeltrainerController:
-        # TODO TaskManager/InfoManager-Sachen sollten vielleicht in Controller-Klasse bleiben
-        # Erzeuge InfoManager
-        self.controller.info_manager = InfoManager.factory(
-            liste_der_boxen=self.controller.modell.vokabelboxen.vokabelboxen,
-            liste_der_karten=self.controller.modell.vokabelkarten.vokabelkarten
-        )
-        # Registriere Instanze des InfoManager als Objekt des Tasks 'INFO_MANAGER' im TaskManager
-        if self.task_manager:
-            self.task_manager.registriere_task('INFO_MANAGER', Task(self.controller.info_manager))
-            self.task_manager.task('INFO_MANAGER').start()
-
-        # Schreibe Funktion zum Erzeugen der Infos des InfoManagers in die Aufgabenliste des Tasks 'INFO_MANAGER'
-        if self.task_manager:
-            self.task_manager.task('INFO_MANAGER').registriere_funktion(
-                self.__task_funktion_erzeuge_infos(self.controller.uhr.now(self.controller.uhr.echte_zeit())))
-            # Task muss beendet sein fuer folgenden Block. Siehe Kommentar im folgenden Block mit self.aktueller_zustand
-            self.task_manager.task('INFO_MANAGER').join()  # Warte, bis alle Aufgaben/Funktionen fertig sind
-        else:
-            # Falls kein TaskManager benutzt wird, schreibe info_manager seriell ohne Task.
-            self.controller.info_manager = self.controller.info_manager.erzeuge_alle_infos(
-                self.uhr.now(self.controller.uhr.echte_zeit()))
+        self.controller.starte_info_und_task_manager()
         return self.controller
 
     def execute_controller_kommando(self, cmd: list[str]) -> VokabeltrainerController:
@@ -156,38 +116,6 @@ class ProgrammLoop:
         # Sende Event an alle Abonnenten von KOMMANDO_EXECUTED, die auf den aktuallisierten Zustand warten
         self.event_manager.publish_event(EventTyp.KOMMANDO_EXECUTED, self.controller.aktueller_zustand)
         self.cmd = ''   # FLAG loeschen
-
-        """                
-                Beispiel-Code fuer Start->Lernuhr
-                1. Klicke auf Lernuhrbutton -> Schicke z@ZustandLernuhr an kommand_event_handler.
-                ---- In ProgrammLoop
-                2. kommando_event_handler -> rufe WorkflowManager auf, wenn z ein Workflow-Case ist
-                ---- Im WorkflowManager
-FERTIG                3. WorkflowManager sucht nach "ZustandLernuhr" im transisiton[Type[aktueller_zustand]]
-FERTIG                4. Pruefe, ob Typ in transitions verfuegbar ist
-FERTIG                4a. Gefunden:
-FERTIG                    1. Lege den Typ des aktuellen Zustands auf den history_stack.
-FERTIG                    2. Speicher ZustandLernuhr als Typ im aktuellen Zustand.
-FERTIG                4b. Nicht gefunden:
-FERTIG                    1. Bleibe unveraendert
-                ---- In ProgrammLoop
-FERTIG                5. Pruefe, ob die aktuellen_zustaende im WorkflowManager und im Controller gleich sind
-FERTIG                5a. Sind gleich:
-FERTIG                    1. Mache nichts
-FERTIG                5b. Sind unterschiedlich:
-                    ---- ZustandsFactory
-KEIN CACHE IMPLEMNTIERT
-                    1. Pruefe, ob eine Instanz der neuen aktuellen Zustandsklasse im Cache der Zustandfactory existiert.
-                        1a. exisitiert:
-                            1. speicher die Instanz in controller.aktueller_zustand
-                            2. Evtl. Informiere im EventManager oder ObserverManager, dass neue Werte da sind.
-                        1b. exisitiert nicht:
-FERTIG                            1. Rufe builderKlasse fuer Lernuhr auf.
-FERTIG                            2. Speicher Schluesselpaar im cache.
-FERTIG                            3. Mache weiter mit 1a.
-                Der WorkflowManager sollte als Parrent den Typ des vorherigen Zustands speichern.
-                """
-        # raise NotImplementedError
 
     def start(self):
         while not isinstance(self.controller.aktueller_zustand, ZustandsFactory.end_zustand()):

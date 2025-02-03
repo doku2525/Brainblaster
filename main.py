@@ -66,7 +66,6 @@ def main() -> None:
     print(f"Stage 1 abgeschlossen!")
     programm_loop = ProgrammLoop(controller=controller,
                                  event_manager=event_manager,
-                                 task_manager=TaskManager(),
                                  cmd_interpreter=KommandoInterpreter(),
                                  workflow=WorkflowManager(aktueller_zustand=ZustandsFactory.start_zustand().__class__,
                                                           transitions=ZustandsFactory.transitions()))
