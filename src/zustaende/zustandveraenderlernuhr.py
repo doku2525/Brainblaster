@@ -8,17 +8,10 @@ from src.zustaende.zustand import ZustandReturnValue, Zustand
 
 @dataclass(frozen=True)
 class ZustandVeraenderLernuhr(Zustand):
-    """Vom prinzip her gibt es keine Child-Zustaende, sondern nur den aufrufenden Parentzustand,
-    zu dem vonm ZustandStelleUhr aus wieder zurueckgegangen wird."""
     titel: str = 'ZustandStelleUhr'
     beschreibung: str = 'Zustand, zum Stellen der Uhr.'
-    kommandos: list[str] = field(default=('s', 'k', 't', 'z', 'p', 'r', 'c'))
-    neue_uhr: Lernuhr | None = field(default=None)   # TODO Waere gut wenn JSON der neuen Zeit Uhr
-    # TODO Ersetzen Lernuhr durch JSON: Der einzige Aufruf von Lernuhr ist in __post__init__,
-    #  um neue_uhrzeit zu definieren. Alle weiteren Vorkommen von self.neue_uhr koennte man auch durch
-    #  Operationen auf das JSON-Dictionary ausfuehren und dann im Controller die neue Lernuhr mit Lernuhr.fromdict()
-    #  wieder zusammenbauen.
-    # TODO Es sollte auch die echte_zeit uebergeben werden. Z.B. fuer Rest usw.
+    kommandos: list[str] = field(default=('c', 'k', 'p', 'r', 's', 't', 'u', 'z'))
+    neue_uhr: Lernuhr | None = field(default=None)
 
     def parse_user_eingabe(self, cmd_str: list[str]) -> tuple[str, tuple]:
         """
@@ -38,53 +31,63 @@ class ZustandVeraenderLernuhr(Zustand):
         vokabeltrainercontroller aufgerufen. return neuerZustand, wechsel_uhr, (self.neue_uhr,)
         """
         match cmd_str:
-            case ['c', *wert]:
-                neuer_zustand = self._replace_neue_uhr(self.neue_uhr.calibrate(self.neue_uhr.echte_zeit()))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
-            case ['k', '=', *wert]:
-                neuer_zustand = self._replace_neue_uhr(self.kalkulation_gleich(wert))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
-            case ['k', '+', *wert]:
-                neuer_zustand = self._replace_neue_uhr(self.kalkulation_plus(wert))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
-            case ['k', '-', *wert]:
-                neuer_zustand = self._replace_neue_uhr(self.kalkulation_minus(wert))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
-            case ['p', 'b']:    # Pause Beginn
-                neuer_zustand = self._replace_neue_uhr(self.neue_uhr.pausiere(Lernuhr.echte_zeit()))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
-            case ['p', 'e']:    # Pause Ende
-                neuer_zustand = self._replace_neue_uhr(self.neue_uhr.beende_pause(Lernuhr.echte_zeit()))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
-            case ['r', *wert]:
-                neuer_zustand = self._replace_neue_uhr(self.neue_uhr.reset(self.neue_uhr.echte_zeit()))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
-            case ['s', '=', *wert]:
-                neuer_zustand = self._replace_neue_uhr(self.start_gleich(wert))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
-            case ['s', '+', *wert]:
-                neuer_zustand = self._replace_neue_uhr(self.start_plus(wert))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
-            case ['s', '-', *wert]:
-                neuer_zustand = self._replace_neue_uhr(self.start_minus(wert))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
-            case ['t', *wert]:
-                neuer_zustand = replace(self, neue_uhr=replace(self.neue_uhr, tempo=float(''.join(wert))))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand, )
-            case ['u', 'p', 'd', 'a', 't', 'e']:
-                return 'CmdErsetzeLernuhr', (self.neue_uhr, )
-            case ['z', 'e']:
-                neuer_zustand = self._replace_neue_uhr(replace(self.neue_uhr, modus=UhrStatus.ECHT))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
-            case ['z', 'p']:
-                neuer_zustand = self._replace_neue_uhr(replace(self.neue_uhr, modus=UhrStatus.PAUSE))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
-            case ['z', 'l']:
-                neuer_zustand = self._replace_neue_uhr(replace(self.neue_uhr, modus=UhrStatus.LAEUFT))
-                return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
+            case ['c']: return self.handle_c()
+            case ['k', *cmd]: return self.handle_k(cmd)
+            case ['p', *cmd]: return self.handle_p(cmd)
+            case ['r']: return self.handle_r()
+            case ['s', *cmd]: return self.handle_s(cmd)
+            case ['t', *cmd]: return self.handle_t(cmd)
+            case ['u', 'p', 'd', 'a', 't', 'e']: return 'CmdErsetzeLernuhr', (self.neue_uhr, )
+            case ['z', *cmd]: return self.handle_z(cmd)
         return super().parse_user_eingabe(cmd_str)   # Liefert tuple("", tuple())
 
-    # ------------------------------------------
+    # #######################################
+    # Handle-Funktion aus match-case-Konstrukt
+
+    def handle_c(self) -> tuple[str, tuple]:
+        neuer_zustand = self._replace_neue_uhr(self.neue_uhr.calibrate(self.neue_uhr.echte_zeit()))
+        return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
+
+    def handle_k(self, cmd: list[string]) -> tuple[str, tuple]:
+        match cmd:
+            case ['=', *cmd]: neuer_zustand = self._replace_neue_uhr(self.kalkulation_gleich(cmd))
+            case ['+', *cmd]: neuer_zustand = self._replace_neue_uhr(self.kalkulation_plus(cmd))
+            case ['-', *cmd]: neuer_zustand = self._replace_neue_uhr(self.kalkulation_minus(cmd))
+            case _: neuer_zustand = self
+        return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
+
+    def handle_p(self, cmd: list[string]) -> tuple[str, tuple]:
+        match cmd:
+            case ['b']: neuer_zustand = self._replace_neue_uhr(self.neue_uhr.pausiere(Lernuhr.echte_zeit()))
+            case ['e']: neuer_zustand = self._replace_neue_uhr(self.neue_uhr.beende_pause(Lernuhr.echte_zeit()))
+            case _: neuer_zustand = self
+        return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
+
+    def handle_r(self) -> tuple[str, tuple]:
+        neuer_zustand = self._replace_neue_uhr(self.neue_uhr.reset(self.neue_uhr.echte_zeit()))
+        return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
+
+    def handle_s(self, cmd: list[string]) -> tuple[str, tuple]:
+        match cmd:
+            case ['=', *cmd]: neuer_zustand = self._replace_neue_uhr(self.start_gleich(cmd))
+            case ['+', *cmd]: neuer_zustand = self._replace_neue_uhr(self.start_plus(cmd))
+            case ['-', *cmd]: neuer_zustand = self._replace_neue_uhr(self.start_minus(wert))
+            case _: neuer_zustand = self
+        return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
+
+    def handle_t(self, cmd: list[str]) -> tuple[str, tuple]:
+        neuer_zustand = replace(self, neue_uhr=replace(self.neue_uhr, tempo=float(''.join(cmd))))
+        return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
+
+    def handle_z(self, cmd: list[string]) -> tuple[str, tuple]:
+        match cmd:
+            case ['e']: neuer_zustand = self._replace_neue_uhr(replace(self.neue_uhr, modus=UhrStatus.ECHT))
+            case ['l']: neuer_zustand = self._replace_neue_uhr(replace(self.neue_uhr, modus=UhrStatus.LAEUFT))
+            case ['p']: neuer_zustand = self._replace_neue_uhr(replace(self.neue_uhr, modus=UhrStatus.PAUSE))
+            case _: neuer_zustand = self
+        return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
+
+    # #######################################
     # Hilfsfunktionen, die parse_user_eingabe() aufgerufen werden.
 
     def _replace_neue_uhr(self, neue_uhr: Lernuhr) -> ZustandVeraenderLernuhr:
@@ -101,7 +104,7 @@ class ZustandVeraenderLernuhr(Zustand):
     def berechne_time_delta(zeit_spanne: str) -> datetime.timedelta:
         """
         Hilfsfunktion fuer die Funktion, die start_zeit und kalaibrierungszeit aus Zeitspannen berechnen
-        Z.B.: +1t, -1t, +20h usw.
+        Z.B.: +1t, -1t, +20h usw. t->Tage, h->Stunden, m->Minuten
         :param zeit_spanne: str
         :return: datetime.timedelta
         """
@@ -134,14 +137,3 @@ class ZustandVeraenderLernuhr(Zustand):
     def start_minus(self, neuer_wert: list[str]) -> Lernuhr:
         time_delta = self.berechne_time_delta(''.join(neuer_wert))
         return replace(self.neue_uhr, start_zeit=self.neue_uhr.start_zeit - time_delta.total_seconds() * 1000)
-
-
-    # Kommando unbekannt und wird an die Superklasse weitergeleitet
-    """Da ZustandVeraenderLernuhr auf jeden Fall ein parrent hat, kann mit
-    0 -> Zurueck ohne die Veraenderungen in neue_uhr als neue Uhrzeit im Controller zu speichern
-    n -> Liefert einen Zustand aus child (beim Erzeugen des aktuellen Zustands wird parrent auch in child kopiert),
-            aber der Befehl 'update_uhr' mit dem args neue_uhr wird dem ZustandReturnValue() hinzugefuegt"""
-    # if (not index_child) or (index_child[0] == "0") or (f"@{self.__class__.__name__}" in index_child):
-    #     return super().verarbeite_userinput(index_child)
-    # # Fuege dem ZustandReturnValue den Befehl zum Updaten der Uhr hinzu
-    # return super().verarbeite_userinput(index_child)._replace(**{'cmd': 'update_uhr', 'args': (self.neue_uhr,)})

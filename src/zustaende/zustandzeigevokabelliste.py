@@ -14,7 +14,8 @@ class ZustandZeigeVokabelliste(Zustand):
     # TODO Tests
     """Zustand zum Anzeigen einer Uebersichtsliste mit den wichtigsten Daten aus Lerneinheit und
         einer Zusammenfassung der Statistiken.
-        Sollte mit erzeuge_aus_vokabelliste erzeugt werden, zum Beispiel mit den Listen aus Lerninfo"""
+        Sollte mit der Klassen methode erzeuge_aus_vokabelliste() erzeugt werden,
+        zum Beispiel mit den Listen aus Lerninfo"""
     titel: str = field(default='Zustand Zeige Vokablliste')
     beschreibung: str = field(default='Zustand Zeige Vokabelliste, die wesentlichen Daten der Karten als Liste')
     kommandos: list[str] = field(default=('e',))
@@ -28,9 +29,8 @@ class ZustandZeigeVokabelliste(Zustand):
         # TODO Tests
         return cls(liste=[DisplayPatternVokabelkarte.in_vokabel_liste(element) for element in vokabelliste])
 
-    def verarbeite_userinput(self, index_child: str) -> ZustandReturnValue:
-        # TODO Tests
-        return super().verarbeite_userinput(index_child)
+    def parse_user_eingabe(self, cmd_str: list[str]) -> tuple[str, tuple]:
+        return super().parse_user_eingabe(cmd_str)
 
 
 @dataclass(frozen=True)
