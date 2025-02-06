@@ -56,7 +56,10 @@ class ZustandsFactory:
             ZustandVeraenderLernuhr: [],
             ZustandBoxinfo: [ZustandVokabelPruefen, ZustandVokabelLernen, ZustandVokabelNeue,
                              ZustandZeigeVokabellisteKomplett, ZustandZeigeVokabellisteLernen,
-                             ZustandZeigeVokabellisteNeue],
+                             ZustandZeigeVokabellisteNeue, ZustandVeraenderLernuhr],
+            ZustandZeigeVokabellisteKomplett: [],
+            ZustandZeigeVokabellisteLernen: [],
+            ZustandZeigeVokabellisteNeue: []
         }
 
     def suche_build_funktion(self, zustand: Type[Zustand]) -> Callable[[Zustand], Zustand]:
