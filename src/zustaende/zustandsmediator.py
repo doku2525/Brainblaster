@@ -42,6 +42,8 @@ class ZustandsMediator:
                     mediator_objekt.zustand_to_flaskview_data(zustand, zeit_in_ms)).items() if value != ''
                 }
 
+    # TODO WorkflowManager mit als Argument uebergeben. Ansonsten werden die Optionen/Transitions nicht in
+    #       ConcoleView angezeigt.
     def zustand_to_consoleview_data(self, zustand: Zustand, zeit_in_ms: int = 0) -> dict:
         mediator_objekt = self.klassen[zustand.__class__.__name__]()
         return {key: value
@@ -60,21 +62,24 @@ class ZustandsMediator:
         return ''
 
     def prepare_consoleview_optionen_string(self, zustand: Zustand) -> str:
-        """Erzeugt den String fuer das Feld 'optionen'.
+        """Erzeugt den String fuer das Feld 'optionen' (mit anderen Worten 'transition' des WorkflowManagers.
             Vom Prinzip ist es immer die gleiche Vorgehensweise, deshalb hier definiert"""
-        def build_zustand_liste(zustands_liste: list[Zustand], start_index: int = 1) -> list[str]:
-            """Wandle zustand.parent oder child in Liste aus String um."""
-            return [f"{index:2d} {der_zustand.titel} : {der_zustand.beschreibung}\n"
-                    for index, der_zustand
-                    in enumerate(zustands_liste, start_index) if der_zustand is not None]
+        # TODO Um die Transitions anzuzeigen, muss hier die aktuelle instanz des WorkflowManagers verarbeitet werden
+        # def build_zustand_liste(zustands_liste: list[Zustand], start_index: int = 1) -> list[str]:
+        #     """Wandle zustand.parent oder child in Liste aus String um."""
+        #     return [f"{index:2d} {der_zustand.titel} : {der_zustand.beschreibung}\n"
+        #             for index, der_zustand
+        #             in enumerate(zustands_liste, start_index)
+        #             if der_zustand is not None]
 
         def build_cmds_liste(cmds_liste: list[str]) -> list[str]:
             """Wandle die Liste mit den im Zustand definierten Kommandos in einen String um."""
             return [f"'{cmd}' + Zahl\n" for cmd in cmds_liste]
-
-        return ''.join(build_zustand_liste([zustand.parent], 0) +
-                       build_zustand_liste(zustand.child, 1) +
-                       build_cmds_liste(zustand.kommandos))
+        return ''.join(
+#            (build_zustand_liste([workflow.zustands_history], 0) if workflow.zustands_history
+#             else ['']) +
+#            build_zustand_liste(workflow.transitions[workflow.aktueller_zustand], 1) +
+            build_cmds_liste(zustand.kommandos))
 
 
 @dataclass(frozen=True)
@@ -85,7 +90,7 @@ class ZustandMediatorEnde(ZustandsMediator):
         return {}
 
     def prepare_consoleview_optionen_string(self, zustand: Zustand, zeit_in_ms: int = 0) -> str:
-        return f"Ciao! {zustand.parent}"
+        return f"Ciao!"
 
 
 @dataclass(frozen=True)
