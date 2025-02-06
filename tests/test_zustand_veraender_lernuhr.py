@@ -22,7 +22,7 @@ class test_ZustandVeraenderLernuhr(TestCase):
         self.assertEqual('Zustand, zum Stellen der Uhr.', objekt.beschreibung)
         self.assertEqual('', objekt.aktuelle_zeit)
         self.assertIsNone(objekt.neue_uhr)
-        self.assertEqual(('s', 'k', 't', 'z', 'p', 'r', 'c'), objekt.kommandos)
+        self.assertEqual(('c', 'k', 'p', 'r', 's', 't', 'u', 'z'), objekt.kommandos)
 
     def test_parse_user_eingabe_option_leerer_string(self):
         uhr = Lernuhr()

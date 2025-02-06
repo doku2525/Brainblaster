@@ -71,7 +71,7 @@ class ZustandVeraenderLernuhr(Zustand):
         match cmd:
             case ['=', *cmd]: neuer_zustand = self._replace_neue_uhr(self.start_gleich(cmd))
             case ['+', *cmd]: neuer_zustand = self._replace_neue_uhr(self.start_plus(cmd))
-            case ['-', *cmd]: neuer_zustand = self._replace_neue_uhr(self.start_minus(wert))
+            case ['-', *cmd]: neuer_zustand = self._replace_neue_uhr(self.start_minus(cmd))
             case _: neuer_zustand = self
         return 'CmdErsetzeAktuellenZustand', (neuer_zustand,)
 
