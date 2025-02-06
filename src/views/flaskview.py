@@ -286,7 +286,9 @@ class FlaskView:
         @self.app.route('/get_current_data')
         def get_current_data():
             """Route fuer die Clienten, die nur die aktuellen Daten empfangen wollen"""
-            return jsonify(self.data)
+            return jsonify(self.data |
+                           ({'keys': list(enumerate(self.data['info'].keys()))} if self.data.get('info') else {})
+                           )
 
         @self.app.route('/lade_neuen_zustand')
         def lade_neuen_zustand():
